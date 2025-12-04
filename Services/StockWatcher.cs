@@ -5,23 +5,12 @@ namespace UnifiStockTracker.Services;
 
 public class StockWatcher
 {
-    private readonly UnifiStockService? _stockService;
-    private readonly UnifiStockLegacyService? _legacyService;
+    private readonly IUnifiStockService _stockService;
     private readonly string _store;
-    private readonly bool _isLegacy;
-
-    public StockWatcher(UnifiStockService stockService, string store)
+    public StockWatcher(IUnifiStockService stockService, string store)
     {
         _stockService = stockService;
         _store = store;
-        _isLegacy = false;
-    }
-
-    public StockWatcher(UnifiStockLegacyService legacyService, string store)
-    {
-        _legacyService = legacyService;
-        _store = store;
-        _isLegacy = true;
     }
 
     public async Task WaitForStockAsync(
@@ -33,9 +22,7 @@ public class StockWatcher
         CancellationToken cancellationToken = default)
     {
         // Get initial stock to validate products
-        var currentStock = _isLegacy
-            ? await _legacyService!.GetStockAsync(_store, null, cancellationToken)
-            : await _stockService!.GetStockAsync(_store, null, cancellationToken);
+        var currentStock = await _stockService.GetStockAsync(_store, null, cancellationToken);
 
         var cache = currentStock.ToDictionary(p => p.Name, p => p);
         foreach (var product in currentStock)
@@ -96,30 +83,42 @@ public class StockWatcher
         var count = 0;
         List<UnifiProduct> availableProducts;
 
-        do
+        try
         {
-            if (count > 0)
+            do
             {
-                await Task.Delay(TimeSpan.FromSeconds(checkIntervalSeconds), cancellationToken);
+                if (count > 0)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(checkIntervalSeconds), cancellationToken);
+                }
+
+                Console.WriteLine("Checking stock...");
+
+                var currentResults = await _stockService.GetStockAsync(_store, null, cancellationToken);
+
+                var matchingProducts = currentResults
+                    .Where(p => applicableProducts.Contains(p.Name) || applicableProducts.Contains(p.SKU))
+                    .OrderBy(p => p.Name)
+                    .ToList();
+
+                availableProducts = matchingProducts.Where(p => p.Available).ToList();
+
+                Console.WriteLine($"Checking stock... Done, sleeping for {checkIntervalSeconds} seconds");
+                count++;
             }
-
-            Console.WriteLine("Checking stock...");
-
-            var currentResults = _isLegacy
-                ? await _legacyService!.GetStockAsync(_store, null, cancellationToken)
-                : await _stockService!.GetStockAsync(_store, null, cancellationToken);
-
-            var matchingProducts = currentResults
-                .Where(p => applicableProducts.Contains(p.Name) || applicableProducts.Contains(p.SKU))
-                .OrderBy(p => p.Name)
-                .ToList();
-
-            availableProducts = matchingProducts.Where(p => p.Available).ToList();
-
-            Console.WriteLine($"Checking stock... Done, sleeping for {checkIntervalSeconds} seconds");
-            count++;
+            while (availableProducts.Count == 0);
         }
-        while (availableProducts.Count == 0);
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Stock monitoring cancelled.");
+            return;
+        }
+
+        // Show notification for all available products
+        var productList = string.Join(", ", availableProducts.Select(p => p.Name));
+        NotificationService.ShowNotification(
+            "UniFi Stock Alert!", 
+            $"{availableProducts.Count} product(s) in stock: {productList}");
 
         foreach (var product in availableProducts)
         {

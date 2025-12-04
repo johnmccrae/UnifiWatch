@@ -5,7 +5,7 @@ using UnifiStockTracker.Models;
 
 namespace UnifiStockTracker.Services;
 
-public class UnifiStockLegacyService
+public class UnifiStockLegacyService : IUnifiStockService
 {
     private readonly HttpClient _httpClient;
 

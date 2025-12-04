@@ -1,83 +1,106 @@
 using System.CommandLine;
+using System.CommandLine.Invocation;
 using UnifiStockTracker.Configuration;
 using UnifiStockTracker.Services;
 
 namespace UnifiStockTracker;
 
-class Program
+public class Program
 {
-    static async Task<int> Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
         var rootCommand = new RootCommand("UnifiStockTracker - Monitor Ubiquiti product stock availability");
 
-        // Get-Stock command (modern stores)
-        var getStockCommand = new Command("get-stock", "Get current stock for US/EU/UK stores");
-        var storeOption = new Option<string>("--store", "Store to check (Europe, USA, UK)") { IsRequired = true };
+        // Mode options (mutually exclusive)
+        var stockOption = new Option<bool>("--stock", "Get current stock");
+        var waitOption = new Option<bool>("--wait", "Wait for products to be in stock");
+        
+        // Store options (mutually exclusive)
+        var storeOption = new Option<string?>("--store", "Store to check (Europe, USA, UK) - uses GraphQL API");
+        var legacyApiStoreOption = new Option<string?>("--legacy-api-store", "Store to check (Brazil, India, Japan, Taiwan, Singapore, Mexico, China) - uses Shopify API");
+        
+        // Filter options
         var collectionsOption = new Option<string[]?>("--collections", "Collections to filter (optional)") { AllowMultipleArgumentsPerToken = true };
-        getStockCommand.AddOption(storeOption);
-        getStockCommand.AddOption(collectionsOption);
-        getStockCommand.SetHandler(async (string store, string[]? collections) =>
-        {
-            await GetStockAsync(store, collections, isLegacy: false);
-        }, storeOption, collectionsOption);
-
-        // Get-Stock-Legacy command (legacy stores)
-        var getStockLegacyCommand = new Command("get-stock-legacy", "Get current stock for Brazil/India/Japan/Taiwan/Singapore/Mexico/China stores");
-        var legacyStoreOption = new Option<string>("--store", "Store to check (Brazil, India, Japan, Taiwan, Singapore, Mexico, China)") { IsRequired = true };
-        var legacyCollectionsOption = new Option<string[]?>("--collections", "Collections to filter (optional)") { AllowMultipleArgumentsPerToken = true };
-        getStockLegacyCommand.AddOption(legacyStoreOption);
-        getStockLegacyCommand.AddOption(legacyCollectionsOption);
-        getStockLegacyCommand.SetHandler(async (string store, string[]? collections) =>
-        {
-            await GetStockAsync(store, collections, isLegacy: true);
-        }, legacyStoreOption, legacyCollectionsOption);
-
-        // Wait-Stock command (modern stores)
-        var waitStockCommand = new Command("wait-stock", "Wait for products to be in stock (US/EU/UK stores)");
-        var waitStoreOption = new Option<string>("--store", "Store to check (Europe, USA, UK)") { IsRequired = true };
         var productNamesOption = new Option<string[]?>("--product-names", "Product names to monitor") { AllowMultipleArgumentsPerToken = true };
         var productSkusOption = new Option<string[]?>("--product-skus", "Product SKUs to monitor") { AllowMultipleArgumentsPerToken = true };
+        
+        // Wait options
         var secondsOption = new Option<int>("--seconds", () => 60, "Check interval in seconds");
         var noWebsiteOption = new Option<bool>("--no-website", () => false, "Don't open website when product is in stock");
         var noSoundOption = new Option<bool>("--no-sound", () => false, "Don't play sound when product is in stock");
-        
-        waitStockCommand.AddOption(waitStoreOption);
-        waitStockCommand.AddOption(productNamesOption);
-        waitStockCommand.AddOption(productSkusOption);
-        waitStockCommand.AddOption(secondsOption);
-        waitStockCommand.AddOption(noWebsiteOption);
-        waitStockCommand.AddOption(noSoundOption);
-        
-        waitStockCommand.SetHandler(async (string store, string[]? productNames, string[]? productSkus, int seconds, bool noWebsite, bool noSound) =>
-        {
-            await WaitForStockAsync(store, productNames, productSkus, seconds, noWebsite, noSound, isLegacy: false);
-        }, waitStoreOption, productNamesOption, productSkusOption, secondsOption, noWebsiteOption, noSoundOption);
 
-        // Wait-Stock-Legacy command (legacy stores)
-        var waitStockLegacyCommand = new Command("wait-stock-legacy", "Wait for products to be in stock (legacy stores)");
-        var waitLegacyStoreOption = new Option<string>("--store", "Store to check (Brazil, India, Japan, Taiwan, Singapore, Mexico, China)") { IsRequired = true };
-        var legacyProductNamesOption = new Option<string[]?>("--product-names", "Product names to monitor") { AllowMultipleArgumentsPerToken = true };
-        var legacyProductSkusOption = new Option<string[]?>("--product-skus", "Product SKUs to monitor") { AllowMultipleArgumentsPerToken = true };
-        var legacySecondsOption = new Option<int>("--seconds", () => 60, "Check interval in seconds");
-        var legacyNoWebsiteOption = new Option<bool>("--no-website", () => false, "Don't open website when product is in stock");
-        var legacyNoSoundOption = new Option<bool>("--no-sound", () => false, "Don't play sound when product is in stock");
-        
-        waitStockLegacyCommand.AddOption(waitLegacyStoreOption);
-        waitStockLegacyCommand.AddOption(legacyProductNamesOption);
-        waitStockLegacyCommand.AddOption(legacyProductSkusOption);
-        waitStockLegacyCommand.AddOption(legacySecondsOption);
-        waitStockLegacyCommand.AddOption(legacyNoWebsiteOption);
-        waitStockLegacyCommand.AddOption(legacyNoSoundOption);
-        
-        waitStockLegacyCommand.SetHandler(async (string store, string[]? productNames, string[]? productSkus, int seconds, bool noWebsite, bool noSound) =>
-        {
-            await WaitForStockAsync(store, productNames, productSkus, seconds, noWebsite, noSound, isLegacy: true);
-        }, waitLegacyStoreOption, legacyProductNamesOption, legacyProductSkusOption, legacySecondsOption, legacyNoWebsiteOption, legacyNoSoundOption);
+        rootCommand.AddOption(stockOption);
+        rootCommand.AddOption(waitOption);
+        rootCommand.AddOption(storeOption);
+        rootCommand.AddOption(legacyApiStoreOption);
+        rootCommand.AddOption(collectionsOption);
+        rootCommand.AddOption(productNamesOption);
+        rootCommand.AddOption(productSkusOption);
+        rootCommand.AddOption(secondsOption);
+        rootCommand.AddOption(noWebsiteOption);
+        rootCommand.AddOption(noSoundOption);
 
-        rootCommand.AddCommand(getStockCommand);
-        rootCommand.AddCommand(getStockLegacyCommand);
-        rootCommand.AddCommand(waitStockCommand);
-        rootCommand.AddCommand(waitStockLegacyCommand);
+        rootCommand.SetHandler(async (InvocationContext context) =>
+        {
+            var stock = context.ParseResult.GetValueForOption(stockOption);
+            var wait = context.ParseResult.GetValueForOption(waitOption);
+            var store = context.ParseResult.GetValueForOption(storeOption);
+            var legacyStore = context.ParseResult.GetValueForOption(legacyApiStoreOption);
+            var collections = context.ParseResult.GetValueForOption(collectionsOption);
+            var productNames = context.ParseResult.GetValueForOption(productNamesOption);
+            var productSkus = context.ParseResult.GetValueForOption(productSkusOption);
+            var seconds = context.ParseResult.GetValueForOption(secondsOption);
+            var noWebsite = context.ParseResult.GetValueForOption(noWebsiteOption);
+            var noSound = context.ParseResult.GetValueForOption(noSoundOption);
+
+            // Validate mutually exclusive mode options
+            if (!stock && !wait)
+            {
+                Console.WriteLine("Error: You must specify either --stock or --wait");
+                context.ExitCode = 1;
+                return;
+            }
+            if (stock && wait)
+            {
+                Console.WriteLine("Error: Cannot specify both --stock and --wait");
+                context.ExitCode = 1;
+                return;
+            }
+
+            // Validate mutually exclusive store options
+            if (store == null && legacyStore == null)
+            {
+                Console.WriteLine("Error: You must specify either --store or --legacy-api-store");
+                context.ExitCode = 1;
+                return;
+            }
+            if (store != null && legacyStore != null)
+            {
+                Console.WriteLine("Error: Cannot specify both --store and --legacy-api-store");
+                context.ExitCode = 1;
+                return;
+            }
+
+            var selectedStore = store ?? legacyStore!;
+            var isLegacy = legacyStore != null;
+
+            try
+            {
+                if (stock)
+                {
+                    await GetStockAsync(selectedStore, collections, isLegacy);
+                }
+                else // wait
+                {
+                    await WaitForStockAsync(selectedStore, productNames, productSkus, seconds, noWebsite, noSound, isLegacy);
+                }
+                context.ExitCode = 0;
+            }
+            catch
+            {
+                context.ExitCode = 1;
+            }
+        });
 
         return await rootCommand.InvokeAsync(args);
     }
@@ -88,86 +111,58 @@ class Program
 
         try
         {
-            if (isLegacy)
-            {
-                var service = new UnifiStockLegacyService(httpClient);
-                var products = await service.GetStockAsync(store, collections);
-                DisplayProducts(products);
-            }
-            else
-            {
-                var service = new UnifiStockService(httpClient);
-                var products = await service.GetStockAsync(store, collections);
-                DisplayProducts(products);
-            }
+            IUnifiStockService service = isLegacy
+                ? new UnifiStockLegacyService(httpClient)
+                : new UnifiStockService(httpClient);
+
+            var products = await service.GetStockAsync(store, collections);
+            DisplayProducts(products);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
+            throw;
         }
     }
 
-    static async Task WaitForStockAsync(string store, string[]? productNames, string[]? productSkus, int seconds, bool noWebsite, bool noSound, bool isLegacy)
+    static async Task WaitForStockAsync(string store, string[]? productNames, string[]? productSkus, 
+        int seconds, bool noWebsite, bool noSound, bool isLegacy)
     {
-        if ((productNames == null || productNames.Length == 0) && (productSkus == null || productSkus.Length == 0))
-        {
-            Console.WriteLine("Error: You must specify at least one product name or SKU to monitor");
-            return;
-        }
-
         using var httpClient = new HttpClient();
 
         try
         {
-            StockWatcher watcher;
-
-            if (isLegacy)
-            {
-                var service = new UnifiStockLegacyService(httpClient);
-                watcher = new StockWatcher(service, store);
-            }
-            else
-            {
-                var service = new UnifiStockService(httpClient);
-                watcher = new StockWatcher(service, store);
-            }
-
+            IUnifiStockService stockService = isLegacy
+                ? new UnifiStockLegacyService(httpClient)
+                : new UnifiStockService(httpClient);
+            var watcher = new StockWatcher(stockService, store);
             await watcher.WaitForStockAsync(productNames, productSkus, seconds, noWebsite, noSound);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
+            throw;
         }
     }
 
-    static void DisplayProducts(List<Models.UnifiProduct> products)
+    static void DisplayProducts(List<UnifiStockTracker.Models.UnifiProduct> products)
     {
-        if (products.Count == 0)
-        {
-            Console.WriteLine("No products found");
-            return;
-        }
+        Console.WriteLine($"\nFound {products.Count} products:\n");
+        Console.WriteLine("{0,-50} {1,-12} {2,-30} {3,-20} {4,10}", 
+            "Name", "Available", "Category", "SKU", "Price");
+        Console.WriteLine(new string('-', 125));
 
-        Console.WriteLine($"\n{"Name",-50} {"Available",-10} {"Category",-30} {"SKU",-15} {"Price",-10}");
-        Console.WriteLine(new string('-', 120));
-
-        foreach (var product in products.OrderBy(p => p.Name))
+        foreach (var product in products)
         {
-            var available = product.Available ? "✓ Yes" : "✗ No";
-            var price = product.Price.HasValue ? $"${product.Price:F2}" : "N/A";
+            var availability = product.Available ? "✓ In Stock" : "✗ Out of Stock";
+            var price = product.Price.HasValue ? $"{(product.Price.Value / 100):F2}" : "N/A";
             
-            Console.WriteLine($"{TruncateString(product.Name, 50),-50} {available,-10} {TruncateString(product.Category, 30),-30} {TruncateString(product.SKU, 15),-15} {price,-10}");
+            Console.WriteLine("{0,-50} {1,-12} {2,-30} {3,-20} {4,10}",
+                product.Name.Length > 47 ? product.Name.Substring(0, 47) + "..." : product.Name,
+                availability,
+                product.Category?.Length > 27 ? product.Category.Substring(0, 27) + "..." : product.Category ?? "N/A",
+                product.SKU ?? "N/A",
+                price);
         }
-
-        Console.WriteLine($"\nTotal: {products.Count} products");
-        Console.WriteLine($"Available: {products.Count(p => p.Available)} products");
-    }
-
-    static string TruncateString(string str, int maxLength)
-    {
-        if (string.IsNullOrEmpty(str))
-            return string.Empty;
-
-        return str.Length <= maxLength ? str : str.Substring(0, maxLength - 3) + "...";
     }
 }

@@ -1,22 +1,39 @@
-# UnifiStockTracker - C# Version
+# UnifiStockTracker - C# Edition
 
-A C# rewrite of the PowerShell UnifiStockTracker module for monitoring Ubiquiti product stock availability.
+## What is This?
 
-## Stock Tracking Mechanism
+UnifiStockTracker is a tool that automatically checks if Ubiquiti networking products are in stock at their online stores. Instead of manually refreshing the Ubiquiti store website hoping your desired product comes back in stock, this program does it for you automatically.
 
-This application uses **TWO different API mechanisms** to check Ubiquiti product stock:
+This is a C# rewrite of the original PowerShell module created by [Evotec](https://github.com/EvotecIT) of Poland. The C# version provides better cross-platform support and performance while maintaining all the functionality of the original.
 
-### 1. Modern API (US/EU/UK stores) - GraphQL
+Think of it as a personal shopping assistant that watches the store 24/7 and alerts you the moment your product becomes available.
+
+## Why Would I Use This?
+
+Ubiquiti products (like UniFi WiFi access points, security cameras, switches, and routers) are often sold out due to high demand. This tool helps you:
+
+- **Save Time**: No more constantly checking the website manually
+- **Never Miss a Restock**: Get notified immediately when products become available
+- **Monitor Multiple Products**: Watch several products at once
+- **Open the Store Automatically**: When stock is found, it opens the product page in your browser
+- **Get Alerts**: Hear a beep notification when stock is available (Windows only)
+
+## How Does It Work?
+
+The program connects to Ubiquiti's online store systems using two different methods:
+
+### 1. GraphQL API (US/EU/UK stores)
 - **Endpoint**: `https://ecomm.svc.ui.com/graphql`
 - **Method**: POST
 - **Query**: `GetProductsForLandingPagePro`
-- **Features**: 
+- **Features**:
   - Fetches products in paginated batches (250 items per request)
   - Returns structured product data with variants
   - Checks `variant.status == "AVAILABLE"` for stock availability
 - **Supported Stores**: USA, Europe, UK
+- **Command**: Use `--store` option
 
-### 2. Legacy API (Other stores) - Shopify REST
+### 2. Shopify REST API (Other stores)
 - **URL Pattern**: `{store_url}/collections/{collection}/products.json`
 - **Method**: GET
 - **Examples**:
@@ -26,197 +43,314 @@ This application uses **TWO different API mechanisms** to check Ubiquiti product
   - Standard Shopify products JSON API
   - Checks `variant.available` boolean for stock status
 - **Supported Stores**: Brazil, India, Japan, Taiwan, Singapore, Mexico, China
+- **Command**: Use `--legacy-api-store` option
 
 ## Prerequisites
 
-- .NET 8.0 SDK or later
+- .NET 9.0 SDK or later
 - Windows, Linux, or macOS
 
 ## Building the Application
 
+### For Windows
+
+1. Open PowerShell
+2. Navigate to the program folder:
+   ```powershell
+   cd UnifiStockTracker-CSharp
+   ```
+3. Build as a standalone executable:
+   ```powershell
+   dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true
+   ```
+
+The executable will be created at: `bin\Release\net9.0\win-x64\publish\UnifiStockTracker.exe`
+
+### For Linux
+
+1. Open a terminal
+2. Navigate to the program folder:
+   ```bash
+   cd UnifiStockTracker-CSharp
+   ```
+3. Build as a standalone executable:
+   ```bash
+   dotnet publish -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true
+   ```
+
+The executable will be created at: `bin/Release/net9.0/linux-x64/publish/UnifiStockTracker`
+
+You may need to make it executable:
 ```bash
-cd CSharp
-dotnet restore
-dotnet build
+chmod +x bin/Release/net9.0/linux-x64/publish/UnifiStockTracker
 ```
+
+### For macOS
+
+1. Open Terminal
+2. Navigate to the program folder:
+   ```bash
+   cd UnifiStockTracker-CSharp
+   ```
+3. Build as a standalone executable:
+   ```bash
+   dotnet publish -c Release -r osx-x64 --self-contained -p:PublishSingleFile=true
+   ```
+
+The executable will be created at: `bin/Release/net9.0/osx-x64/publish/UnifiStockTracker`
+
+You may need to make it executable:
+```bash
+chmod +x bin/Release/net9.0/osx-x64/publish/UnifiStockTracker
+```
+
+**Note:** You can run the executables from anywhere after building, or copy them to a location in your PATH for system-wide access.
 
 ## Running the Application
 
-### Get Current Stock (Modern Stores)
+### Using the Standalone Executable
 
-Get all products from USA store:
+**Windows (PowerShell):**
+```powershell
+.\UnifiStockTracker.exe --stock --store USA
+```
+
+**Linux/macOS (Bash/Zsh):**
 ```bash
-dotnet run -- get-stock --store USA
+./UnifiStockTracker --stock --store USA
 ```
 
-Get specific collections from Europe store:
+### Using dotnet run (without publishing)
+
+If you haven't published the executable yet, you can run directly with:
+
+**All platforms:**
 ```bash
-dotnet run -- get-stock --store Europe --collections CameraSecurityDome360 CameraSecurityCompactPoEWired
+dotnet run -- --stock --store USA
 ```
 
-Get products from UK store:
+### Command Structure
+
+The tool uses option-based commands instead of subcommands:
+
+**Mode Options (choose one):**
+- `--stock` - Get current stock availability
+- `--wait` - Monitor products and alert when in stock
+
+**Store Options (choose one):**
+- `--store <name>` - For GraphQL API stores (USA, Europe, UK)
+- `--legacy-api-store <name>` - For Shopify API stores (Brazil, India, Japan, Taiwan, Singapore, Mexico, China)
+
+**Filter Options (optional):**
+- `--collections <name>` - Filter by collection names
+- `--product-names <pattern>` - Filter by product name patterns
+- `--product-skus <sku>` - Filter by product SKUs
+
+**Wait Options (for `--wait` mode only):**
+- `--seconds <number>` - Check interval in seconds (default: 60)
+- `--no-website` - Don't open browser when product found
+- `--no-sound` - Don't play alert sound when product found
+
+### Examples
+
+**Check all stock in USA store:**
+
+Windows (PowerShell):
+```powershell
+.\UnifiStockTracker.exe --stock --store USA
+```
+
+Linux/macOS:
 ```bash
-dotnet run -- get-stock --store UK --collections DreamMachine DreamRouter
+./UnifiStockTracker --stock --store USA
 ```
 
-### Get Current Stock (Legacy Stores)
+**Check stock in Brazil store (Shopify API):**
 
-Get all products from Brazil store:
+Windows (PowerShell):
+```powershell
+.\UnifiStockTracker.exe --stock --legacy-api-store Brazil
+```
+
+Linux/macOS:
 ```bash
-dotnet run -- get-stock-legacy --store Brazil
+./UnifiStockTracker --stock --legacy-api-store Brazil
 ```
 
-Get specific collections from India store:
+**Monitor for Dream Machine in USA store:**
+
+Windows (PowerShell):
+```powershell
+.\UnifiStockTracker.exe --wait --store USA --product-names "Dream Machine"
+```
+
+Linux/macOS:
 ```bash
-dotnet run -- get-stock-legacy --store India --collections Protect NetworkWifi
+./UnifiStockTracker --wait --store USA --product-names "Dream Machine"
 ```
 
-### Wait for Products to be in Stock (Modern Stores)
+**Monitor specific SKU in Europe:**
 
-Monitor specific products by name in USA store:
+Windows (PowerShell):
+```powershell
+.\UnifiStockTracker.exe --wait --store Europe --product-skus "UDM-Pro"
+```
+
+Linux/macOS:
 ```bash
-dotnet run -- wait-stock --store USA --product-names "UniFi6 Mesh" "G4 Doorbell Pro" --seconds 60
+./UnifiStockTracker --wait --store Europe --product-skus "UDM-Pro"
 ```
 
-Monitor by SKU in Europe store:
+**Wait for stock in Japan with custom interval:**
+
+Windows (PowerShell):
+```powershell
+.\UnifiStockTracker.exe --wait --legacy-api-store Japan --product-names "UniFi" --seconds 120
+```
+
+Linux/macOS:
 ```bash
-dotnet run -- wait-stock --store Europe --product-skus UDR-EU --seconds 60
+./UnifiStockTracker --wait --legacy-api-store Japan --product-names "UniFi" --seconds 120
 ```
 
-Monitor without opening website or playing sound:
+**Silent monitoring (no browser, no sound):**
+
+Windows (PowerShell):
+```powershell
+.\UnifiStockTracker.exe --wait --store UK --product-names "Camera" --no-website --no-sound
+```
+
+Linux/macOS:
 ```bash
-dotnet run -- wait-stock --store USA --product-names "Access Point AC Lite" --seconds 60 --no-website --no-sound
+./UnifiStockTracker --wait --store UK --product-names "Camera" --no-website --no-sound
 ```
 
-### Wait for Products to be in Stock (Legacy Stores)
+## Supported Stores
 
-Monitor products in Brazil store:
-```bash
-dotnet run -- wait-stock-legacy --store Brazil --product-names "UniFi6 Mesh" "Camera G4 Pro" --seconds 60
-```
+### GraphQL API Stores (use `--store`)
+- **USA** (`--store USA`)
+- **Europe** (`--store Europe`)
+- **UK** (`--store UK`)
 
-Monitor by SKU in Japan store:
-```bash
-dotnet run -- wait-stock-legacy --store Japan --product-skus UDR-JP --seconds 60
-```
+### Shopify API Stores (use `--legacy-api-store`)
+- **Brazil** (`--legacy-api-store Brazil`)
+- **India** (`--legacy-api-store India`)
+- **Japan** (`--legacy-api-store Japan`)
+- **Taiwan** (`--legacy-api-store Taiwan`)
+- **Singapore** (`--legacy-api-store Singapore`)
+- **Mexico** (`--legacy-api-store Mexico`)
+- **China** (`--legacy-api-store China`)
 
-## Publishing as Standalone Executable
+## What Happens When Stock is Found?
 
-Create a self-contained executable for Windows:
-```bash
-dotnet publish -c Release -r win-x64 --self-contained
-```
+When the `--wait` command finds products in stock:
 
-For Linux:
-```bash
-dotnet publish -c Release -r linux-x64 --self-contained
-```
-
-For macOS:
-```bash
-dotnet publish -c Release -r osx-x64 --self-contained
-```
-
-The executable will be in `bin/Release/net8.0/{runtime}/publish/`
-
-## Command Reference
-
-### Commands
-
-- `get-stock` - Get current stock for US/EU/UK stores
-- `get-stock-legacy` - Get current stock for Brazil/India/Japan/Taiwan/Singapore/Mexico/China stores
-- `wait-stock` - Wait for products to be in stock (US/EU/UK stores)
-- `wait-stock-legacy` - Wait for products to be in stock (legacy stores)
-
-### Common Options
-
-- `--store` - Store to check (required)
-- `--collections` - Filter by specific collections (optional, multiple values allowed)
-- `--product-names` - Product names to monitor (wait commands, multiple values allowed)
-- `--product-skus` - Product SKUs to monitor (wait commands, multiple values allowed)
-- `--seconds` - Check interval in seconds (wait commands, default: 60)
-- `--no-website` - Don't open website when product is in stock (wait commands)
-- `--no-sound` - Don't play sound notification (wait commands)
-
-### Supported Stores
-
-**Modern Stores (GraphQL API):**
-- Europe
-- USA
-- UK
-
-**Legacy Stores (Shopify API):**
-- Brazil
-- India
-- Japan
-- Taiwan
-- Singapore
-- Mexico
-- China
-
-## Project Structure
-
-```
-CSharp/
-├── UnifiStockTracker.csproj    # Project file with dependencies
-├── Program.cs                   # Main entry point with CLI
-├── Models/
-│   ├── UnifiProduct.cs         # Common product model
-│   ├── GraphQLModels.cs        # GraphQL request/response models
-│   └── LegacyModels.cs         # Shopify API models
-├── Services/
-│   ├── UnifiStockService.cs    # Modern GraphQL API service
-│   ├── UnifiStockLegacyService.cs  # Legacy Shopify API service
-│   └── StockWatcher.cs         # Stock monitoring service
-└── Configuration/
-    └── StoreConfiguration.cs   # Store URLs and collection mappings
-```
-
-## Features
-
-- ✅ Support for both modern GraphQL and legacy Shopify APIs
-- ✅ Monitor multiple products simultaneously
-- ✅ Automatic website opening when stock is available
-- ✅ Audio notifications (Windows beep)
-- ✅ Configurable check intervals
-- ✅ Cross-platform support (Windows, Linux, macOS)
-- ✅ Type-safe C# implementation
-- ✅ Modern async/await patterns
+1. **Native Notification**: Shows a system notification with product details
+   - **Windows**: Windows Toast Notification appears in Action Center
+   - **macOS**: Notification Center alert with product name and details
+   - **Linux**: Desktop notification via notify-send (if available)
+2. **Console Output**: Lists all matching products that are available
+3. **Browser Opens**: Automatically opens the product page (unless `--no-website` is used)
+4. **Alert Sound**: Plays a beep notification on Windows (unless `--no-sound` is used)
 
 ## Technical Details
 
+### API Implementation
+
+**GraphQL API:**
+`
+POST https://ecomm.svc.ui.com/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetProductsForLandingPagePro(...)",
+  "variables": {
+    "pageNumber": 1,
+    "itemsPerPage": 250,
+    "collectionSlugs": ["dream-machine", "camera-security-compact-poe-wired"]
+  }
+}
+`
+
+**Shopify REST API:**
+`
+GET https://br.store.ui.com/collections/unifi-protect/products.json
+`
+
+### Project Structure
+
+- `Models/` - Data models for products and API responses
+  - `UnifiProduct.cs` - Common product representation
+  - `GraphQLModels.cs` - GraphQL API request/response types
+  - `LegacyModels.cs` - Shopify API response types
+- `Services/` - API interaction services
+  - `UnifiStockService.cs` - GraphQL API implementation
+  - `UnifiStockLegacyService.cs` - Shopify API implementation
+  - `StockWatcher.cs` - Stock monitoring with notifications
+- `Configuration/` - Store URLs and collection mappings
+  - `StoreConfiguration.cs` - Store endpoints and collection data
+- `Program.cs` - CLI entry point using System.CommandLine
+
 ### Dependencies
 
-- **System.CommandLine** (v2.0.0-beta4) - Command-line parsing
-- **System.Text.Json** (v8.0.0) - JSON serialization
-- **Microsoft.Extensions.Http** (v8.0.0) - HTTP client factory
+- **System.CommandLine** (2.0.0-beta4) - Modern command-line parsing
+- **System.Text.Json** (9.0.0) - JSON serialization
+- **Microsoft.Extensions.Http** (9.0.0) - HTTP client factory
+- **Microsoft.Toolkit.Uwp.Notifications** (7.1.3) - Windows Toast Notifications (Windows only)
 
-### API Communication
+### Notification System
 
-The application uses `HttpClient` to communicate with:
-1. **GraphQL Endpoint** - POST requests with complex queries for modern stores
-2. **REST Endpoints** - GET requests to Shopify product JSON for legacy stores
+The application provides rich, branded notifications across all platforms:
 
-### Error Handling
+**Windows**: 
+- Uses Windows Toast Notifications with Ubiquiti branding
+- Features the official Ubiquiti logo in the notification
+- Notifications appear in the Action Center and persist until dismissed
+- Can include multiple products in a single alert
+- Supports long-duration display for better visibility
 
-- Validates store names before making API calls
-- Handles HTTP errors gracefully
-- Provides warnings for unknown products
-- Continues monitoring even if individual requests fail
+**macOS**: 
+- Uses AppleScript to trigger native Notification Center alerts
+- Includes "Ubiquiti Stock Alert" subtitle for branding
+- Notifications appear in the top-right corner
+- Follows system notification settings and do-not-disturb preferences
 
-## Differences from PowerShell Version
+**Linux**: 
+- Uses `notify-send` with Ubiquiti branding and network icon
+- Falls back to console output if notify-send is not available
+- Compatible with most desktop environments (GNOME, KDE, XFCE)
 
-1. **Type Safety**: Strongly typed models vs dynamic PowerShell objects
-2. **Performance**: Compiled C# code vs interpreted PowerShell
-3. **Dependencies**: NuGet packages vs PowerShell modules
-4. **Cross-Platform**: Better Linux/macOS support without PowerShell-specific dependencies
-5. **Async**: Native async/await throughout vs PowerShell's job-based async
+**Cross-Platform Features:**
+- All notifications include the title and detailed product information
+- Windows notifications include interactive arguments for potential future click handling
+- Consistent branding across all platforms
+- Automatic fallback to console output if native notifications fail
 
-## License
+## Troubleshooting
 
-Same license as the original PowerShell version (MIT License)
+**Error: "You must specify either --stock or --wait"**
+- You need to choose a mode. Add either `--stock` or `--wait` to your command.
+
+**Error: "You must specify either --store or --legacy-api-store"**
+- You need to specify which store. Add either `--store USA` or `--legacy-api-store Brazil`.
+
+**Error: "Cannot specify both --stock and --wait"**
+- Only use one mode at a time.
+
+**No products found:**
+- Check that the store name is correct (case-sensitive)
+- Try without filters first to see all products
+- Some stores may have no products (Brazil store appears empty in testing)
+
+**Linux/macOS: "Permission denied"**
+- Make the executable file executable: `chmod +x UnifiStockTracker`
 
 ## Credits
 
-Original PowerShell version by Przemysław Kłys (EvotecIT)
-C# port created as a rewrite exercise
+- Original PowerShell module by [EvotecIT/UnifiStockTracker](https://github.com/EvotecIT/UnifiStockTracker)
+- C# rewrite maintains the same API monitoring approach
+- API discovery and implementation patterns from original project
+
+## License
+
+This project maintains the same open-source spirit as the original PowerShell module.

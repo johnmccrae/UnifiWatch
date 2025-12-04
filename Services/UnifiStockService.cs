@@ -5,7 +5,7 @@ using UnifiStockTracker.Models;
 
 namespace UnifiStockTracker.Services;
 
-public class UnifiStockService
+public class UnifiStockService : IUnifiStockService
 {
     private readonly HttpClient _httpClient;
     private const string GraphQLEndpoint = "https://ecomm.svc.ui.com/graphql";
