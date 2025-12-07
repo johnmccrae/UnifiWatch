@@ -158,7 +158,7 @@ You should see a notification in the top-right corner of your screen.
 To run the full test suite:
 
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln
+sudo dotnet test UnifiStockTracker-CSharp.sln
 ```
 
 Expected output:
@@ -233,7 +233,7 @@ After building and testing, confirm:
 - ✅ `--wait` mode monitors and counts down
 - ✅ Native macOS notifications appear when monitored (if products were in stock)
 - ✅ Ctrl+C stops the monitoring gracefully
-- ✅ Unit tests pass (`dotnet test`)
+- ✅ Unit tests pass (`sudo dotnet test UnifiStockTracker-CSharp.sln`)
 
 ## Performance Notes
 
@@ -250,5 +250,5 @@ If you encounter issues:
 1. Check the [Troubleshooting](#troubleshooting) section above
 2. Verify .NET 9.0 is installed: `dotnet --version`
 3. Ensure you're on the correct Mac architecture (Intel vs Apple Silicon)
-4. Run `dotnet test` to check if the test suite passes
+4. Run `sudo dotnet test UnifiStockTracker-CSharp.sln` to check if the test suite passes
 5. Check internet connectivity when running API calls

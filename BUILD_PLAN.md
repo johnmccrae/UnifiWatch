@@ -55,7 +55,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 
 **Objective**: Set up localization infrastructure BEFORE building notification templates to avoid rewriting them later
 
-**Context**: Application will be used in Brazil, Germany, Japan, France, and Canada. Must establish i18n patterns NOW before hardcoding English in email templates (Phase 3a), SMS messages (Phase 3b), and CLI wizards (Phase 5).
+**Context**: Application will be used in Canada (English and French), and the rest of the English Speaking Countries, as well as Germany, Spain, and France. Must establish i18n patterns NOW before hardcoding English in email templates (Phase 3a), SMS messages (Phase 3b), and CLI wizards (Phase 5).
 
 **Why Phase 2**: Email/SMS templates are much easier to build with localization from the start than to refactor later. This phase sets up infrastructure but only creates English resources initially.
 
@@ -70,9 +70,9 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
    - Email templates (Phase 3a) - need structure for multilingual HTML
    - SMS messages (Phase 3b) - 160 char limit across languages
    - Configuration wizard (Phase 5) - interactive prompts
-   - Date/time formatting (critical for Japan: YYYY/MM/DD)
-   - Number formatting (Germany uses comma: 1.234,56)
-   - Currency display (Euro, Real, Yen, Dollar)
+   - Date/time formatting (Canada: YYYY-MM-DD, Germany: DD.MM.YYYY, Spain/France: DD/MM/YYYY)
+   - Number formatting (Germany/Spain use comma: 1.234,56)
+   - Currency display (Euro, Canadian Dollar)
    - Time zones (UTC internally, local display)
 
 3. **Set up localization infrastructure**:
@@ -82,14 +82,13 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
    
    // Create resource structure
    Resources/
-     Notifications.en-US.json
-     Notifications.pt-BR.json  // Brazilian Portuguese
-     Notifications.de-DE.json  // German
-     Notifications.ja-JP.json  // Japanese  
      Notifications.en-CA.json  // English Canadian
      Notifications.fr-CA.json  // French Canadian
-     CLI.en-US.json
-     Errors.en-US.json
+     Notifications.fr-FR.json  // French (France)
+     Notifications.de-DE.json  // German
+     Notifications.es-ES.json  // Spanish (Castilian)
+     CLI.en-CA.json
+     Errors.en-CA.json
      
    // JSON format
    {
@@ -105,10 +104,10 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
      {
          public CultureInfo GetUserCulture()
          {
-             // 1. Check CLI flag: --language pt-BR
+             // 1. Check CLI flag: --language fr-CA
              // 2. Check config: "language": "de-DE"  
              // 3. System default: CultureInfo.CurrentUICulture
-             // 4. Fallback: en-US
+             // 4. Fallback: en-CA
          }
      }
      ```
@@ -144,7 +143,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
        // ... existing properties ...
        
        [JsonPropertyName("language")]
-       public string Language { get; set; } = "auto";  // auto, en-US, pt-BR, de-DE, ja-JP, en-CA, fr-CA
+       public string Language { get; set; } = "auto";  // auto, en-CA, fr-CA, fr-FR, de-DE, es-ES
        
        [JsonPropertyName("timeZone")]
        public string TimeZone { get; set; } = "auto";  // auto, or IANA timezone
@@ -152,11 +151,11 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
    ```
 
 8. **Test with international data NOW**:
-   - Test Japanese product names (Kanji: 製品, Katakana: プロダクト)
+   - Test Spanish characters (ñ, á, é, í, ó, ú, ü, ¿, ¡)
    - Test German characters (ü, ö, ä, ß)
-   - Test Brazilian Portuguese (ã, õ, ç)
+   - Test French characters (à, â, ç, é, è, ê, ë, î, ï, ô, ù, û, ü, ÿ, æ, œ)
    - Verify UTF-8 encoding throughout (email, SMS, config files)
-   - Test currency symbols (€, R$, ¥, $, £)
+   - Test currency symbols (€, $, £)
 
 9. **Add unit tests**:
    - Test culture selection logic
@@ -167,7 +166,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 **Deliverables**:
 - `I18N_AUDIT.md` - Current state assessment
 - `LOCALIZATION_GUIDELINES.md` - Coding standards for the team
-- `Resources/` directory with initial .json files (English only, structured for 6 languages)
+- `Resources/` directory with initial .json files (English Canadian only, structured for 5 languages)
 - `Services/Localization/CultureProvider.cs`
 - Updated `Configuration/ServiceConfiguration.cs` with language/timezone
 - `UnifiStockTracker.Tests/LocalizationTests.cs`

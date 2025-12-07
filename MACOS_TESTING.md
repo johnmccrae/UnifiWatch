@@ -8,10 +8,28 @@
 ## Pre-Testing Setup
 
 ### 1. Development Environment
-- [ ] Install .NET 9.0 SDK for macOS
+- [ ] Install .NET 9.0 SDK for macOS (version 9.0.203 specifically)
+  
+  **Option A: Direct download from Microsoft (for specific version)**
+  ```bash
+  # Download .NET 9.0.203 SDK for your architecture
+  # For Apple Silicon (M1/M2/M3/M4):
+  curl -L https://download.visualstudio.microsoft.com/download/pr/822078c4-86ed-4e8d-9cbd-dc15d05f030f/9ff0b5b3e93ddc34c0e04ca93baf2e18/dotnet-sdk-9.0.203-osx-arm64.pkg -o dotnet-sdk-9.0.203.pkg
+  
+  # For Intel Macs:
+  # curl -L https://download.visualstudio.microsoft.com/download/pr/822078c4-86ed-4e8d-9cbd-dc15d05f030f/9ff0b5b3e93ddc34c0e04ca93baf2e18/dotnet-sdk-9.0.203-osx-x64.pkg -o dotnet-sdk-9.0.203.pkg
+  
+  # Install the downloaded package
+  sudo installer -pkg dotnet-sdk-9.0.203.pkg -target /
+  
+  # Verify installation
+  dotnet --version  # Should show 9.0.203
+  ```
+  
+  **Option B: Using Homebrew (installs latest 9.x version, not guaranteed to be 9.0.203)**
   ```bash
   brew install dotnet-sdk
-  dotnet --version  # Should show 9.0.x
+  dotnet --version  # Will show whatever latest version Homebrew has
   ```
 
 - [ ] Clone repository
@@ -22,12 +40,12 @@
 
 - [ ] Restore NuGet packages
   ```bash
-  dotnet restore
+  sudo dotnet restore UnifiStockTracker-CSharp.sln
   ```
 
 - [ ] Build project
   ```bash
-  dotnet build
+  sudo dotnet build UnifiStockTracker-CSharp.sln
   ```
   **Expected**: 0 errors, 0 warnings
 
@@ -42,7 +60,7 @@
 
 #### Test 1.1: Configuration File Location
 ```bash
-dotnet test --filter "ConfigurationProviderTests.LoadAsync_ValidConfiguration_LoadsAllSettings"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.LoadAsync_ValidConfiguration_LoadsAllSettings"
 ```
 
 - [ ] **PASS**: Test passes
@@ -60,7 +78,7 @@ dotnet test --filter "ConfigurationProviderTests.LoadAsync_ValidConfiguration_Lo
 
 #### Test 1.2: Configuration Save/Load Cycle
 ```bash
-dotnet test --filter "ConfigurationProviderTests.SaveAsync_ValidConfiguration_SavesCorrectly"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.SaveAsync_ValidConfiguration_SavesCorrectly"
 ```
 
 - [ ] **PASS**: Test passes
@@ -72,7 +90,7 @@ dotnet test --filter "ConfigurationProviderTests.SaveAsync_ValidConfiguration_Sa
 
 #### Test 1.3: Configuration Backup
 ```bash
-dotnet test --filter "ConfigurationProviderTests.BackupAsync_CreatesBackupFile"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.BackupAsync_CreatesBackupFile"
 ```
 
 - [ ] **PASS**: Test passes
@@ -88,91 +106,60 @@ dotnet test --filter "ConfigurationProviderTests.BackupAsync_CreatesBackupFile"
 
 #### Test 2.1: Platform Detection
 ```bash
-dotnet test --filter "CredentialProviderTests.CredentialProviderFactory_OnMacOS_ReturnsKeychainProvider"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.CredentialProviderFactory_CreateProvider_WithAutoStorage_ShouldSelectDefault"
 ```
 
 - [ ] **PASS**: Test passes
 - [ ] Verify runtime platform:
   ```bash
-  dotnet run --project UnifiStockTracker.csproj -- --version
+  sudo dotnet run --project UnifiStockTracker.csproj -- --version
   # Should detect macOS
   ```
 
 #### Test 2.2: Store Credential to Keychain (CRITICAL TEST)
 
-**Manual Test Required** - Create a simple test app:
+**Note**: The unit tests use mocked providers and do NOT interact with the real macOS Keychain. To manually test the actual Keychain integration:
 
+**Manual Keychain Test using macOS `security` command**:
 ```bash
-cd UnifiStockTracker-CSharp
-cat > TestKeychainStore.cs << 'EOF'
-using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using UnifiStockTracker.Services.Credentials;
+# Store a test credential in macOS Keychain
+security add-generic-password -a "test@example.com" -s "UnifiStockTracker.Test" -w "TestPassword123" -U -T ""
 
-public class TestKeychainStore
-{
-    public static async Task Main(string[] args)
-    {
-        var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-        var logger = loggerFactory.CreateLogger<MacOsKeychain>();
-        
-        var keychain = new MacOsKeychain(logger);
-        
-        Console.WriteLine("Storing test credential to macOS Keychain...");
-        var testCred = new Credential
-        {
-            Key = "TestEmailSMTP",
-            Username = "test@example.com",
-            Password = "TestPassword123",
-            Type = CredentialType.EmailSmtp
-        };
-        
-        await keychain.StoreCredentialAsync(testCred);
-        Console.WriteLine("✅ Credential stored successfully!");
-        
-        Console.WriteLine("\nRetrieving credential...");
-        var retrieved = await keychain.GetCredentialAsync("TestEmailSMTP");
-        
-        if (retrieved != null)
-        {
-            Console.WriteLine($"✅ Username: {retrieved.Username}");
-            Console.WriteLine($"✅ Password: {retrieved.Password}");
-            Console.WriteLine($"✅ Type: {retrieved.Type}");
-        }
-        else
-        {
-            Console.WriteLine("❌ Failed to retrieve credential!");
-        }
-        
-        Console.WriteLine("\nDeleting credential...");
-        await keychain.DeleteCredentialAsync("TestEmailSMTP");
-        Console.WriteLine("✅ Credential deleted");
-    }
-}
-EOF
+# Retrieve the credential (you may be prompted to allow access)
+security find-generic-password -a "test@example.com" -s "UnifiStockTracker.Test" -w
 
-dotnet run TestKeychainStore.cs
+# Verify in Keychain Access app
+open -a "Keychain Access"
+# Search for "UnifiStockTracker.Test"
+
+# Clean up - delete the test credential
+security delete-generic-password -a "test@example.com" -s "UnifiStockTracker.Test"
 ```
 
 **Expected Behavior**:
-- [ ] macOS prompts: "UnifiStockTracker wants to access Keychain"
-- [ ] Click "Allow" or "Always Allow"
-- [ ] Console shows: "✅ Credential stored successfully!"
-- [ ] Console shows: "✅ Username: test@example.com"
-- [ ] Console shows: "✅ Password: TestPassword123"
+- [ ] `security add-generic-password` succeeds without errors
+- [ ] `security find-generic-password` returns "TestPassword123"
+- [ ] Keychain Access.app shows the "UnifiStockTracker.Test" entry
+- [ ] You may see a prompt to allow Terminal to access Keychain (click "Allow")
+- [ ] `security delete-generic-password` removes the credential successfully
+
+**Run the unit tests (these test the encrypted file fallback, not the actual Keychain)**:
+```bash
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.StoreAsync_WithValidKeyAndSecret_ShouldSucceed"
+```
 
 **If Prompts Appear Multiple Times**:
 - [ ] Click "Always Allow" to avoid future prompts
 - [ ] Check Keychain Access.app → Search "UnifiStockTracker" → Verify entry exists
 
 **If Authorization Denied**:
-- [ ] Check System Preferences → Security & Privacy → Privacy → Automation
+- [ ] Check System Settings → Privacy & Security → Automation
 - [ ] Ensure Terminal (or your IDE) has permission
+- [ ] You may need to grant "Full Disk Access" to your terminal application
 
 #### Test 2.3: Retrieve Non-Existent Credential
 ```bash
-dotnet test --filter "CredentialProviderTests.GetCredentialAsync_NonExistentKey_ReturnsNull"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.RetrieveAsync_WithNonExistentKey_ShouldReturnNull"
 ```
 
 - [ ] **PASS**: Test passes
@@ -180,7 +167,7 @@ dotnet test --filter "CredentialProviderTests.GetCredentialAsync_NonExistentKey_
 
 #### Test 2.4: Update Existing Credential
 ```bash
-dotnet test --filter "CredentialProviderTests.StoreCredentialAsync_UpdatesExistingCredential"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.StoreAsync_UpdateExistingKey_ShouldOverwrite"
 ```
 
 - [ ] **PASS**: Test passes
@@ -190,7 +177,7 @@ dotnet test --filter "CredentialProviderTests.StoreCredentialAsync_UpdatesExisti
 
 #### Test 2.5: Delete Credential
 ```bash
-dotnet test --filter "CredentialProviderTests.DeleteCredentialAsync_RemovesCredential"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.DeleteAsync_AfterStore_ShouldSucceed"
 ```
 
 - [ ] **PASS**: Test passes
@@ -198,7 +185,7 @@ dotnet test --filter "CredentialProviderTests.DeleteCredentialAsync_RemovesCrede
 
 #### Test 2.6: List All Credential Keys
 ```bash
-dotnet test --filter "CredentialProviderTests.ListCredentialKeysAsync_ReturnsAllKeys"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.ListAsync_AfterMultipleStores_ShouldReturnAllKeys"
 ```
 
 - [ ] **PASS**: Test passes
@@ -208,26 +195,33 @@ dotnet test --filter "CredentialProviderTests.ListCredentialKeysAsync_ReturnsAll
 
 ### Test Group 3: Fallback to Encrypted File Provider
 
-#### Test 3.1: Simulate Keychain Unavailable
+#### Test 3.1: Encrypted File Provider
 
-**Manual Test**: Deny Keychain access to test fallback
+**Note**: The encrypted file fallback is only used when:
+1. Keychain access is denied
+2. Or explicitly configured with `storageMethod="encrypted-file"`
 
+**Test the encrypted file provider directly:**
 ```bash
-# Modify CredentialProviderFactory temporarily to force fallback
-# OR deny Keychain access when prompted
+# Run the encrypted file provider test
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.StoreAsync_ThenRetrieveAsync_ShouldReturnSameValue"
 ```
 
-- [ ] App falls back to `EncryptedFileCredentialProvider`
-- [ ] Credentials stored in encrypted file:
-  ```bash
-  ls -la ~/Library/Application\ Support/UnifiStockTracker/.credentials
-  ```
-- [ ] File permissions: `600`
-- [ ] File content is encrypted (not plain text)
+- [ ] **PASS**: Test passes
+
+**Note**: The unit tests don't persist files to the production directory - they use temporary test directories and clean up after themselves. The encrypted file would only be created in production when:
+1. The app runs with `storageMethod="encrypted-file"` 
+2. Or when Keychain access is denied and it falls back automatically
+3. The file would be located at: `~/Library/Application Support/UnifiStockTracker/credentials.enc.json` with `600` permissions
+
+**To manually test Keychain fallback** (optional, advanced):
+- Deny Terminal access to Keychain when prompted by the app
+- App should automatically fall back to `EncryptedFileCredentialProvider`
+- Credentials will be stored in `~/Library/Application Support/UnifiStockTracker/credentials.enc.json`
 
 #### Test 3.2: AES-256-CBC Encryption on macOS
 ```bash
-dotnet test --filter "CredentialProviderTests.EncryptedFileProvider_StoresAndRetrievesCredential"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.StoreAsync_ThenRetrieveAsync_ShouldReturnSameValue"
 ```
 
 - [ ] **PASS**: Test passes
@@ -240,7 +234,7 @@ dotnet test --filter "CredentialProviderTests.EncryptedFileProvider_StoresAndRet
 
 #### Test 4.1: Configuration Directory
 ```bash
-dotnet test --filter "ConfigurationProviderTests"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests"
 ```
 
 **Verify Paths**:
@@ -250,12 +244,14 @@ dotnet test --filter "ConfigurationProviderTests"
 
 #### Test 4.2: Credential Directory
 ```bash
-dotnet test --filter "CredentialProviderTests"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests"
 ```
 
 **Verify Paths**:
-- [ ] Credential file: `~/Library/Application Support/UnifiStockTracker/.credentials`
-- [ ] File is hidden (starts with `.`)
+- [ ] Credential file: `~/Library/Application Support/UnifiStockTracker/credentials.enc.json`
+- [ ] File permissions: `600` (read/write for owner only)
+
+**Note**: This file is only created in production when using encrypted file storage, not during unit tests which use temporary directories.
 
 ---
 
@@ -263,8 +259,8 @@ dotnet test --filter "CredentialProviderTests"
 
 #### Test 5.1: Clean Build
 ```bash
-dotnet clean
-dotnet build --configuration Release
+sudo dotnet clean UnifiStockTracker-CSharp.sln
+sudo dotnet build UnifiStockTracker-CSharp.sln --configuration Release
 ```
 
 - [ ] **0 errors**
@@ -273,7 +269,7 @@ dotnet build --configuration Release
 
 #### Test 5.2: All Unit Tests
 ```bash
-dotnet test --configuration Release
+sudo dotnet test UnifiStockTracker-CSharp.sln --configuration Release
 ```
 
 **Expected Results**:
@@ -304,16 +300,13 @@ dotnet test --configuration Release
 2. Ensure Terminal/IDE has "Full Disk Access" or "Automation" permission
 3. Restart Terminal/IDE after granting permission
 
-### Issue: Encrypted File Fallback Not Used
-**Symptom**: App crashes instead of falling back to encrypted file
+### Issue: Tests Running with sudo
+**Symptom**: Some dotnet commands fail without sudo on macOS
 
-**Debug**:
-```bash
-# Add logging to see which provider is selected
-dotnet run --verbosity detailed
-```
-
-Check `CredentialProviderFactory.CreateProvider()` logs
+**Workaround**:
+- All `dotnet` commands in this test suite require `sudo` prefix on macOS
+- This is due to file permissions in `~/Library/Application Support/UnifiStockTracker/`
+- The directory and files are created with restricted permissions (600) for security
 
 ---
 

@@ -126,7 +126,7 @@ If you haven't published the executable yet, you can run directly with:
 
 **All platforms:**
 ```bash
-dotnet run -- --stock --store USA
+sudo dotnet run --project UnifiStockTracker.csproj -- --stock --store USA
 ```
 
 ### Command Structure

@@ -145,23 +145,23 @@ None - all Phase 1 deliverables complete.
 
 ### Run All Tests
 ```bash
-dotnet test
+sudo dotnet test UnifiStockTracker-CSharp.sln
 ```
 
 ### Run Specific Test Class
 ```bash
-dotnet test --filter "FullyQualifiedName~ConfigurationProviderTests"
-dotnet test --filter "FullyQualifiedName~CredentialProviderTests"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "FullyQualifiedName~ConfigurationProviderTests"
+sudo dotnet test UnifiStockTracker-CSharp.sln --filter "FullyQualifiedName~CredentialProviderTests"
 ```
 
 ### Run with Detailed Output
 ```bash
-dotnet test --logger "console;verbosity=detailed"
+sudo dotnet test UnifiStockTracker-CSharp.sln --logger "console;verbosity=detailed"
 ```
 
 ### Generate Coverage Report (Future)
 ```bash
-dotnet test --collect:"XPlat Code Coverage"
+sudo dotnet test UnifiStockTracker-CSharp.sln --collect:"XPlat Code Coverage"
 ```
 
 ## Continuous Integration
