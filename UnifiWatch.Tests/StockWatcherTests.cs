@@ -1,19 +1,19 @@
 using FluentAssertions;
 using Moq;
-using UnifiStockTracker.Models;
-using UnifiStockTracker.Services;
+using UnifiWatch.Models;
+using UnifiWatch.Services;
 using Xunit;
 
-namespace UnifiStockTracker.Tests;
+namespace UnifiWatch.Tests;
 
 public class StockWatcherTests
 {
-    private readonly Mock<IUnifiStockService> _mockStockService;
+    private readonly Mock<IunifiwatchService> _mockStockService;
     private readonly List<UnifiProduct> _mockProducts;
 
     public StockWatcherTests()
     {
-        _mockStockService = new Mock<IUnifiStockService>();
+        _mockStockService = new Mock<IunifiwatchService>();
 
         _mockProducts = new List<UnifiProduct>
         {

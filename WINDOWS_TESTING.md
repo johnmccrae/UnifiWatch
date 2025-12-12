@@ -1,6 +1,6 @@
 # Windows Testing Guide
 
-This guide covers testing the UnifiStockTracker application on Windows.
+This guide covers testing the UnifiWatch application on Windows.
 
 ## Prerequisites
 
@@ -57,8 +57,8 @@ Expected output: All 10 credential provider tests should pass.
 
 ### File Paths
 Windows uses different path conventions:
-- Configuration directory: `%APPDATA%\UnifiStock`
-- Credentials file: `%APPDATA%\UnifiStock\credentials.enc.json`
+- Configuration directory: `%APPDATA%\unifiwatch`
+- Credentials file: `%APPDATA%\unifiwatch\credentials.enc.json`
 
 ## Running Tests with Coverage
 
@@ -91,8 +91,8 @@ Remove test artifacts:
 
 ```powershell
 Remove-Item -Recurse -Force bin, obj
-Remove-Item -Recurse -Force UnifiStockTracker.Tests\bin, UnifiStockTracker.Tests\obj
-Remove-Item -Recurse -Force $env:APPDATA\UnifiStock
+Remove-Item -Recurse -Force UnifiWatch.Tests\bin, UnifiWatch.Tests\obj
+Remove-Item -Recurse -Force $env:APPDATA\unifiwatch
 ```
 
 ## Running Specific Test Categories
@@ -131,10 +131,10 @@ To verify DPAPI encryption is working:
 dotnet test --filter "FullyQualifiedName~CredentialProviderTests"
 
 # Verify encrypted file exists
-Test-Path $env:APPDATA\UnifiStock\credentials.enc.json
+Test-Path $env:APPDATA\unifiwatch\credentials.enc.json
 
 # Verify file is encrypted (not plaintext)
-Get-Content $env:APPDATA\UnifiStock\credentials.enc.json
+Get-Content $env:APPDATA\unifiwatch\credentials.enc.json
 ```
 
 The content should be binary/encrypted data, not readable JSON.

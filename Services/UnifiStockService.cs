@@ -1,17 +1,17 @@
 using System.Text;
 using System.Text.Json;
-using UnifiStockTracker.Configuration;
-using UnifiStockTracker.Models;
+using UnifiWatch.Configuration;
+using UnifiWatch.Models;
 
-namespace UnifiStockTracker.Services;
+namespace UnifiWatch.Services;
 
-public class UnifiStockService : IUnifiStockService
+public class unifiwatchService : IunifiwatchService
 {
     private readonly HttpClient _httpClient;
     private const string GraphQLEndpoint = "https://ecomm.svc.ui.com/graphql";
     private const int PageLimit = 250;
 
-    public UnifiStockService(HttpClient httpClient)
+    public unifiwatchService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }

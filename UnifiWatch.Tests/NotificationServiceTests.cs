@@ -1,10 +1,10 @@
 using FluentAssertions;
 using Moq;
 using System.Runtime.InteropServices;
-using UnifiStockTracker.Services;
+using UnifiWatch.Services;
 using Xunit;
 
-namespace UnifiStockTracker.Tests;
+namespace UnifiWatch.Tests;
 
 public class NotificationServiceTests
 {

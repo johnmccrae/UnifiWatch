@@ -63,7 +63,7 @@
 **CRITICAL**: The Linux Secret Service credential provider is NOT fully implemented in Phase 1. The current implementation falls back to the insecure encrypted file storage described above.
 
 **Impact**:
-- Credentials are stored in `~/.config/unifistock/credentials.enc.json` 
+- Credentials are stored in `~/.config/unifiwatch/credentials.enc.json` 
 - NOT stored in system keyring (GNOME Keyring, KDE Wallet, pass, etc.)
 - Encryption key stored alongside encrypted data (see security issue above)
 - Functional for testing, but requires Phase 2 enhancement
@@ -138,18 +138,18 @@
 
 - [ ] Clone repository
   ```bash
-  git clone https://github.com/EvotecIT/UnifiStockTracker.git
-  cd UnifiStockTracker/UnifiStockTracker-CSharp
+  git clone https://github.com/EvotecIT/UnifiWatch.git
+  cd UnifiWatch/UnifiWatch
   ```
 
 - [ ] Restore NuGet packages
   ```bash
-  dotnet restore UnifiStockTracker-CSharp.sln
+  dotnet restore UnifiWatch.sln
   ```
 
 - [ ] Build project
   ```bash
-  dotnet build UnifiStockTracker-CSharp.sln
+  dotnet build UnifiWatch.sln
   ```
   **Expected**: 0 errors, 0 warnings
 
@@ -188,43 +188,43 @@ sudo dnf install kwalletmanager      # Fedora/RHEL
 
 #### Test 1.1: Configuration File Location
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.LoadAsync_ValidConfiguration_LoadsAllSettings"
+dotnet test UnifiWatch.sln --filter "ConfigurationProviderTests.LoadAsync_ValidConfiguration_LoadsAllSettings"
 ```
 
 - [ ] **PASS**: Test passes
 - [ ] Verify config directory created at:
   ```bash
-  ls -la ~/.config/unifistock/
+  ls -la ~/.config/unifiwatch/
   ```
   **Expected**: Directory exists
 
 - [ ] Check file permissions:
   ```bash
-  stat -c "%a" ~/.config/unifistock/config.json
+  stat -c "%a" ~/.config/unifiwatch/config.json
   ```
   **Expected**: `600` (read/write for owner only)
 
 #### Test 1.2: Configuration Save/Load Cycle
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.SaveAsync_ValidConfiguration_SavesCorrectly"
+dotnet test UnifiWatch.sln --filter "ConfigurationProviderTests.SaveAsync_ValidConfiguration_SavesCorrectly"
 ```
 
 - [ ] **PASS**: Test passes
 - [ ] Verify JSON file created:
   ```bash
-  cat ~/.config/unifistock/config.json
+  cat ~/.config/unifiwatch/config.json
   ```
   **Expected**: Valid JSON with ServiceSettings, MonitoringSettings, NotificationSettings
 
 #### Test 1.3: Configuration Backup
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.BackupAsync_CreatesBackupFile"
+dotnet test UnifiWatch.sln --filter "ConfigurationProviderTests.BackupAsync_CreatesBackupFile"
 ```
 
 - [ ] **PASS**: Test passes
 - [ ] Verify backup file created:
   ```bash
-  ls -l ~/.config/unifistock/config.backup.*.json
+  ls -l ~/.config/unifiwatch/config.backup.*.json
   ```
   **Expected**: Backup file with timestamp
 
@@ -236,13 +236,13 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.Ba
 
 #### Test 2.1: Platform Detection
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.CredentialProviderFactory_CreateProvider_WithAutoStorage_ShouldSelectDefault"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.CredentialProviderFactory_CreateProvider_WithAutoStorage_ShouldSelectDefault"
 ```
 
 - [ ] **PASS**: Test passes
 - [ ] Verify runtime platform:
   ```bash
-  dotnet run --project UnifiStockTracker.csproj -- --version
+  dotnet run --project UnifiWatch.csproj -- --version
   # Should detect Linux
   ```
 
@@ -253,10 +253,10 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.Crede
 **Manual Test - Verify Fallback Behavior**:
 ```bash
 # Check that LinuxSecretService falls back to encrypted file
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.StoreAsync_WithValidKeyAndSecret_ShouldSucceed"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.StoreAsync_WithValidKeyAndSecret_ShouldSucceed"
 
 # Verify encrypted file is created (in test temp directory during unit tests)
-# In production, credentials would be at: ~/.config/unifistock/credentials.enc.json
+# In production, credentials would be at: ~/.config/unifiwatch/credentials.enc.json
 ```
 
 **Expected Behavior**:
@@ -267,7 +267,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.Store
 
 #### Test 2.3: Retrieve Non-Existent Credential
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.RetrieveAsync_WithNonExistentKey_ShouldReturnNull"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.RetrieveAsync_WithNonExistentKey_ShouldReturnNull"
 ```
 
 - [ ] **PASS**: Test passes
@@ -275,7 +275,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.Retri
 
 #### Test 2.4: Update Existing Credential
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.StoreAsync_UpdateExistingKey_ShouldOverwrite"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.StoreAsync_UpdateExistingKey_ShouldOverwrite"
 ```
 
 - [ ] **PASS**: Test passes
@@ -283,7 +283,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.Store
 
 #### Test 2.5: Delete Credential
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.DeleteAsync_AfterStore_ShouldSucceed"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.DeleteAsync_AfterStore_ShouldSucceed"
 ```
 
 - [ ] **PASS**: Test passes
@@ -291,7 +291,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.Delet
 
 #### Test 2.6: List All Credential Keys
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.ListAsync_AfterMultipleStores_ShouldReturnAllKeys"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.ListAsync_AfterMultipleStores_ShouldReturnAllKeys"
 ```
 
 - [ ] **PASS**: Test passes
@@ -306,32 +306,32 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.ListA
 **Test the encrypted file provider directly:**
 ```bash
 # Run the encrypted file provider test
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.StoreAsync_ThenRetrieveAsync_ShouldReturnSameValue"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.StoreAsync_ThenRetrieveAsync_ShouldReturnSameValue"
 ```
 
 - [ ] **PASS**: Test passes
 
 **Note**: The unit tests don't persist files to the production directory - they use temporary test directories and clean up after themselves. The encrypted file would be created in production at:
-- **User mode**: `~/.config/unifistock/credentials.enc.json`
-- **Root mode**: `/etc/unifistock/credentials.enc.json`
+- **User mode**: `~/.config/unifiwatch/credentials.enc.json`
+- **Root mode**: `/etc/unifiwatch/credentials.enc.json`
 
 **Production Test (Optional)**:
 ```bash
 # Run actual application to create production credential file
-# This will create ~/.config/unifistock/credentials.enc.json
+# This will create ~/.config/unifiwatch/credentials.enc.json
 
 # Check file permissions
-stat -c "%a" ~/.config/unifistock/credentials.enc.json
+stat -c "%a" ~/.config/unifiwatch/credentials.enc.json
 # Expected: 600
 
 # Check file ownership
-ls -l ~/.config/unifistock/credentials.enc.json
+ls -l ~/.config/unifiwatch/credentials.enc.json
 # Expected: owned by your user
 ```
 
 #### Test 3.2: AES-256-CBC Encryption on Linux
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.StoreAsync_ThenRetrieveAsync_ShouldReturnSameValue"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.StoreAsync_ThenRetrieveAsync_ShouldReturnSameValue"
 ```
 
 - [ ] **PASS**: Test passes
@@ -344,7 +344,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.Store
 
 ```bash
 # Create a test credential file in production location
-mkdir -p ~/.config/unifistock
+mkdir -p ~/.config/unifiwatch
 echo '{"test-key":"test-secret"}' > /tmp/test-creds.json
 
 # Run app to encrypt credentials (this would need actual app execution)
@@ -352,7 +352,7 @@ echo '{"test-key":"test-secret"}' > /tmp/test-creds.json
 
 # Check if the encrypted file contains both key and ciphertext
 # This demonstrates the security flaw
-hexdump -C ~/.config/unifistock/credentials.enc.json | head -20
+hexdump -C ~/.config/unifiwatch/credentials.enc.json | head -20
 ```
 
 **Expected Findings** (demonstrating the flaw):
@@ -364,12 +364,12 @@ hexdump -C ~/.config/unifistock/credentials.enc.json | head -20
 **Workaround for Production** (until Phase 2):
 ```bash
 # Use environment variables instead of encrypted file storage
-export UNIFI_STOCK_TRACKER_STORAGE="environment-variables"
+export UNIFIWATCH_STORAGE="environment-variables"
 export UNIFI_API_KEY="your-api-key-here"
 export UNIFI_API_SECRET="your-api-secret-here"
 
 # Run the application
-dotnet run --project UnifiStockTracker.csproj
+dotnet run --project UnifiWatch.csproj
 ```
 
 ---
@@ -378,27 +378,27 @@ dotnet run --project UnifiStockTracker.csproj
 
 #### Test 4.1: Configuration Directory
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests"
+dotnet test UnifiWatch.sln --filter "ConfigurationProviderTests"
 ```
 
 **Verify Paths** (User Mode):
-- [ ] Config directory: `~/.config/unifistock/`
-- [ ] Config file: `~/.config/unifistock/config.json`
-- [ ] Backup files: `~/.config/unifistock/config.backup.*.json`
+- [ ] Config directory: `~/.config/unifiwatch/`
+- [ ] Config file: `~/.config/unifiwatch/config.json`
+- [ ] Backup files: `~/.config/unifiwatch/config.backup.*.json`
 
 **Verify Paths** (Root/System Mode - if testing as root):
-- [ ] Config directory: `/etc/unifistock/`
-- [ ] Config file: `/etc/unifistock/config.json`
-- [ ] Backup files: `/etc/unifistock/config.backup.*.json`
+- [ ] Config directory: `/etc/unifiwatch/`
+- [ ] Config file: `/etc/unifiwatch/config.json`
+- [ ] Backup files: `/etc/unifiwatch/config.backup.*.json`
 
 #### Test 4.2: Credential Directory
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests"
 ```
 
 **Verify Paths**:
-- [ ] Credential file: `~/.config/unifistock/credentials.enc.json` (user mode)
-- [ ] OR: `/etc/unifistock/credentials.enc.json` (root mode)
+- [ ] Credential file: `~/.config/unifiwatch/credentials.enc.json` (user mode)
+- [ ] OR: `/etc/unifiwatch/credentials.enc.json` (root mode)
 - [ ] File permissions: `600` (read/write for owner only)
 
 **Note**: This file is only created in production when using encrypted file storage, not during unit tests which use temporary directories.
@@ -409,8 +409,8 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests"
 
 #### Test 5.1: Clean Build
 ```bash
-dotnet clean UnifiStockTracker-CSharp.sln
-dotnet build UnifiStockTracker-CSharp.sln --configuration Release
+dotnet clean UnifiWatch.sln
+dotnet build UnifiWatch.sln --configuration Release
 ```
 
 - [ ] **0 errors**
@@ -419,7 +419,7 @@ dotnet build UnifiStockTracker-CSharp.sln --configuration Release
 
 #### Test 5.2: All Unit Tests
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --configuration Release
+dotnet test UnifiWatch.sln --configuration Release
 ```
 
 **Expected Results**:
@@ -447,14 +447,14 @@ dotnet test UnifiStockTracker-CSharp.sln --configuration Release
 **Workaround for Production**:
 ```bash
 # Option 1: Use environment variables (RECOMMENDED)
-export UNIFI_STOCK_TRACKER_STORAGE="environment-variables"
+export UNIFIWATCH_STORAGE="environment-variables"
 export UNIFI_API_KEY="your-api-key"
 export UNIFI_API_SECRET="your-api-secret"
 
 # Option 2: Restrict file system access (minimal protection)
-chmod 600 ~/.config/unifistock/credentials.enc.json
+chmod 600 ~/.config/unifiwatch/credentials.enc.json
 # Ensure only root or app user can read directory
-chmod 700 ~/.config/unifistock/
+chmod 700 ~/.config/unifiwatch/
 ```
 
 **Phase 2 Fix Required**:
@@ -472,7 +472,7 @@ chmod 700 ~/.config/unifistock/
 
 **Current Behavior**:
 - `LinuxSecretService` provider falls back to `EncryptedFileCredentialProvider`
-- Credentials stored at `~/.config/unifistock/credentials.enc.json`
+- Credentials stored at `~/.config/unifiwatch/credentials.enc.json`
 - Uses AES-256-CBC encryption
 - Functional but less secure than native keyring
 
@@ -518,7 +518,7 @@ sudo ausearch -m avc -ts recent
 sudo setenforce 0
 
 # Re-run tests
-dotnet test UnifiStockTracker-CSharp.sln
+dotnet test UnifiWatch.sln
 
 # Re-enable SELinux
 sudo setenforce 1
@@ -570,7 +570,7 @@ sudo setenforce 1
 
 **Attach screenshots of**:
 - [ ] Terminal output of successful test runs
-- [ ] File permissions (`ls -la ~/.config/unifistock/`)
+- [ ] File permissions (`ls -la ~/.config/unifiwatch/`)
 - [ ] Any error messages or crashes
 
 **Attach logs**:

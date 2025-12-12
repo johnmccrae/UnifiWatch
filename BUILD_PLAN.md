@@ -1,7 +1,7 @@
-# UnifiStockTracker Service Mode - Build Plan
+# UnifiWatch Service Mode - Build Plan
 
 ## Overview
-Transform UnifiStockTracker from CLI-only to a dual-mode application supporting both CLI and background service operation with multi-channel notifications (desktop, email, SMS).
+Transform UnifiWatch from CLI-only to a dual-mode application supporting both CLI and background service operation with multi-channel notifications (desktop, email, SMS).
 
 ## ✅ Completed Phases
 
@@ -11,7 +11,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 - ✅ Created `ServiceConfiguration` with nested models (ServiceSettings, MonitoringSettings, NotificationSettings)
 - ✅ Implemented `IConfigurationProvider` interface with JSON serialization
 - ✅ Built `ConfigurationProvider` with Load/Save/Validate/Backup operations
-- ✅ Platform-specific config paths: Windows (`%APPDATA%\UnifiStockTracker`), macOS/Linux (`~/.config/unifistock`)
+- ✅ Platform-specific config paths: Windows (`%APPDATA%\UnifiWatch`), macOS/Linux (`~/.config/unifiwatch`)
 - ✅ Configuration validation with detailed error reporting
 - ✅ Automatic backup creation with collision-free timestamps
 - ✅ 19 passing unit tests for configuration system
@@ -169,7 +169,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 - `Resources/` directory with initial .json files (English Canadian only, structured for 5 languages)
 - `Services/Localization/CultureProvider.cs`
 - Updated `Configuration/ServiceConfiguration.cs` with language/timezone
-- `UnifiStockTracker.Tests/LocalizationTests.cs`
+- `UnifiWatch.Tests/LocalizationTests.cs`
 - All subsequent phases MUST use `IStringLocalizer` for user-facing text
 
 **Priority**: HIGH - Must complete before Phase 3 to avoid expensive template rewrites
@@ -228,7 +228,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 - `Services/Notifications/NotificationMessage.cs`
 - `Services/Notifications/EmailNotificationProvider.cs`
 - `Services/Notifications/EmailTemplateBuilder.cs`
-- `UnifiStockTracker.Tests/EmailNotificationProviderTests.cs`
+- `UnifiWatch.Tests/EmailNotificationProviderTests.cs`
 
 ---
 
@@ -292,7 +292,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 - `Services/Notifications/AzureCommunicationSmsProvider.cs`
 - `Services/Notifications/SmtpGatewaySmsProvider.cs`
 - `Services/Notifications/SmsProviderFactory.cs`
-- `UnifiStockTracker.Tests/SmsNotificationProviderTests.cs`
+- `UnifiWatch.Tests/SmsNotificationProviderTests.cs`
 
 ---
 
@@ -337,7 +337,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 **Files to Create**:
 - `Services/Notifications/CompositeNotificationProvider.cs`
 - `Services/Notifications/NotificationCache.cs`
-- `UnifiStockTracker.Tests/CompositeNotificationProviderTests.cs`
+- `UnifiWatch.Tests/CompositeNotificationProviderTests.cs`
 
 **Files to Modify**:
 - `Services/NotificationService.cs` - Integrate new providers
@@ -349,9 +349,9 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 **Objective**: Create Windows Service / systemd daemon / launchd service for continuous monitoring
 
 **Tasks**:
-1. Create `UnifiStockTrackerService : BackgroundService`:
+1. Create `UnifiWatchService : BackgroundService`:
    - Implement `ExecuteAsync(CancellationToken stoppingToken)`
-   - Constructor: `IConfigurationProvider`, `IUnifiStockService`, `INotificationProvider`, `ILogger`
+   - Constructor: `IConfigurationProvider`, `IunifiwatchService`, `INotificationProvider`, `ILogger`
    - Dependency injection setup
 
 2. Implement service lifecycle:
@@ -409,9 +409,9 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
    - Test state persistence and reload
 
 **Files to Create**:
-- `Services/UnifiStockTrackerService.cs`
+- `Services/UnifiWatchService.cs`
 - `Models/ServiceState.cs`
-- `UnifiStockTracker.Tests/UnifiStockTrackerServiceTests.cs`
+- `UnifiWatch.Tests/UnifiWatchServiceTests.cs`
 
 ---
 
@@ -439,7 +439,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
    - Use `New-Service` PowerShell cmdlet via `System.Diagnostics.Process`
    - Alternatively: Use P/Invoke to Win32 Service Control Manager APIs
    - Generate service configuration:
-     - Service name: "UnifiStockTracker"
+     - Service name: "UnifiWatch"
      - Binary path: `{exe} --service-mode`
      - Startup type: Automatic (Delayed Start)
      - Recovery: Restart on failure (3 attempts)
@@ -447,11 +447,11 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
    - Verify installation by querying SCM
 
 4. Implement `LinuxServiceInstaller`:
-   - Generate systemd unit file: `/etc/systemd/system/unifistocktracker.service`
+   - Generate systemd unit file: `/etc/systemd/system/UnifiWatch.service`
    - Unit file template:
      ```ini
      [Unit]
-     Description=Unifi Stock Tracker Service
+     Description=UnifiWatch Service
      After=network.target
      
      [Service]
@@ -469,7 +469,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
    - Check service status with `systemctl status`
 
 5. Implement `MacOsServiceInstaller`:
-   - Generate launchd plist: `~/Library/LaunchAgents/com.unifi.stocktracker.plist`
+   - Generate launchd plist: `~/Library/LaunchAgents/com.unifiwatch.plist`
    - Plist template:
      ```xml
      <?xml version="1.0" encoding="UTF-8"?>
@@ -477,7 +477,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
      <plist version="1.0">
      <dict>
          <key>Label</key>
-         <string>com.unifi.stocktracker</string>
+         <string>com.unifiwatch</string>
          <key>ProgramArguments</key>
          <array>
              <string>{dotnet-path}</string>
@@ -492,7 +492,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
      </plist>
      ```
    - Commands: `launchctl load`, `launchctl unload`, `launchctl start`
-   - Check status with `launchctl list | grep stocktracker`
+   - Check status with `launchctl list | grep unifiwatch`
 
 6. Create `ServiceInstallerFactory`:
    - Platform detection (Windows/Linux/macOS)
@@ -521,7 +521,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 - `Services/Installation/LinuxServiceInstaller.cs`
 - `Services/Installation/MacOsServiceInstaller.cs`
 - `Services/Installation/ServiceInstallerFactory.cs`
-- `UnifiStockTracker.Tests/ServiceInstallerTests.cs`
+- `UnifiWatch.Tests/ServiceInstallerTests.cs`
 
 ---
 
@@ -600,11 +600,11 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
    - Configure dependency injection:
      - `IConfigurationProvider`
      - `ICredentialProvider`
-     - `IUnifiStockService`
+     - `IunifiwatchService`
      - `INotificationProvider`
      - `ILogger`
    - Add Windows Service/systemd/launchd lifetime support
-   - Start `UnifiStockTrackerService`
+   - Start `UnifiWatchService`
 
 3. Implement `RunAsCliAsync`:
    - Keep existing CLI commands intact
@@ -773,16 +773,16 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
    - Installation instructions per platform
    - Windows:
      - Prerequisites (Credential Manager enabled)
-     - Installation: `UnifiStockTracker.exe --install-service`
-     - Configuration: `UnifiStockTracker.exe --configure`
+     - Installation: `UnifiWatch.exe --install-service`
+     - Configuration: `UnifiWatch.exe --configure`
      - Viewing credentials in Credential Manager
    - Linux:
      - Prerequisites (D-Bus secret-service, systemd)
-     - Installation: `sudo ./UnifiStockTracker --install-service`
-     - systemd commands: `systemctl status unifistocktracker`
+     - Installation: `sudo ./UnifiWatch --install-service`
+     - systemd commands: `systemctl status UnifiWatch`
    - macOS:
      - Prerequisites (Keychain access)
-     - Installation: `./UnifiStockTracker --install-service`
+     - Installation: `./UnifiWatch --install-service`
      - launchctl commands
 
 2. Create `SECURITY.md`:
@@ -828,7 +828,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 
 **Tasks**:
 1. Windows testing:
-   - Install service: `UnifiStockTracker.exe --install-service`
+   - Install service: `UnifiWatch.exe --install-service`
    - Verify service in Services.msc
    - Check Windows Event Viewer for logs
    - Store credentials in Credential Manager via wizard
@@ -839,8 +839,8 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 2. Linux (Ubuntu/Debian) testing:
    - Build and publish: `dotnet publish -r linux-x64 -c Release`
    - Install service with sudo
-   - Check systemd status: `systemctl status unifistocktracker`
-   - View logs: `journalctl -u unifistocktracker -f`
+   - Check systemd status: `systemctl status UnifiWatch`
+   - View logs: `journalctl -u UnifiWatch -f`
    - Test secret-service credential storage (requires GNOME Keyring or KDE Wallet)
    - Verify email/SMS notifications (desktop notifications may not work on headless)
    - Test auto-restart on failure
@@ -848,8 +848,8 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 3. macOS testing:
    - Build and publish: `dotnet publish -r osx-x64 -c Release`
    - Install service (user-level launchd)
-   - Check status: `launchctl list | grep stocktracker`
-   - View logs: `tail -f ~/Library/Logs/UnifiStockTracker/service.log`
+   - Check status: `launchctl list | grep unifiwatch`
+   - View logs: `tail -f ~/Library/Logs/UnifiWatch/service.log`
    - Test Keychain credential storage
    - Verify desktop notifications work
    - Test uninstall and cleanup
@@ -901,7 +901,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 When resuming work on this project, provide this section as context:
 
 ```
-I'm working on UnifiStockTracker C# service implementation. 
+I'm working on UnifiWatch C# service implementation. 
 We've completed Phase 1 (Configuration & Credentials). 
 Please implement [Phase X] following the BUILD_PLAN.md specification.
 ```

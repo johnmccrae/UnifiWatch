@@ -4,24 +4,24 @@ using Moq.Protected;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using UnifiStockTracker.Configuration;
-using UnifiStockTracker.Models;
-using UnifiStockTracker.Services;
+using UnifiWatch.Configuration;
+using UnifiWatch.Models;
+using UnifiWatch.Services;
 using Xunit;
 
-namespace UnifiStockTracker.Tests;
+namespace UnifiWatch.Tests;
 
-public class UnifiStockServiceTests
+public class unifiwatchServiceTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
     private readonly HttpClient _httpClient;
-    private readonly UnifiStockService _service;
+    private readonly unifiwatchService _service;
 
-    public UnifiStockServiceTests()
+    public unifiwatchServiceTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
         _httpClient = new HttpClient(_mockHttpMessageHandler.Object);
-        _service = new UnifiStockService(_httpClient);
+        _service = new unifiwatchService(_httpClient);
     }
 
     [Fact]

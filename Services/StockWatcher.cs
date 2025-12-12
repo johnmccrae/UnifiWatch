@@ -1,13 +1,13 @@
 using System.Diagnostics;
-using UnifiStockTracker.Models;
+using UnifiWatch.Models;
 
-namespace UnifiStockTracker.Services;
+namespace UnifiWatch.Services;
 
 public class StockWatcher
 {
-    private readonly IUnifiStockService _stockService;
+    private readonly IunifiwatchService _stockService;
     private readonly string _store;
-    public StockWatcher(IUnifiStockService stockService, string store)
+    public StockWatcher(IunifiwatchService stockService, string store)
     {
         _stockService = stockService;
         _store = store;

@@ -1,10 +1,10 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using UnifiStockTracker.Configuration;
+using UnifiWatch.Configuration;
 using Xunit;
 
-namespace UnifiStockTracker.Tests;
+namespace UnifiWatch.Tests;
 
 public class ConfigurationProviderTests
 {
@@ -14,7 +14,7 @@ public class ConfigurationProviderTests
     public ConfigurationProviderTests()
     {
         _mockLogger = new Mock<ILogger<ConfigurationProvider>>();
-        _testConfigDir = Path.Combine(Path.GetTempPath(), "UnifiStockTracker-Test-" + Guid.NewGuid());
+        _testConfigDir = Path.Combine(Path.GetTempPath(), "UnifiWatch-Test-" + Guid.NewGuid());
     }
 
     private void Cleanup()

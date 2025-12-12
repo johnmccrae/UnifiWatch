@@ -1,4 +1,4 @@
-namespace UnifiStockTracker.Configuration;
+namespace UnifiWatch.Configuration;
 
 public static class StoreConfiguration
 {

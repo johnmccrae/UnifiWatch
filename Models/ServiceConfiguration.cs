@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace UnifiStockTracker.Models;
+namespace UnifiWatch.Models;
 
 /// <summary>
 /// Root configuration model for service mode

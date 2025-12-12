@@ -1,4 +1,4 @@
-using UnifiStockTracker.Services;
+using UnifiWatch.Services;
 
 // Test notification
 Console.WriteLine("Sending test notification...");

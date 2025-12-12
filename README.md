@@ -1,8 +1,8 @@
-# UnifiStockTracker - C# Edition
+# UnifiWatch - C# Edition
 
 ## What is This?
 
-UnifiStockTracker is a tool that automatically checks if Ubiquiti networking products are in stock at their online stores. Instead of manually refreshing the Ubiquiti store website hoping your desired product comes back in stock, this program does it for you automatically.
+UnifiWatch is a tool that automatically checks if Ubiquiti networking products are in stock at their online stores. Instead of manually refreshing the Ubiquiti store website hoping your desired product comes back in stock, this program does it for you automatically.
 
 This is a C# rewrite of the original PowerShell module created by [Evotec](https://github.com/EvotecIT) of Poland. The C# version provides better cross-platform support and performance while maintaining all the functionality of the original.
 
@@ -57,32 +57,32 @@ The program connects to Ubiquiti's online store systems using two different meth
 1. Open PowerShell
 2. Navigate to the program folder:
    ```powershell
-   cd UnifiStockTracker-CSharp
+   cd UnifiWatch
    ```
 3. Build as a standalone executable:
    ```powershell
    dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true
    ```
 
-The executable will be created at: `bin\Release\net9.0\win-x64\publish\UnifiStockTracker.exe`
+The executable will be created at: `bin\Release\net9.0\win-x64\publish\UnifiWatch.exe`
 
 ### For Linux
 
 1. Open a terminal
 2. Navigate to the program folder:
    ```bash
-   cd UnifiStockTracker-CSharp
+   cd UnifiWatch
    ```
 3. Build as a standalone executable:
    ```bash
    dotnet publish -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true
    ```
 
-The executable will be created at: `bin/Release/net9.0/linux-x64/publish/UnifiStockTracker`
+The executable will be created at: `bin/Release/net9.0/linux-x64/publish/UnifiWatch`
 
 You may need to make it executable:
 ```bash
-chmod +x bin/Release/net9.0/linux-x64/publish/UnifiStockTracker
+chmod +x bin/Release/net9.0/linux-x64/publish/UnifiWatch
 ```
 
 ### For macOS
@@ -90,18 +90,18 @@ chmod +x bin/Release/net9.0/linux-x64/publish/UnifiStockTracker
 1. Open Terminal
 2. Navigate to the program folder:
    ```bash
-   cd UnifiStockTracker-CSharp
+   cd UnifiWatch
    ```
 3. Build as a standalone executable:
    ```bash
    dotnet publish -c Release -r osx-x64 --self-contained -p:PublishSingleFile=true
    ```
 
-The executable will be created at: `bin/Release/net9.0/osx-x64/publish/UnifiStockTracker`
+The executable will be created at: `bin/Release/net9.0/osx-x64/publish/UnifiWatch`
 
 You may need to make it executable:
 ```bash
-chmod +x bin/Release/net9.0/osx-x64/publish/UnifiStockTracker
+chmod +x bin/Release/net9.0/osx-x64/publish/UnifiWatch
 ```
 
 **Note:** You can run the executables from anywhere after building, or copy them to a location in your PATH for system-wide access.
@@ -112,12 +112,12 @@ chmod +x bin/Release/net9.0/osx-x64/publish/UnifiStockTracker
 
 **Windows (PowerShell):**
 ```powershell
-.\UnifiStockTracker.exe --stock --store USA
+.\UnifiWatch.exe --stock --store USA
 ```
 
 **Linux/macOS (Bash/Zsh):**
 ```bash
-./UnifiStockTracker --stock --store USA
+./UnifiWatch --stock --store USA
 ```
 
 ### Using dotnet run (without publishing)
@@ -126,7 +126,7 @@ If you haven't published the executable yet, you can run directly with:
 
 **All platforms:**
 ```bash
-sudo dotnet run --project UnifiStockTracker.csproj -- --stock --store USA
+sudo dotnet run --project UnifiWatch.csproj -- --stock --store USA
 ```
 
 ### Command Structure
@@ -157,72 +157,72 @@ The tool uses option-based commands instead of subcommands:
 
 Windows (PowerShell):
 ```powershell
-.\UnifiStockTracker.exe --stock --store USA
+.\UnifiWatch.exe --stock --store USA
 ```
 
 Linux/macOS:
 ```bash
-./UnifiStockTracker --stock --store USA
+./UnifiWatch --stock --store USA
 ```
 
 **Check stock in Brazil store (Shopify API):**
 
 Windows (PowerShell):
 ```powershell
-.\UnifiStockTracker.exe --stock --legacy-api-store Brazil
+.\UnifiWatch.exe --stock --legacy-api-store Brazil
 ```
 
 Linux/macOS:
 ```bash
-./UnifiStockTracker --stock --legacy-api-store Brazil
+./UnifiWatch --stock --legacy-api-store Brazil
 ```
 
 **Monitor for Dream Machine in USA store:**
 
 Windows (PowerShell):
 ```powershell
-.\UnifiStockTracker.exe --wait --store USA --product-names "Dream Machine"
+.\UnifiWatch.exe --wait --store USA --product-names "Dream Machine"
 ```
 
 Linux/macOS:
 ```bash
-./UnifiStockTracker --wait --store USA --product-names "Dream Machine"
+./UnifiWatch --wait --store USA --product-names "Dream Machine"
 ```
 
 **Monitor specific SKU in Europe:**
 
 Windows (PowerShell):
 ```powershell
-.\UnifiStockTracker.exe --wait --store Europe --product-skus "UDM-Pro"
+.\UnifiWatch.exe --wait --store Europe --product-skus "UDM-Pro"
 ```
 
 Linux/macOS:
 ```bash
-./UnifiStockTracker --wait --store Europe --product-skus "UDM-Pro"
+./UnifiWatch --wait --store Europe --product-skus "UDM-Pro"
 ```
 
 **Wait for stock in Japan with custom interval:**
 
 Windows (PowerShell):
 ```powershell
-.\UnifiStockTracker.exe --wait --legacy-api-store Japan --product-names "UniFi" --seconds 120
+.\UnifiWatch.exe --wait --legacy-api-store Japan --product-names "UniFi" --seconds 120
 ```
 
 Linux/macOS:
 ```bash
-./UnifiStockTracker --wait --legacy-api-store Japan --product-names "UniFi" --seconds 120
+./UnifiWatch --wait --legacy-api-store Japan --product-names "UniFi" --seconds 120
 ```
 
 **Silent monitoring (no browser, no sound):**
 
 Windows (PowerShell):
 ```powershell
-.\UnifiStockTracker.exe --wait --store UK --product-names "Camera" --no-website --no-sound
+.\UnifiWatch.exe --wait --store UK --product-names "Camera" --no-website --no-sound
 ```
 
 Linux/macOS:
 ```bash
-./UnifiStockTracker --wait --store UK --product-names "Camera" --no-website --no-sound
+./UnifiWatch --wait --store UK --product-names "Camera" --no-website --no-sound
 ```
 
 ## Supported Stores
@@ -284,8 +284,8 @@ GET https://br.store.ui.com/collections/unifi-protect/products.json
   - `GraphQLModels.cs` - GraphQL API request/response types
   - `LegacyModels.cs` - Shopify API response types
 - `Services/` - API interaction services
-  - `UnifiStockService.cs` - GraphQL API implementation
-  - `UnifiStockLegacyService.cs` - Shopify API implementation
+  - `unifiwatchService.cs` - GraphQL API implementation
+  - `unifiwatchLegacyService.cs` - Shopify API implementation
   - `StockWatcher.cs` - Stock monitoring with notifications
 - `Configuration/` - Store URLs and collection mappings
   - `StoreConfiguration.cs` - Store endpoints and collection data
@@ -343,11 +343,11 @@ The application provides rich, branded notifications across all platforms:
 - Some stores may have no products (Brazil store appears empty in testing)
 
 **Linux/macOS: "Permission denied"**
-- Make the executable file executable: `chmod +x UnifiStockTracker`
+- Make the executable file executable: `chmod +x UnifiWatch`
 
 ## Credits
 
-- Original PowerShell module by [EvotecIT/UnifiStockTracker](https://github.com/EvotecIT/UnifiStockTracker)
+- Original PowerShell module by [EvotecIT/UnifiWatch](https://github.com/EvotecIT/UnifiWatch)
 - C# rewrite maintains the same API monitoring approach
 - API discovery and implementation patterns from original project
 

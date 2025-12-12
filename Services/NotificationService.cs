@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 
-namespace UnifiStockTracker.Services;
+namespace UnifiWatch.Services;
 
 public static class NotificationService
 {
@@ -113,7 +113,7 @@ public static class NotificationService
             var startInfo = new System.Diagnostics.ProcessStartInfo
             {
                 FileName = "notify-send",
-                Arguments = $"--app-name=\"Ubiquiti Stock Tracker\" --icon=network \"{title}\" \"{message}\"",
+                Arguments = $"--app-name=\"UnifiWatch\" --icon=network \"{title}\" \"{message}\"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,

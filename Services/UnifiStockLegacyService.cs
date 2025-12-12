@@ -1,15 +1,15 @@
 using System.Globalization;
 using System.Text.Json;
-using UnifiStockTracker.Configuration;
-using UnifiStockTracker.Models;
+using UnifiWatch.Configuration;
+using UnifiWatch.Models;
 
-namespace UnifiStockTracker.Services;
+namespace UnifiWatch.Services;
 
-public class UnifiStockLegacyService : IUnifiStockService
+public class unifiwatchLegacyService : IunifiwatchService
 {
     private readonly HttpClient _httpClient;
 
-    public UnifiStockLegacyService(HttpClient httpClient)
+    public unifiwatchLegacyService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }

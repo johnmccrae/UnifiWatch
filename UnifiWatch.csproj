@@ -5,7 +5,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>UnifiStockTracker</RootNamespace>
+    <RootNamespace>UnifiWatch</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
@@ -31,7 +31,7 @@
   <ItemGroup>
     <Compile Remove="TestNotification.cs" />
     <Compile Remove="obj/**/*.cs" />
-    <Compile Remove="UnifiStockTracker.Tests/**/*.cs" />
+    <Compile Remove="UnifiWatch.Tests/**/*.cs" />
   </ItemGroup>
 
 </Project>

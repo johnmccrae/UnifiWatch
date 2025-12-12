@@ -2,9 +2,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using UnifiStockTracker.Utilities;
+using UnifiWatch.Utilities;
 
-namespace UnifiStockTracker.Services.Credentials;
+namespace UnifiWatch.Services.Credentials;
 
 /// <summary>
 /// Encrypted file-based credential provider using DPAPI (Windows) or AES (others)

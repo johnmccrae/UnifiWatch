@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace UnifiStockTracker.Configuration;
+namespace UnifiWatch.Configuration;
 
 /// <summary>
 /// Main service configuration loaded from config.json

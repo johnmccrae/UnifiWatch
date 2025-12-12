@@ -1,15 +1,15 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using UnifiStockTracker.Configuration;
-using UnifiStockTracker.Services;
+using UnifiWatch.Configuration;
+using UnifiWatch.Services;
 
-namespace UnifiStockTracker;
+namespace UnifiWatch;
 
 public class Program
 {
     public static async Task<int> Main(string[] args)
     {
-        var rootCommand = new RootCommand("UnifiStockTracker - Monitor Ubiquiti product stock availability");
+        var rootCommand = new RootCommand("UnifiWatch - Monitor Ubiquiti product stock availability");
 
         // Mode options (mutually exclusive)
         var stockOption = new Option<bool>("--stock", "Get current stock");
@@ -111,9 +111,9 @@ public class Program
 
         try
         {
-            IUnifiStockService service = isLegacy
-                ? new UnifiStockLegacyService(httpClient)
-                : new UnifiStockService(httpClient);
+            IunifiwatchService service = isLegacy
+                ? new unifiwatchLegacyService(httpClient)
+                : new unifiwatchService(httpClient);
 
             var products = await service.GetStockAsync(store, collections);
             DisplayProducts(products);
@@ -132,9 +132,9 @@ public class Program
 
         try
         {
-            IUnifiStockService stockService = isLegacy
-                ? new UnifiStockLegacyService(httpClient)
-                : new UnifiStockService(httpClient);
+            IunifiwatchService stockService = isLegacy
+                ? new unifiwatchLegacyService(httpClient)
+                : new unifiwatchService(httpClient);
             var watcher = new StockWatcher(stockService, store);
             await watcher.WaitForStockAsync(productNames, productSkus, seconds, noWebsite, noSound);
         }
@@ -145,7 +145,7 @@ public class Program
         }
     }
 
-    static void DisplayProducts(List<UnifiStockTracker.Models.UnifiProduct> products)
+    static void DisplayProducts(List<UnifiWatch.Models.UnifiProduct> products)
     {
         Console.WriteLine($"\nFound {products.Count} products:\n");
         Console.WriteLine("{0,-50} {1,-12} {2,-30} {3,-20} {4,10}", 

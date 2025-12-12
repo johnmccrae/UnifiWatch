@@ -1,10 +1,10 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using UnifiStockTracker.Services.Credentials;
+using UnifiWatch.Services.Credentials;
 using Xunit;
 
-namespace UnifiStockTracker.Tests;
+namespace UnifiWatch.Tests;
 
 public class CredentialProviderTests
 {
