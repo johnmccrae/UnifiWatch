@@ -36,6 +36,12 @@ public class ServiceSettings
 
     [JsonPropertyName("paused")]
     public bool Paused { get; set; } = false;
+
+    [JsonPropertyName("language")]
+    public string Language { get; set; } = "auto"; // auto, en-CA, fr-CA, fr-FR, de-DE, es-ES
+
+    [JsonPropertyName("timeZone")]
+    public string TimeZone { get; set; } = "auto"; // auto or IANA timezone like America/Toronto
 }
 
 /// <summary>

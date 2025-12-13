@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
+using UnifiWatch.Services.Localization;
 
 namespace UnifiWatch.Services;
 
@@ -8,17 +9,18 @@ public static class NotificationService
 {
     public static void ShowNotification(string title, string message)
     {
+        var loc = ResourceLocalizerHolder.Instance ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
         if (OperatingSystem.IsWindows())
         {
             ShowWindowsToast(title, message);
         }
         else if (OperatingSystem.IsMacOS())
         {
-            ShowMacOSNotification(title, message);
+            ShowMacOSNotification(title, message, loc);
         }
         else if (OperatingSystem.IsLinux())
         {
-            ShowLinuxNotification(title, message);
+            ShowLinuxNotification(title, message, loc);
         }
     }
 
@@ -40,12 +42,14 @@ public static class NotificationService
                 .Show();
 #else
             // Fallback if not compiled for Windows
-            Console.WriteLine($"[Notification] {title}: {message}");
+            var loc = ResourceLocalizerHolder.Instance ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
+            Console.WriteLine(loc.Notification("Notification.ConsoleFallback", title, message));
 #endif
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to show Windows notification: {ex.Message}");
+            var loc = ResourceLocalizerHolder.Instance ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
+            Console.WriteLine(loc.Notification("Notification.Failed", ex.Message));
 #if WINDOWS
             // Try without logo as fallback
             try
@@ -60,21 +64,22 @@ public static class NotificationService
             catch
             {
                 // Final fallback to console
-                Console.WriteLine($"[Notification] {title}: {message}");
+                Console.WriteLine(loc.Notification("Notification.ConsoleFallback", title, message));
             }
 #else
             // Fallback to console on non-Windows platforms
-            Console.WriteLine($"[Notification] {title}: {message}");
+            Console.WriteLine(loc.Notification("Notification.ConsoleFallback", title, message));
 #endif
         }
     }
 
-    private static void ShowMacOSNotification(string title, string message)
+    private static void ShowMacOSNotification(string title, string message, ResourceLocalizer loc)
     {
         try
         {
             // Use osascript to display notification via AppleScript with Ubiquiti branding
-            var script = $"display notification \"{EscapeAppleScript(message)}\" with title \"{EscapeAppleScript(title)}\" subtitle \"Ubiquiti Stock Alert\"";
+            var subtitle = EscapeAppleScript(loc.Notification("Notification.MacOSSubtitle"));
+            var script = $"display notification \"{EscapeAppleScript(message)}\" with title \"{EscapeAppleScript(title)}\" subtitle \"{subtitle}\"";
             var startInfo = new System.Diagnostics.ProcessStartInfo
             {
                 FileName = "osascript",
@@ -94,7 +99,7 @@ public static class NotificationService
         }
     }
 
-    private static void ShowLinuxNotification(string title, string message)
+    private static void ShowLinuxNotification(string title, string message, ResourceLocalizer loc)
     {
         // Try multiple notification methods in order of preference
         if (TryNotifySend(title, message)) return;
@@ -103,7 +108,7 @@ public static class NotificationService
         if (TryXMessage(title, message)) return;
 
         // Final fallback to console
-        Console.WriteLine($"[Ubiquiti Stock Alert] {title}: {message}");
+        Console.WriteLine(loc.Notification("Notification.ConsoleFallback", title, message));
     }
 
     private static bool TryNotifySend(string title, string message)

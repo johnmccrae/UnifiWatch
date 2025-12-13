@@ -3,6 +3,21 @@
 ## Overview
 Transform UnifiWatch from CLI-only to a dual-mode application supporting both CLI and background service operation with multi-channel notifications (desktop, email, SMS).
 
+## Project Information
+
+**Product Name**: UnifiWatch (formerly "UnifiStockTracker")  
+**Repository**: https://github.com/johnmccrae/UnifiWatch  
+**Language**: C# / .NET 9.0  
+**Target Platforms**: Windows, macOS, Linux  
+**Current Branch**: jfm/stock-base-build  
+**Phase Status**: Phase 1 Complete (Configuration & Credentials)
+
+**Recent Changes (December 2025)**:
+- ✅ Product rebranded from "UnifiStockTracker" to "UnifiWatch" across all files
+- ✅ All documentation updated with new product name
+- ✅ Service descriptions, notification names, environment variables updated
+- ✅ Bundle identifiers and systemd service names updated (e.g., `com.unifiwatch`)
+
 ## ✅ Completed Phases
 
 ### Phase 1: Configuration & Credential Infrastructure (COMPLETE)
@@ -33,6 +48,11 @@ Transform UnifiWatch from CLI-only to a dual-mode application supporting both CL
 **Documentation**:
 - ✅ `TEST_RESULTS.md` - Comprehensive test results, platform-specific status, macOS/Linux test requirements
 - ✅ `MACOS_TESTING.md` - Complete checklist for macOS validation (Keychain, paths, encryption fallback)
+- ✅ `MACOS_BUILD_AND_TEST.md` - macOS build and test guide (separate document)
+- ✅ `MACOS_BUILD_AND_TEST_UNIFIED.md` - Unified macOS build and test guide (comprehensive)
+- ✅ `LINUX_TESTING.md` - Complete checklist for Linux validation (Secret Service, config paths, encryption fallback)
+- ✅ `WINDOWS_TESTING.md` - Windows testing guide (DPAPI credential storage validation)
+- ✅ `WINDOWS_BUILD_AND_TEST_UNIFIED.md` - Unified Windows build and test guide (comprehensive)
 - ✅ `BUILD_PLAN.md` - This file, serves as AI assistant handoff document for future sessions
 
 **Lessons Learned**:
@@ -42,10 +62,37 @@ Transform UnifiWatch from CLI-only to a dual-mode application supporting both CL
 - File permissions: Unix chmod 600 requires P/Invoke, not available via managed APIs
 - Async testing: All async methods tested with `await`, no `.Result` blocking
 
+**Known Issues & Limitations**:
+- ✅ **RESOLVED**: Encrypted file provider implements PBKDF2 key derivation with 100,000 iterations
+  - **Implementation**: Keys derived from machine ID + username + hostname, NOT stored in file
+  - **File Contents**: `[salt (32 bytes)][IV (16 bytes)][AES-256-CBC ciphertext]`
+  - **Security**: File permissions (chmod 600) protect access, salt allows key rederivation on any machine copy
+  - **Status**: Properly secured with OWASP-recommended PBKDF2 parameters
+- ⚠️ **Linux Secret Service (D-Bus)**: Currently uses encrypted file fallback instead of native D-Bus API
+  - **Scope**: Phase 1 intentionally uses fallback for simplicity
+  - **Plan**: Future phase can implement full `Tmds.DBus` integration for native GNOME Keyring/KDE Wallet
+  - **Current Behavior**: Works correctly via encrypted file provider with PBKDF2
+- ⚠️ **Headless Linux servers**: Encrypted file provider works without daemon (preferred for servers)
+  - **Desktop Linux**: Can optionally use GNOME Keyring or KDE Wallet if `secret-service` daemon is running
+  - **Server Linux**: Encrypted file provider with PBKDF2 is suitable and recommended for headless systems
+
+**Testing Status by Platform**:
+- ✅ **Windows**: Fully tested with Windows Credential Manager (DPAPI), all 65 tests passing
+- ✅ **macOS**: Fully tested on macOS Tahoe 26.1, all 65 tests passing with Keychain integration validated
+- ✅ **Linux**: Fully validated on **Ubuntu 24.04** and **Fedora 43** via WSL2
+  - **Ubuntu 24.04**: All 65 tests passing (6 skipped integration tests), .NET SDK 9.0.112
+  - **Fedora 43**: All 65 tests passing (6 skipped integration tests), .NET SDK 9.0.112
+  - **Distribution Compatibility**: Confirmed cross-distribution compatibility (Debian-based and RPM-based)
+  - **Credential Provider**: Encrypted file storage validated on both distributions
+  - **Real API Test**: Successfully retrieved 786 products from USA store (all currently out of stock)
+  - **Configuration Paths**: XDG_CONFIG_HOME respected (`~/.config/UnifiWatch` default)
+  - **File Permissions**: Unix chmod 600 protection validated for credential files
+  - **No Distribution-Specific Issues**: Identical behavior across Ubuntu and Fedora
+
 **Next Testing Steps**:
-1. ⚠️ **macOS testing** (see `MACOS_TESTING.md`) - Validate Keychain integration, config paths, file permissions
-2. ⚠️ **Linux testing** - Validate secret-service, GNOME Keyring/KWallet, fallback behavior
-3. 📝 Document platform-specific issues/workarounds
+1. ✅ **Credential Security Validation** - PBKDF2 implementation verified in code (100,000 iterations, salt-based derivation)
+2. 📝 **Optional Future Enhancement**: Full D-Bus integration for native Linux secret-service (not required for Phase 1 completion)
+3. 🚀 **Phase 2 Priority**: Begin Internationalization (i18n) infrastructure setup as planned in build roadmap
 
 ---
 
@@ -896,6 +943,49 @@ Transform UnifiWatch from CLI-only to a dual-mode application supporting both CL
 
 ---
 
+## Documentation Structure
+
+The project includes comprehensive documentation for all platforms and development stages:
+
+### Core Documentation
+- **README.md** - Product overview, features, CLI usage, build instructions for all platforms
+- **BUILD_PLAN.md** (this file) - Complete roadmap, phase tracking, AI assistant handoff document
+- **SERVICE_ARCHITECTURE.md** - Architecture design, service mode specifications, technical details
+
+### Platform-Specific Build & Test Guides (Unified)
+- **WINDOWS_BUILD_AND_TEST_UNIFIED.md** - Complete Windows guide (prerequisites, build, test, validation)
+- **MACOS_BUILD_AND_TEST_UNIFIED.md** - Complete macOS guide (Intel & Apple Silicon)
+- **Linux Build Guide** - TBD (planned)
+
+### Platform-Specific Testing Checklists
+- **WINDOWS_TESTING.md** - Windows testing checklist (DPAPI credential validation)
+- **MACOS_TESTING.md** - macOS testing checklist (Keychain integration validation)
+- **LINUX_TESTING.md** - Linux testing checklist (Secret Service, distribution compatibility)
+
+### Legacy Documentation (Deprecated)
+- **MACOS_BUILD_AND_TEST.md** - Original macOS guide (superseded by unified version)
+
+### Test Results
+- **UnifiWatch.Tests/TEST_RESULTS.md** - Detailed test results, platform-specific notes
+
+### Utility Scripts
+- **Rename-ToUnifiWatch.ps1** - PowerShell script documenting the product rename from UnifiStockTracker
+
+### Configuration
+- **global.json** - .NET SDK version pinning
+- **UnifiWatch.csproj** - Project configuration, dependencies
+- **UnifiWatch.sln** - Solution file
+- **UnifiStockTracker.code-workspace** - VS Code workspace settings (legacy name, update pending)
+
+**Documentation Standards**:
+- All paths use forward slashes in markdown
+- Cross-platform examples included
+- Security warnings prominently displayed
+- Known issues documented with severity levels
+- Phase dependencies clearly marked
+
+---
+
 ## How to Use This Document
 
 When resuming work on this project, provide this section as context:
@@ -907,3 +997,9 @@ Please implement [Phase X] following the BUILD_PLAN.md specification.
 ```
 
 This document serves as a complete implementation roadmap with enough detail for AI-assisted development while maintaining consistency across sessions.
+
+**Key Files to Review Before Starting**:
+1. This file (BUILD_PLAN.md) - Overall roadmap and current status
+2. SERVICE_ARCHITECTURE.md - Technical architecture decisions
+3. Platform-specific testing documentation - Known issues and validation requirements
+4. TEST_RESULTS.md - Current test status and platform-specific notes

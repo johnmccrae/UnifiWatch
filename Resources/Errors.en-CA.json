@@ -1,0 +1,16 @@
+{
+  "Configuration.MissingCredentials": "No credentials found. Please configure using the CLI.",
+  "Configuration.InvalidStore": "Invalid store specified: {0}",
+  "Configuration.NoProductsSelected": "No products selected to monitor",
+  "API.ConnectionFailed": "Failed to connect to API: {0}",
+  "API.RequestTimeout": "API request timed out after {0} seconds",
+  "Credential.EncryptionFailed": "Failed to encrypt credentials: {0}",
+  "Credential.DecryptionFailed": "Failed to decrypt credentials: {0}",
+  "Notification.DisplayFailed": "Failed to display notification: {0}",
+  "StockCheck.Failed": "Stock check failed: {0}"
+}
+
+  "Error.MustSpecifyStockOrWait": "Error: You must specify either --stock or --wait",
+  "Error.CannotSpecifyBothStockAndWait": "Error: Cannot specify both --stock and --wait",
+  "Error.MustSpecifyStoreOrLegacy": "Error: You must specify either --store or --legacy-api-store",
+  "Error.CannotSpecifyBothStoreAndLegacy": "Error: Cannot specify both --store and --legacy-api-store"
