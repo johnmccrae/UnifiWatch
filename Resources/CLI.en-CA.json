@@ -25,5 +25,11 @@
   "List.OutOfStock": "✗ Out of Stock",
   "List.PriceNA": "N/A",
   "List.CategoryNA": "N/A",
-  "List.SKUNA": "N/A"
+  "List.SKUNA": "N/A",
+  "Monitor.MonitoringFor": "Monitoring for: {0}",
+  "Monitor.CheckingStock": "Checking stock...",
+  "Monitor.CheckingStockDone": "Checking stock... Done, sleeping for {0} seconds",
+  "Monitor.MonitoringCancelled": "Stock monitoring cancelled.",
+  "Store.GettingProducts": "Getting Unifi products from {0} store...",
+  "Store.RetrievedProducts": "Retrieved {0} products"
 }

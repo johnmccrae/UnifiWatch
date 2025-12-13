@@ -7,10 +7,18 @@
   "Credential.EncryptionFailed": "Failed to encrypt credentials: {0}",
   "Credential.DecryptionFailed": "Failed to decrypt credentials: {0}",
   "Notification.DisplayFailed": "Failed to display notification: {0}",
-  "StockCheck.Failed": "Stock check failed: {0}"
-}
-
+  "StockCheck.Failed": "Stock check failed: {0}",
   "Error.MustSpecifyStockOrWait": "Error: You must specify either --stock or --wait",
   "Error.CannotSpecifyBothStockAndWait": "Error: Cannot specify both --stock and --wait",
   "Error.MustSpecifyStoreOrLegacy": "Error: You must specify either --store or --legacy-api-store",
-  "Error.CannotSpecifyBothStoreAndLegacy": "Error: Cannot specify both --store and --legacy-api-store"
+  "Error.CannotSpecifyBothStoreAndLegacy": "Error: Cannot specify both --store and --legacy-api-store",
+  "Warning.ProductSkuNotFound": "Warning: Product SKU '{0}' not found in stock. Ignoring",
+  "Warning.ProductNameNotFound": "Warning: Product Name '{0}' not found in stock. Ignoring",
+  "Error.NoValidProductsFound": "Error: No valid products found. Exiting",
+  "Error.OpenUrlFailed": "Failed to open URL: {0}",
+  "Warning.CollectionNotFound": "Warning: Collection '{0}' not found, skipping...",
+  "Info.FetchingCollectionProducts": "Fetching {0}...",
+  "Info.NoProductsInCollection": "No products found for collection '{0}'",
+  "Error.FetchingCollectionProducts": "Error fetching {0}: {1}",
+  "Error.OperationFailed": "Error: {0}"
+}

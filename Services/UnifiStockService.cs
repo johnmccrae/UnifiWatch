@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using UnifiWatch.Configuration;
 using UnifiWatch.Models;
+using UnifiWatch.Services.Localization;
 
 namespace UnifiWatch.Services;
 
@@ -28,7 +29,10 @@ public class unifiwatchService : IunifiwatchService
             throw new ArgumentException($"Store link not found for '{store}'");
         }
 
-        Console.WriteLine($"Getting Unifi products from {store} store...");
+        var loc = ServiceProviderHolder.GetService<ResourceLocalizer>()
+                  ?? ResourceLocalizerHolder.Instance
+                  ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
+        Console.WriteLine(loc.CLI("Store.GettingProducts", store));
 
         var allProducts = new List<StorefrontProduct>();
         var offset = 0;
@@ -68,7 +72,7 @@ public class unifiwatchService : IunifiwatchService
             }
         }
 
-        Console.WriteLine($"Retrieved {allProducts.Count} products");
+        Console.WriteLine(loc.CLI("Store.RetrievedProducts", allProducts.Count));
 
         return ConvertToUnifiProducts(allProducts, storeLink, collections);
     }

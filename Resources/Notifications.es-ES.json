@@ -1,0 +1,17 @@
+{
+  "StockAlert.Title": "Alerta UnifiWatch",
+  "StockAlert.Subtitle": "Alerta UnifiWatch",
+  "Product.InStock": "Producto '{0}' está en stock. SKU: {1}",
+  "StockCheck.Completed": "Comprobación de stock completada a las {0}",
+  "StockCheck.Starting": "Iniciando la monitorización de stock a las {0}",
+  "Notification.ProductsAvailable": "{0} producto(s) en stock: {1}",
+  "Notification.ConsoleFallback": "[Alerta UnifiWatch] {0}: {1}",
+  "Notification.MacOSSubtitle": "Alerta UnifiWatch",
+  "Notification.Failed": "Error al mostrar la notificación: {0}",
+  "Notification.Windows.LogoMissing": "Notificación de Windows mostrada sin logo por un error",
+  "Notification.Linux.NotifySendUsed": "Se usó notify-send en Linux",
+  "Notification.Linux.ZenityUsed": "Se usó zenity en Linux",
+  "Notification.Linux.KDialogUsed": "Se usó kdialog en Linux",
+  "Notification.Linux.XMessageUsed": "Se usó xmessage en Linux",
+  "Notification.Bell": "🔔 Alerta de stock!"
+}

@@ -35,6 +35,7 @@ public class Program
             serviceProvider = services.BuildServiceProvider();
             // Cache localizer instance for reuse (back-compat)
             ResourceLocalizerHolder.Instance = localizer;
+            ServiceProviderHolder.Provider = serviceProvider;
         }
         catch
         {
@@ -169,7 +170,8 @@ public class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            var loc = ResourceLocalizerHolder.Instance ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
+            Console.WriteLine(loc.Error("Error.OperationFailed", ex.Message));
             throw;
         }
     }
@@ -189,7 +191,8 @@ public class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            var loc = ResourceLocalizerHolder.Instance ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
+            Console.WriteLine(loc.Error("Error.OperationFailed", ex.Message));
             throw;
         }
     }

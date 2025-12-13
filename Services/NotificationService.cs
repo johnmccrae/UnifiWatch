@@ -9,7 +9,9 @@ public static class NotificationService
 {
     public static void ShowNotification(string title, string message)
     {
-        var loc = ResourceLocalizerHolder.Instance ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
+        var loc = ServiceProviderHolder.GetService<ResourceLocalizer>()
+                  ?? ResourceLocalizerHolder.Instance
+                  ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
         if (OperatingSystem.IsWindows())
         {
             ShowWindowsToast(title, message);

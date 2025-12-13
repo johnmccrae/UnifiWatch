@@ -345,6 +345,18 @@ The application provides rich, branded notifications across all platforms:
 **Linux/macOS: "Permission denied"**
 - Make the executable file executable: `chmod +x UnifiWatch`
 
+## Localization
+
+- Resource files live under `Resources/` and are JSON per culture and category: `CLI.<culture>.json`, `Notifications.<culture>.json`, `Errors.<culture>.json`.
+- Fallback order is culture name → two-letter language code → `en-CA`. Missing keys return the key name.
+- To add a new locale:
+  - Copy the `en-CA` files as a template and translate the values.
+  - Keep the keys unchanged; they are referenced in code.
+  - Include the new files in `Resources/` (the project copies `*.json` on build).
+- **Parity Testing**: Run `dotnet test --filter LocalizationParityTests` to ensure all locale files have matching key sets (baseline: `en-CA`). This prevents missing translations and inconsistent resource keys across locales.
+- **Fallback & Robustness**: Run `dotnet test --filter ResourceLocalizerFallbackTests` to verify graceful handling of malformed JSON files and proper localization of all messages.
+- Testing: run `dotnet test` to ensure resource JSON is valid and look for localized output in CLI flows (`--wait` warnings, product lists, notifications).
+
 ## Credits
 
 - Original PowerShell module by [EvotecIT/UnifiWatch](https://github.com/EvotecIT/UnifiWatch)

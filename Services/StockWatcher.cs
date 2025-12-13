@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using UnifiWatch.Models;
+using UnifiWatch.Services.Localization;
 
 namespace UnifiWatch.Services;
 
@@ -21,6 +22,9 @@ public class StockWatcher
         bool doNotPlaySound = false,
         CancellationToken cancellationToken = default)
     {
+        var loc = ServiceProviderHolder.GetService<ResourceLocalizer>()
+                  ?? ResourceLocalizerHolder.Instance
+                  ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
         // Get initial stock to validate products
         var currentStock = await _stockService.GetStockAsync(_store, null, cancellationToken);
 
@@ -49,7 +53,7 @@ public class StockWatcher
                 }
                 if (!found)
                 {
-                    Console.WriteLine($"Warning: Product Name '{name}' not found in stock. Ignoring");
+                    Console.WriteLine(loc.Error("Warning.ProductNameNotFound", name));
                 }
             }
         }
@@ -65,7 +69,7 @@ public class StockWatcher
                 }
                 else
                 {
-                    Console.WriteLine($"Warning: Product SKU '{sku}' not found in stock. Ignoring");
+                    Console.WriteLine(loc.Error("Warning.ProductSkuNotFound", sku));
                 }
             }
         }
@@ -74,11 +78,11 @@ public class StockWatcher
 
         if (applicableProducts.Count == 0)
         {
-            Console.WriteLine("Error: No valid products found. Exiting");
+            Console.WriteLine(loc.Error("Error.NoValidProductsFound"));
             return;
         }
 
-        Console.WriteLine($"Monitoring for: {string.Join(", ", applicableProducts)}");
+        Console.WriteLine(loc.CLI("Monitor.MonitoringFor", string.Join(", ", applicableProducts)));
 
         var count = 0;
         List<UnifiProduct> availableProducts;
@@ -92,7 +96,7 @@ public class StockWatcher
                     await Task.Delay(TimeSpan.FromSeconds(checkIntervalSeconds), cancellationToken);
                 }
 
-                Console.WriteLine("Checking stock...");
+                Console.WriteLine(loc.CLI("Monitor.CheckingStock"));
 
                 var currentResults = await _stockService.GetStockAsync(_store, null, cancellationToken);
 
@@ -103,26 +107,26 @@ public class StockWatcher
 
                 availableProducts = matchingProducts.Where(p => p.Available).ToList();
 
-                Console.WriteLine($"Checking stock... Done, sleeping for {checkIntervalSeconds} seconds");
+                Console.WriteLine(loc.CLI("Monitor.CheckingStockDone", checkIntervalSeconds));
                 count++;
             }
             while (availableProducts.Count == 0);
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine("Stock monitoring cancelled.");
+            Console.WriteLine(loc.CLI("Monitor.MonitoringCancelled"));
             return;
         }
 
         // Show notification for all available products
         var productList = string.Join(", ", availableProducts.Select(p => p.Name));
-        NotificationService.ShowNotification(
-            "UniFi Stock Alert!", 
-            $"{availableProducts.Count} product(s) in stock: {productList}");
+        var title = loc.Notification("StockAlert.Title");
+        var message = loc.Notification("Notification.ProductsAvailable", availableProducts.Count, productList);
+        NotificationService.ShowNotification(title, message);
 
         foreach (var product in availableProducts)
         {
-            Console.WriteLine($"✓ Product '{product.Name}' is in stock! SKU: {product.SKU}");
+            Console.WriteLine(loc.Notification("Product.InStock", product.Name, product.SKU));
 
             if (!doNotOpenWebsite)
             {
@@ -148,7 +152,10 @@ public class StockWatcher
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to open URL: {ex.Message}");
+            var loc = ServiceProviderHolder.GetService<ResourceLocalizer>()
+                      ?? ResourceLocalizerHolder.Instance
+                      ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
+            Console.WriteLine(loc.Error("Error.OpenUrlFailed", ex.Message));
         }
     }
 
@@ -163,13 +170,19 @@ public class StockWatcher
             }
             else
             {
-                Console.WriteLine("🔔 Stock alert!");
+                var loc = ServiceProviderHolder.GetService<ResourceLocalizer>()
+                          ?? ResourceLocalizerHolder.Instance
+                          ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
+                Console.WriteLine(loc.Notification("Notification.Bell"));
             }
         }
         catch
         {
             // Beep not supported on this platform
-            Console.WriteLine("🔔 Stock alert!");
+            var loc = ServiceProviderHolder.GetService<ResourceLocalizer>()
+                      ?? ResourceLocalizerHolder.Instance
+                      ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
+            Console.WriteLine(loc.Notification("Notification.Bell"));
         }
     }
 }
