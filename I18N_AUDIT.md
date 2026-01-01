@@ -80,7 +80,7 @@ All notifications follow this pattern:
 **Note**: "Ubiquiti Stock Tracker" should be updated to "UnifiWatch" for consistency
 
 ### 2.3 Platform-Specific Notification Strings
-- **Windows**: Uses ToastContentBuilder (no hardcoded strings, uses title + message)
+- **Windows**: Uses PowerShell + Windows.UI.Notifications (no hardcoded strings, uses title + message)
 - **macOS**: AppleScript subtitle = `"Ubiquiti Stock Alert"` (needs update to "UnifiWatch")
 - **Linux**: Multiple fallback methods
   - `notify-send`: app-name parameter
@@ -351,3 +351,5 @@ All notifications follow this pattern:
 **Created**: December 12, 2025  
 **Audit Scope**: Current codebase as of Phase 1 completion  
 **Next Review**: After Phase 2 implementation  
+
+

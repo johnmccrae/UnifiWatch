@@ -23,3 +23,5 @@
 1. Add new keys to `en-CA` JSON first.
 2. Reference the key in code (central helper planned in Phase 2).
 3. Add translations in future phases.
+
+

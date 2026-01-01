@@ -222,3 +222,5 @@ sudo dotnet test UnifiWatch.sln --collect:"XPlat Code Coverage"
 
 **Last Updated**: December 4, 2025  
 **Next Review**: After macOS testing session
+
+

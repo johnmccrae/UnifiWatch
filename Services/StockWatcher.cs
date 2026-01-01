@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using UnifiWatch.Models;
 using UnifiWatch.Services.Localization;
+using UnifiWatch.Services.Notifications;
 
 namespace UnifiWatch.Services;
 
@@ -8,10 +9,13 @@ public class StockWatcher
 {
     private readonly IunifiwatchService _stockService;
     private readonly string _store;
-    public StockWatcher(IunifiwatchService stockService, string store)
+    private readonly NotificationOrchestrator? _notifier;
+
+    public StockWatcher(IunifiwatchService stockService, string store, NotificationOrchestrator? notifier = null)
     {
         _stockService = stockService;
         _store = store;
+        _notifier = notifier; // optional; tests can omit, CLI passes via DI
     }
 
     public async Task WaitForStockAsync(
@@ -123,6 +127,11 @@ public class StockWatcher
         var title = loc.Notification("StockAlert.Title");
         var message = loc.Notification("Notification.ProductsAvailable", availableProducts.Count, productList);
         NotificationService.ShowNotification(title, message);
+
+        if (_notifier != null)
+        {
+            await _notifier.NotifyInStockAsync(availableProducts, _store, cancellationToken);
+        }
 
         foreach (var product in availableProducts)
         {

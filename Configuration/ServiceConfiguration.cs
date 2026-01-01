@@ -78,6 +78,9 @@ public class NotificationSettings
 
     [JsonPropertyName("sms")]
     public SmsNotificationConfig Sms { get; set; } = new();
+
+    [JsonPropertyName("dedupeMinutes")]
+    public int DedupeMinutes { get; set; } = 5; // Default 5 minutes, min 1, max 60
 }
 
 /// <summary>

@@ -10,6 +10,7 @@
   "SecondsOption.Description": "Intervallo di controllo in secondi",
   "NoWebsiteOption.Description": "Non aprire il sito web quando il prodotto è disponibile",
   "NoSoundOption.Description": "Non riprodurre suoni quando il prodotto è disponibile",
+  "LanguageOption.Description": "Sovrascrivere lingua/cultura (es: fr-CA, de-DE, es-ES)",
   "Help.UsageHeader": "Utilizzo",
   "Help.OptionsHeader": "Opzioni",
   "Help.ExamplesHeader": "Esempi",

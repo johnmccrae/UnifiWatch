@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
-using UnifiWatch.Models;
+using UnifiWatch.Configuration;
 using UnifiWatch.Utilities;
 
 namespace UnifiWatch.Services.Configuration;
@@ -10,7 +10,7 @@ namespace UnifiWatch.Services.Configuration;
 /// JSON file-based configuration provider
 /// Handles loading, saving, and validating service configurations
 /// </summary>
-public class JsonConfigurationProvider : IConfigurationProvider
+public class JsonConfigurationProvider : UnifiWatch.Configuration.IConfigurationProvider
 {
     private readonly ILogger<JsonConfigurationProvider> _logger;
     private FileSystemWatcher? _fileWatcher;
@@ -115,6 +115,65 @@ public class JsonConfigurationProvider : IConfigurationProvider
     }
 
     /// <summary>
+    /// Gets the configuration file path
+    /// </summary>
+    public string ConfigurationFilePath => ConfigurationPath;
+
+    /// <summary>
+    /// Checks if configuration file exists
+    /// </summary>
+    public bool ConfigurationExists() => File.Exists(ConfigurationPath);
+
+    /// <summary>
+    /// Deletes the configuration file
+    /// </summary>
+    public async Task<bool> DeleteAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (File.Exists(ConfigurationPath))
+            {
+                File.Delete(ConfigurationPath);
+                _logger.LogInformation("Configuration file deleted: {Path}", ConfigurationPath);
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting configuration file: {Path}", ConfigurationPath);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Creates a backup of the current configuration
+    /// </summary>
+    public async Task<string?> BackupAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (!File.Exists(ConfigurationPath))
+                return null;
+
+            var backupPath = Path.Combine(
+                ConfigurationDirectory,
+                $"config.backup.{DateTime.Now:yyyyMMdd-HHmmss}.json"
+            );
+
+            var json = await File.ReadAllTextAsync(ConfigurationPath, cancellationToken);
+            await File.WriteAllTextAsync(backupPath, json, cancellationToken);
+
+            _logger.LogInformation("Configuration backed up to: {Path}", backupPath);
+            return backupPath;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating configuration backup");
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Validates configuration completeness and correctness
     /// </summary>
     public List<string> Validate(ServiceConfiguration config)
@@ -188,8 +247,8 @@ public class JsonConfigurationProvider : IConfigurationProvider
             },
             Notifications = new NotificationSettings
             {
-                Desktop = new DesktopNotificationSettings { Enabled = true },
-                Email = new EmailNotificationSettings
+                Desktop = new DesktopNotificationConfig { Enabled = true },
+                Email = new EmailNotificationConfig
                 {
                     Enabled = false,
                     Recipients = new(),
@@ -199,7 +258,7 @@ public class JsonConfigurationProvider : IConfigurationProvider
                     FromAddress = string.Empty,
                     CredentialKey = "email-smtp"
                 },
-                Sms = new SmsNotificationSettings
+                Sms = new SmsNotificationConfig
                 {
                     Enabled = false,
                     Provider = "twilio",

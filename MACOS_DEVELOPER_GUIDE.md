@@ -1,4 +1,4 @@
-# macOS Build and Test Guide
+# macOS Developer Guide
 
 **Purpose**: Complete guide for building, testing, and validating UnifiWatch on macOS  
 **Platform**: macOS 10.15 or later (Intel or Apple Silicon)  
@@ -72,8 +72,8 @@ dotnet --version  # Will show whatever latest version Homebrew has
 #### Option A: Clone from GitHub
 
 ```bash
-git clone https://github.com/EvotecIT/UnifiWatch.git
-cd UnifiWatch/UnifiWatch
+git clone https://github.com/johnmccrae/UnifiWatch.git
+cd UnifiWatch
 ```
 
 #### Option B: Copy from Windows Machine
@@ -641,5 +641,7 @@ If you encounter issues:
 ---
 
 **Last Updated**: December 2025  
-**Document Version**: 1.0 (Unified build and test guide)  
+**Document Version**: 1.0 (Developer guide)  
 **Phase**: Phase 1 Complete
+
+

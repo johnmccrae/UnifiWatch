@@ -23,6 +23,7 @@ Ubiquiti products (like UniFi WiFi access points, security cameras, switches, an
 The program connects to Ubiquiti's online store systems using two different methods:
 
 ### 1. GraphQL API (US/EU/UK stores)
+
 - **Endpoint**: `https://ecomm.svc.ui.com/graphql`
 - **Method**: POST
 - **Query**: `GetProductsForLandingPagePro`
@@ -34,6 +35,7 @@ The program connects to Ubiquiti's online store systems using two different meth
 - **Command**: Use `--store` option
 
 ### 2. Shopify REST API (Other stores)
+
 - **URL Pattern**: `{store_url}/collections/{collection}/products.json`
 - **Method**: GET
 - **Examples**:
@@ -56,10 +58,13 @@ The program connects to Ubiquiti's online store systems using two different meth
 
 1. Open PowerShell
 2. Navigate to the program folder:
+
    ```powershell
    cd UnifiWatch
    ```
+
 3. Build as a standalone executable:
+
    ```powershell
    dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true
    ```
@@ -70,10 +75,13 @@ The executable will be created at: `bin\Release\net9.0\win-x64\publish\UnifiWatc
 
 1. Open a terminal
 2. Navigate to the program folder:
+
    ```bash
    cd UnifiWatch
    ```
+
 3. Build as a standalone executable:
+
    ```bash
    dotnet publish -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true
    ```
@@ -81,6 +89,7 @@ The executable will be created at: `bin\Release\net9.0\win-x64\publish\UnifiWatc
 The executable will be created at: `bin/Release/net9.0/linux-x64/publish/UnifiWatch`
 
 You may need to make it executable:
+
 ```bash
 chmod +x bin/Release/net9.0/linux-x64/publish/UnifiWatch
 ```
@@ -89,10 +98,13 @@ chmod +x bin/Release/net9.0/linux-x64/publish/UnifiWatch
 
 1. Open Terminal
 2. Navigate to the program folder:
+
    ```bash
    cd UnifiWatch
    ```
+
 3. Build as a standalone executable:
+
    ```bash
    dotnet publish -c Release -r osx-x64 --self-contained -p:PublishSingleFile=true
    ```
@@ -100,6 +112,7 @@ chmod +x bin/Release/net9.0/linux-x64/publish/UnifiWatch
 The executable will be created at: `bin/Release/net9.0/osx-x64/publish/UnifiWatch`
 
 You may need to make it executable:
+
 ```bash
 chmod +x bin/Release/net9.0/osx-x64/publish/UnifiWatch
 ```
@@ -111,11 +124,13 @@ chmod +x bin/Release/net9.0/osx-x64/publish/UnifiWatch
 ### Using the Standalone Executable
 
 **Windows (PowerShell):**
+
 ```powershell
 .\UnifiWatch.exe --stock --store USA
 ```
 
 **Linux/macOS (Bash/Zsh):**
+
 ```bash
 ./UnifiWatch --stock --store USA
 ```
@@ -125,6 +140,7 @@ chmod +x bin/Release/net9.0/osx-x64/publish/UnifiWatch
 If you haven't published the executable yet, you can run directly with:
 
 **All platforms:**
+
 ```bash
 sudo dotnet run --project UnifiWatch.csproj -- --stock --store USA
 ```
@@ -134,19 +150,23 @@ sudo dotnet run --project UnifiWatch.csproj -- --stock --store USA
 The tool uses option-based commands instead of subcommands:
 
 **Mode Options (choose one):**
+
 - `--stock` - Get current stock availability
 - `--wait` - Monitor products and alert when in stock
 
 **Store Options (choose one):**
+
 - `--store <name>` - For GraphQL API stores (USA, Europe, UK)
 - `--legacy-api-store <name>` - For Shopify API stores (Brazil, India, Japan, Taiwan, Singapore, Mexico, China)
 
 **Filter Options (optional):**
+
 - `--collections <name>` - Filter by collection names
 - `--product-names <pattern>` - Filter by product name patterns
 - `--product-skus <sku>` - Filter by product SKUs
 
 **Wait Options (for `--wait` mode only):**
+
 - `--seconds <number>` - Check interval in seconds (default: 60)
 - `--no-website` - Don't open browser when product found
 - `--no-sound` - Don't play alert sound when product found
@@ -156,11 +176,13 @@ The tool uses option-based commands instead of subcommands:
 **Check all stock in USA store:**
 
 Windows (PowerShell):
+
 ```powershell
 .\UnifiWatch.exe --stock --store USA
 ```
 
 Linux/macOS:
+
 ```bash
 ./UnifiWatch --stock --store USA
 ```
@@ -168,11 +190,13 @@ Linux/macOS:
 **Check stock in Brazil store (Shopify API):**
 
 Windows (PowerShell):
+
 ```powershell
 .\UnifiWatch.exe --stock --legacy-api-store Brazil
 ```
 
 Linux/macOS:
+
 ```bash
 ./UnifiWatch --stock --legacy-api-store Brazil
 ```
@@ -180,11 +204,13 @@ Linux/macOS:
 **Monitor for Dream Machine in USA store:**
 
 Windows (PowerShell):
+
 ```powershell
 .\UnifiWatch.exe --wait --store USA --product-names "Dream Machine"
 ```
 
 Linux/macOS:
+
 ```bash
 ./UnifiWatch --wait --store USA --product-names "Dream Machine"
 ```
@@ -192,11 +218,13 @@ Linux/macOS:
 **Monitor specific SKU in Europe:**
 
 Windows (PowerShell):
+
 ```powershell
 .\UnifiWatch.exe --wait --store Europe --product-skus "UDM-Pro"
 ```
 
 Linux/macOS:
+
 ```bash
 ./UnifiWatch --wait --store Europe --product-skus "UDM-Pro"
 ```
@@ -204,11 +232,13 @@ Linux/macOS:
 **Wait for stock in Japan with custom interval:**
 
 Windows (PowerShell):
+
 ```powershell
 .\UnifiWatch.exe --wait --legacy-api-store Japan --product-names "UniFi" --seconds 120
 ```
 
 Linux/macOS:
+
 ```bash
 ./UnifiWatch --wait --legacy-api-store Japan --product-names "UniFi" --seconds 120
 ```
@@ -216,11 +246,13 @@ Linux/macOS:
 **Silent monitoring (no browser, no sound):**
 
 Windows (PowerShell):
+
 ```powershell
 .\UnifiWatch.exe --wait --store UK --product-names "Camera" --no-website --no-sound
 ```
 
 Linux/macOS:
+
 ```bash
 ./UnifiWatch --wait --store UK --product-names "Camera" --no-website --no-sound
 ```
@@ -228,11 +260,13 @@ Linux/macOS:
 ## Supported Stores
 
 ### GraphQL API Stores (use `--store`)
+
 - **USA** (`--store USA`)
 - **Europe** (`--store Europe`)
 - **UK** (`--store UK`)
 
 ### Shopify API Stores (use `--legacy-api-store`)
+
 - **Brazil** (`--legacy-api-store Brazil`)
 - **India** (`--legacy-api-store India`)
 - **Japan** (`--legacy-api-store Japan`)
@@ -258,7 +292,8 @@ When the `--wait` command finds products in stock:
 ### API Implementation
 
 **GraphQL API:**
-`
+
+```json
 POST https://ecomm.svc.ui.com/graphql
 Content-Type: application/json
 
@@ -270,12 +305,13 @@ Content-Type: application/json
     "collectionSlugs": ["dream-machine", "camera-security-compact-poe-wired"]
   }
 }
-`
+```
 
 **Shopify REST API:**
-`
+
+```json
 GET https://br.store.ui.com/collections/unifi-protect/products.json
-`
+```
 
 ### Project Structure
 
@@ -296,31 +332,35 @@ GET https://br.store.ui.com/collections/unifi-protect/products.json
 - **System.CommandLine** (2.0.0-beta4) - Modern command-line parsing
 - **System.Text.Json** (9.0.0) - JSON serialization
 - **Microsoft.Extensions.Http** (9.0.0) - HTTP client factory
-- **Microsoft.Toolkit.Uwp.Notifications** (7.1.3) - Windows Toast Notifications (Windows only)
+- **Windows.UI.Notifications** (via PowerShell) - Windows Toast Notifications (Windows only, no NuGet dependency)
 
 ### Notification System
 
 The application provides rich, branded notifications across all platforms:
 
-**Windows**: 
-- Uses Windows Toast Notifications with Ubiquiti branding
+**Windows**:
+
+- Uses Windows Toast Notifications via PowerShell (works in interactive and service modes)
 - Features the official Ubiquiti logo in the notification
 - Notifications appear in the Action Center and persist until dismissed
 - Can include multiple products in a single alert
 - Supports long-duration display for better visibility
 
-**macOS**: 
+**macOS**:
+
 - Uses AppleScript to trigger native Notification Center alerts
 - Includes "Ubiquiti Stock Alert" subtitle for branding
 - Notifications appear in the top-right corner
 - Follows system notification settings and do-not-disturb preferences
 
-**Linux**: 
+**Linux**:
+
 - Uses `notify-send` with Ubiquiti branding and network icon
 - Falls back to console output if notify-send is not available
 - Compatible with most desktop environments (GNOME, KDE, XFCE)
 
-**Cross-Platform Features:**
+**Cross-Platform Features**:
+
 - All notifications include the title and detailed product information
 - Windows notifications include interactive arguments for potential future click handling
 - Consistent branding across all platforms
@@ -328,22 +368,108 @@ The application provides rich, branded notifications across all platforms:
 
 ## Troubleshooting
 
-**Error: "You must specify either --stock or --wait"**
-- You need to choose a mode. Add either `--stock` or `--wait` to your command.
+### Error: "You must specify either --stock or --wait"
 
-**Error: "You must specify either --store or --legacy-api-store"**
-- You need to specify which store. Add either `--store USA` or `--legacy-api-store Brazil`.
+You need to choose a mode. Add either `--stock` or `--wait` to your command.
 
-**Error: "Cannot specify both --stock and --wait"**
-- Only use one mode at a time.
+### Error: "You must specify either --store or --legacy-api-store"
 
-**No products found:**
+You need to specify which store. Add either `--store USA` or `--legacy-api-store Brazil`.
+
+### Error: "Cannot specify both --stock and --wait"
+
+Only use one mode at a time.
+
+### No products found
+
 - Check that the store name is correct (case-sensitive)
 - Try without filters first to see all products
 - Some stores may have no products (Brazil store appears empty in testing)
 
-**Linux/macOS: "Permission denied"**
-- Make the executable file executable: `chmod +x UnifiWatch`
+### Linux/macOS: "Permission denied"
+
+Make the executable file executable: `chmod +x UnifiWatch`
+
+## Service Mode
+
+UnifiWatch supports both CLI mode (manual commands) and Service Mode (background monitoring). Service Mode runs as a system service on Windows, Linux, or macOS, continuously monitoring for stock availability and sending notifications.
+
+### Quick Start
+
+**Setup and start the service:**
+
+Windows (PowerShell, Administrator):
+
+```powershell
+.\UnifiWatch.exe --install-service
+# Service starts automatically - check Windows Services (services.msc)
+```
+
+Linux/macOS (Terminal):
+
+```bash
+sudo ./UnifiWatch --install-service
+# Service starts automatically - check systemd (systemctl status unifiwatch)
+```
+
+**Configure notifications and products:**
+
+Windows (PowerShell):
+
+```powershell
+.\UnifiWatch.exe --configure
+# Interactive wizard: email, SMS, Discord, products, check interval
+```
+
+Linux/macOS (Terminal):
+
+```bash
+./UnifiWatch --configure
+# Interactive wizard: email, SMS, Discord, products, check interval
+```
+
+**View current configuration:**
+
+Windows (PowerShell):
+
+```powershell
+.\UnifiWatch.exe --show-config
+```
+
+Linux/macOS (Terminal):
+
+```bash
+./UnifiWatch --show-config
+```
+
+### Features
+
+- **24/7 Background Monitoring**: Service runs continuously checking stock
+- **Multiple Notification Channels**: Email, SMS (Twilio), Desktop notifications, Discord
+- **Secure Credential Storage**:
+  - Windows: Windows Credential Manager (DPAPI encryption)
+  - macOS: Keychain
+  - Linux: Secret Service or encrypted file storage
+- **Cross-Platform**: Windows, Linux (systemd), macOS (launchd)
+- **Automatic Updates**: Updates configuration without service restart
+- **Detailed Logging**: View service logs for debugging and monitoring
+
+### Comprehensive Documentation
+
+For detailed service setup, configuration, and troubleshooting:
+
+- **[SERVICE_SETUP.md](SERVICE_SETUP.md)** - Platform-specific installation and operation guides
+- **[SECURITY.md](SECURITY.md)** - Credential storage and security best practices
+- **[Example Configurations](examples/)** - Ready-to-use config templates
+
+### Example Configurations
+
+Ready-made configuration examples in `examples/` directory:
+
+- `config.minimal.json` - Desktop notifications only
+- `config.email-only.json` - Email notifications with SMTP
+- `config.sms-twilio.json` - SMS notifications with Twilio
+- `config.all-channels.json` - All notification types enabled
 
 ## Localization
 
@@ -366,3 +492,5 @@ The application provides rich, branded notifications across all platforms:
 ## License
 
 This project maintains the same open-source spirit as the original PowerShell module.
+
+

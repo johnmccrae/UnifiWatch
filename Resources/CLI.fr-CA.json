@@ -10,6 +10,7 @@
   "SecondsOption.Description": "Intervalle de vérification en secondes",
   "NoWebsiteOption.Description": "Ne pas ouvrir le site Web lorsque le produit est en stock",
   "NoSoundOption.Description": "Ne pas jouer de son lorsque le produit est en stock",
+  "LanguageOption.Description": "Forcer la langue/culture (ex: fr-CA, de-DE, es-ES)",
   "Help.UsageHeader": "Utilisation",
   "Help.OptionsHeader": "Options",
   "Help.ExamplesHeader": "Exemples",

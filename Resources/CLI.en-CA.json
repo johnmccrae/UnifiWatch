@@ -10,6 +10,7 @@
   "SecondsOption.Description": "Check interval in seconds",
   "NoWebsiteOption.Description": "Do not open website when product is in stock",
   "NoSoundOption.Description": "Do not play sound when product is in stock",
+  "LanguageOption.Description": "Override language/culture (e.g., fr-CA, de-DE, es-ES)",
   "Help.UsageHeader": "Usage",
   "Help.OptionsHeader": "Options",
   "Help.ExamplesHeader": "Examples",

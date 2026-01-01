@@ -10,6 +10,7 @@
   "SecondsOption.Description": "Prüfintervall in Sekunden",
   "NoWebsiteOption.Description": "Website nicht öffnen, wenn Produkt vorrätig ist",
   "NoSoundOption.Description": "Keinen Ton abspielen, wenn Produkt vorrätig ist",
+  "LanguageOption.Description": "Sprache/Kultur überschreiben (z.B. fr-CA, de-DE, es-ES)",
   "Help.UsageHeader": "Verwendung",
   "Help.OptionsHeader": "Optionen",
   "Help.ExamplesHeader": "Beispiele",

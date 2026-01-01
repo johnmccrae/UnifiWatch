@@ -13,5 +13,17 @@
   "Notification.Linux.ZenityUsed": "zenity Linux utilisé",
   "Notification.Linux.KDialogUsed": "kdialog Linux utilisé",
   "Notification.Linux.XMessageUsed": "xmessage Linux utilisé",
-  "Notification.Bell": "🔔 Alerte stock !"
+  "Notification.Bell": "🔔 Alerte stock !",
+  "Email.ProductInStock.Subject": "✓ Produit En Stock: {0}",
+  "Email.ProductInStock.Body": "Bonne nouvelle!\n\nProduit: {0}\nSKU: {1}\nPrix: {2}\nMagasin: {3}\nNotifié à: {4}\n\nVérifiez la disponibilité maintenant!",
+  "Email.ProductOutOfStock.Subject": "✗ Produit En Rupture: {0}",
+  "Email.ProductOutOfStock.Body": "Mise à jour des stocks:\n\nProduit: {0}\nSKU: {1}\nMagasin: {2}\nN'est plus en stock depuis: {3}\n\nNous vous avertissons quand il sera à nouveau disponible.",
+  "Email.Error.Subject": "Notification d'erreur UnifiWatch",
+  "Email.Error.Body": "Une erreur s'est produite dans la surveillance du stock UnifiWatch :\n\n{0}\n\nHeure : {1}\n\nVeuillez vérifier votre configuration et réessayer.",
+  "Sms.ProductInStock.Subject": "✓ {0} Disponible",
+  "Sms.ProductInStock.Body": "[EN STOCK] Bonne nouvelle! {0} ({1}) à {2}. Prix: {3}. Vérifiez maintenant!",
+  "Sms.ProductOutOfStock.Subject": "✗ {0} Non disponible",
+  "Sms.ProductOutOfStock.Body": "{0} ({1}) à {2} n'est pas disponible. Nous vous alerterons.",
+  "Sms.Error.Subject": "Alerte UnifiWatch",
+  "Sms.Error.Body": "Erreur: {0}"
 }

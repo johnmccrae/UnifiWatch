@@ -10,6 +10,7 @@
   "SecondsOption.Description": "Intervalo de comprobación en segundos",
   "NoWebsiteOption.Description": "No abrir la web cuando haya stock",
   "NoSoundOption.Description": "No reproducir sonido cuando haya stock",
+  "LanguageOption.Description": "Anular idioma/cultura (ej: fr-CA, de-DE, es-ES)",
   "Help.UsageHeader": "Uso",
   "Help.OptionsHeader": "Opciones",
   "Help.ExamplesHeader": "Ejemplos",

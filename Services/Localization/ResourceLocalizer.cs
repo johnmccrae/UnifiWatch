@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace UnifiWatch.Services.Localization;
 
-public class ResourceLocalizer
+public class ResourceLocalizer : IResourceLocalizer
 {
     private readonly Dictionary<string, string> _cli = new();
     private readonly Dictionary<string, string> _notifications = new();

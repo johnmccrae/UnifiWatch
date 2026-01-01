@@ -1,4 +1,6 @@
-# Windows Build and Test Guide
+# Windows Developer Guide
+
+**Audience**: Developers and contributors building and running the automated test suite
 
 **Purpose**: Complete guide for building, testing, and validating UnifiWatch on Windows  
 **Platform**: Windows 10 or later  
@@ -50,8 +52,8 @@ dotnet --version
 #### Option A: Clone from GitHub
 
 ```powershell
-git clone https://github.com/EvotecIT/UnifiWatch.git
-cd UnifiWatch\UnifiWatch
+git clone https://github.com/johnmccrae/UnifiWatch.git
+cd UnifiWatch
 ```
 
 #### Option B: Download ZIP
@@ -621,5 +623,7 @@ For issues specific to Windows:
 ---
 
 **Last Updated**: December 2025  
-**Document Version**: 1.0 (Unified build and test guide)  
+**Document Version**: 1.0 (Developer guide)  
 **Phase**: Phase 1 Complete
+
+

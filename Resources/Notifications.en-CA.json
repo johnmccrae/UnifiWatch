@@ -13,5 +13,17 @@
   "Notification.Linux.NotifySendUsed": "Linux notify-send used",
   "Notification.Linux.ZenityUsed": "Linux zenity used",
   "Notification.Linux.KDialogUsed": "Linux kdialog used",
-  "Notification.Linux.XMessageUsed": "Linux xmessage used"
+  "Notification.Linux.XMessageUsed": "Linux xmessage used",
+  "Email.ProductInStock.Subject": "✓ Product In Stock: {0}",
+  "Email.ProductInStock.Body": "Great news!\n\nProduct: {0}\nSKU: {1}\nPrice: {2}\nStore: {3}\nNotified at: {4}\n\nCheck availability now!",
+  "Email.ProductOutOfStock.Subject": "✗ Product Out Of Stock: {0}",
+  "Email.ProductOutOfStock.Body": "Stock update:\n\nProduct: {0}\nSKU: {1}\nStore: {2}\nNo longer in stock as of: {3}\n\nWe'll notify you when it becomes available again.",
+  "Email.Error.Subject": "UnifiWatch Error Notification",
+  "Email.Error.Body": "An error occurred in UnifiWatch stock monitoring:\n\n{0}\n\nTime: {1}\n\nPlease check your configuration and try again.",
+  "Sms.ProductInStock.Subject": "✓ {0} In Stock",
+  "Sms.ProductInStock.Body": "[IN STOCK] Good news! {0} ({1}) at {2}. Price: {3}. Check now!",
+  "Sms.ProductOutOfStock.Subject": "✗ {0} Out of Stock",
+  "Sms.ProductOutOfStock.Body": "{0} ({1}) at {2} is out of stock. We'll notify you when available.",
+  "Sms.Error.Subject": "UnifiWatch Alert",
+  "Sms.Error.Body": "Error: {0}"
 }

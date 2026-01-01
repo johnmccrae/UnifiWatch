@@ -1,0 +1,1061 @@
+Build started 12/26/2025 11:00:56 AM.
+     1>Project "C:\localrepo\UnifiWatch\UnifiWatch.sln" on node 1 (VSTest target(s)).
+     1>ValidateSolutionConfiguration:
+         Building solution configuration "Debug|Any CPU".
+Test run for C:\localrepo\UnifiWatch\UnifiWatch.Tests\bin\Debug\net9.0\UnifiWatch.Tests.dll (.NETCoreApp,Version=v9.0)
+VSTest version 17.13.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 9.0.4)
+[xUnit.net 00:00:00.05]   Discovering: UnifiWatch.Tests
+[xUnit.net 00:00:00.08]   Discovered:  UnifiWatch.Tests
+[xUnit.net 00:00:00.09]   Starting:    UnifiWatch.Tests
+     Warning:
+     The component "Fluent Assertions" is governed by the rules defined in the Xceed License Agreement and
+     the Xceed Fluent Assertions Community License. You may use Fluent Assertions free of charge for
+     non-commercial use only. An active subscription is required to use Fluent Assertions for commercial use.
+     Please contact Xceed Sales mailto:sales@xceed.com to acquire a subscription at a very low cost.
+     A paid commercial license supports the development and continued increasing support of
+     Fluent Assertions users under both commercial and community licenses. Help us
+     keep Fluent Assertions at the forefront of unit testing.
+     For more information, visit https://xceed.com/products/unit-testing/fluent-assertions/
+Monitoring for: Test Product 1
+Checking stock...
+Checking stock... Done, sleeping for 1 seconds
+Stock monitoring cancelled.
+Monitoring for: Test Product 1
+Checking stock...
+Checking stock... Done, sleeping for 1 seconds
+Stock monitoring cancelled.
+Monitoring for: Test Product 1
+Checking stock...
+Checking stock... Done, sleeping for 60 seconds
+Stock monitoring cancelled.
+Monitoring for: TEST-001
+Checking stock...
+Checking stock... Done, sleeping for 1 seconds
+Stock monitoring cancelled.
+Warning: Product SKU 'INVALID-SKU' not found in stock. Ignoring
+Error: No valid products found. Exiting
+Warning: Product Name 'Nonexistent Product' not found in stock. Ignoring
+Error: No valid products found. Exiting
+Warning: Product Name 'Nonexistent Product' not found in stock. Ignoring
+Warning: Product SKU 'INVALID-SKU' not found in stock. Ignoring
+Error: No valid products found. Exiting
+  Passed UnifiWatch.Tests.StockWatcherTests.WaitForStockAsync_WithLegacyService_ShouldUseLegacyService [102 ms]
+  Passed UnifiWatch.Tests.StockWatcherTests.WaitForStockAsync_WithValidProductNames_ShouldMonitorAndNotify [117 ms]
+  Passed UnifiWatch.Tests.StockWatcherTests.WaitForStockAsync_WithCancellation_ShouldHandleCancellationGracefully [2 ms]
+  Passed UnifiWatch.Tests.StockWatcherTests.WaitForStockAsync_WithValidProductSKUs_ShouldMonitorAndNotify [55 ms]
+  Passed UnifiWatch.Tests.StockWatcherTests.WaitForStockAsync_WithInvalidProductSKU_ShouldWarnAndContinue [1 ms]
+  Passed UnifiWatch.Tests.StockWatcherTests.WaitForStockAsync_WithInvalidProductName_ShouldWarnAndContinue [1 ms]
+  Passed UnifiWatch.Tests.StockWatcherTests.WaitForStockAsync_WithNoValidProducts_ShouldExitEarly [1 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.ExistsAsync_WithNonExistentKey_ShouldReturnFalse [74 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.ListAsync_AfterMultipleStores_ShouldReturnAllKeys [179 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.DeleteAsync_WithNonExistentKey_ShouldReturnTrue [23 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.ExistsAsync_AfterStore_ShouldReturnTrue [65 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.CredentialProviderFactory_CreateProvider_WithEncryptedFile_ShouldSucceed [6 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.CredentialProviderFactory_CreateProvider_WithInvalidMethod_ShouldThrow [3 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.CredentialProviderFactory_CreateProvider_WithEnvironmentVariables_ShouldSucceed [< 1 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.StoreAsync_WithSpecialCharacters_ShouldSucceed [65 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.StoreAsync_ThenRetrieveAsync_ShouldReturnSameValue [68 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.StoreAsync_UpdateExistingKey_ShouldOverwrite [113 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.StoreAsync_WithEmptySecret_ShouldFail [< 1 ms]
+[xUnit.net 00:00:01.30]     UnifiWatch.Tests.EmailNotificationServiceTests.SendProductInStockNotificationAsync_WithValidProduct_ShouldSendEmail [FAIL]
+[xUnit.net 00:00:01.30]       Moq.MockException : 
+[xUnit.net 00:00:01.30]       Expected invocation on the mock once, but was 0 times: x => x.SendAsync("test@example.com", It.IsAny<string>(), It.IsAny<string>(), null, It.IsAny<CancellationToken>())
+[xUnit.net 00:00:01.30]       
+[xUnit.net 00:00:01.30]       Performed invocations:
+[xUnit.net 00:00:01.30]       
+[xUnit.net 00:00:01.30]          Mock<IEmailProvider:1> (x):
+[xUnit.net 00:00:01.30]       
+[xUnit.net 00:00:01.30]             IEmailProvider.SendAsync("USA", "Γ£ô Product In Stock", "Great news! Product: Test Product", null, CancellationToken)
+[xUnit.net 00:00:01.30]       
+[xUnit.net 00:00:01.30]       Stack Trace:
+[xUnit.net 00:00:01.31]         /_/src/Moq/Mock.cs(332,0): at Moq.Mock.Verify(Mock mock, LambdaExpression expression, Times times, String failMessage)
+[xUnit.net 00:00:01.31]         /_/src/Moq/Mock`1.cs(840,0): at Moq.Mock`1.Verify[TResult](Expression`1 expression, Func`1 times)
+[xUnit.net 00:00:01.31]         C:\localrepo\UnifiWatch\UnifiWatch.Tests\EmailNotificationServiceTests.cs(58,0): at UnifiWatch.Tests.EmailNotificationServiceTests.SendProductInStockNotificationAsync_WithValidProduct_ShouldSendEmail()
+[xUnit.net 00:00:01.31]         --- End of stack trace from previous location ---
+  Passed UnifiWatch.Tests.CredentialProviderTests.CredentialProviderFactory_CreateProvider_WithAutoStorage_ShouldSelectDefault [< 1 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.StoreAsync_WithValidKeyAndSecret_ShouldSucceed [38 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.StoreAsync_WithLargeSecret_ShouldSucceed [73 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.RetrieveAsync_WithNonExistentKey_ShouldReturnNull [20 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.StoreAsync_WithEmptyKey_ShouldFail [< 1 ms]
+  Passed UnifiWatch.Tests.CredentialProviderTests.DeleteAsync_AfterStore_ShouldSucceed [118 ms]
+  Failed UnifiWatch.Tests.EmailNotificationServiceTests.SendProductInStockNotificationAsync_WithValidProduct_ShouldSendEmail [14 ms]
+  Error Message:
+   Moq.MockException : 
+Expected invocation on the mock once, but was 0 times: x => x.SendAsync("test@example.com", It.IsAny<string>(), It.IsAny<string>(), null, It.IsAny<CancellationToken>())
+
+Performed invocations:
+
+   Mock<IEmailProvider:1> (x):
+
+      IEmailProvider.SendAsync("USA", "Γ£ô Product In Stock", "Great news! Product: Test Product", null, CancellationToken)
+
+  Stack Trace:
+     at Moq.Mock.Verify(Mock mock, LambdaExpression expression, Times times, String failMessage) in /_/src/Moq/Mock.cs:line 332
+   at Moq.Mock`1.Verify[TResult](Expression`1 expression, Func`1 times) in /_/src/Moq/Mock`1.cs:line 840
+   at UnifiWatch.Tests.EmailNotificationServiceTests.SendProductInStockNotificationAsync_WithValidProduct_ShouldSendEmail() in C:\localrepo\UnifiWatch\UnifiWatch.Tests\EmailNotificationServiceTests.cs:line 58
+--- End of stack trace from previous location ---
+  Passed UnifiWatch.Tests.EmailNotificationServiceTests.SendProductInStockNotificationAsync_WhenEmailProviderFails_ShouldReturnFalse [1 ms]
+  Passed UnifiWatch.Tests.EmailNotificationServiceTests.SendErrorNotificationAsync_WithErrorMessage_ShouldSendEmail [1 ms]
+[xUnit.net 00:00:01.34]     UnifiWatch.Tests.ProgramTests.Main_WithProductNamesFilter_ShouldSucceed [SKIP]
+[xUnit.net 00:00:01.34]       Integration test - requires real HTTP service
+  Passed UnifiWatch.Tests.EmailNotificationServiceTests.SendProductInStockNotificationAsync_WithVariousCultures_ShouldSendLocalizedEmail(cultureName: "fr-FR") [3 ms]
+  Passed UnifiWatch.Tests.EmailNotificationServiceTests.SendProductInStockNotificationAsync_WithVariousCultures_ShouldSendLocalizedEmail(cultureName: "de-DE") [2 ms]
+  Passed UnifiWatch.Tests.EmailNotificationServiceTests.SendProductInStockNotificationAsync_WithVariousCultures_ShouldSendLocalizedEmail(cultureName: "es-ES") [2 ms]
+  Passed UnifiWatch.Tests.EmailNotificationServiceTests.SendProductInStockNotificationAsync_WithVariousCultures_ShouldSendLocalizedEmail(cultureName: "it-IT") [2 ms]
+  Passed UnifiWatch.Tests.EmailNotificationServiceTests.SendProductInStockNotificationAsync_WithVariousCultures_ShouldSendLocalizedEmail(cultureName: "fr-CA") [2 ms]
+  Passed UnifiWatch.Tests.EmailNotificationServiceTests.SendProductInStockNotificationAsync_WithNullCulture_ShouldUseCurrentCulture [< 1 ms]
+  Passed UnifiWatch.Tests.EmailNotificationServiceTests.SendProductOutOfStockNotificationAsync_WithValidProduct_ShouldSendEmail [2 ms]
+  Passed UnifiWatch.Tests.EmailNotificationServiceTests.SendBatchNotificationAsync_WithMultipleRecipients_ShouldSendToAll [8 ms]
+  Skipped UnifiWatch.Tests.ProgramTests.Main_WithProductNamesFilter_ShouldSucceed [1 ms]
+warn: UnifiWatch.Configuration.ConfigurationProvider[0]
+      Configuration file not found at C:\Users\JohnMcCrae\AppData\Roaming\UnifiWatch\config.json
+Error: You must specify either --store or --legacy-api-store
+warn: UnifiWatch.Configuration.ConfigurationProvider[0]
+      Configuration file not found at C:\Users\JohnMcCrae\AppData\Roaming\UnifiWatch\config.json
+Error: Cannot specify both --store and --legacy-api-store
+warn: UnifiWatch.Configuration.ConfigurationProvider[0]
+      Configuration file not found at C:\Users\JohnMcCrae\AppData\Roaming\UnifiWatch\config.json
+Error: You must specify either --stock or --wait
+warn: UnifiWatch.Configuration.ConfigurationProvider[0]
+      Configuration file not found at C:\Users\JohnMcCrae\AppData\Roaming\UnifiWatch\config.json
+Getting Unifi products from USA store...
+Retrieved 501 products
+Found 0 products:
+Name                                               Available    Category                       SKU                       Price
+-----------------------------------------------------------------------------------------------------------------------------
+[xUnit.net 00:00:02.07]     UnifiWatch.Tests.ProgramTests.Main_WithNoSoundOption_ShouldSucceed [SKIP]
+[xUnit.net 00:00:02.07]       Integration test - requires real HTTP service
+warn: UnifiWatch.Configuration.ConfigurationProvider[0]
+      Configuration file not found at C:\Users\JohnMcCrae\AppData\Roaming\UnifiWatch\config.json
+Error: Store 'InvalidStore' is not supported. Valid stores: Brazil, India, Japan, Taiwan, Singapore, Mexico, China
+[xUnit.net 00:00:02.07]     UnifiWatch.Tests.ProgramTests.Main_WithCustomCheckInterval_ShouldSucceed [SKIP]
+[xUnit.net 00:00:02.08]       Integration test - requires real HTTP service
+warn: UnifiWatch.Configuration.ConfigurationProvider[0]
+      Configuration file not found at C:\Users\JohnMcCrae\AppData\Roaming\UnifiWatch\config.json
+Error: Store 'InvalidStore' is not supported. Valid stores: Europe, USA, UK
+[xUnit.net 00:00:02.08]     UnifiWatch.Tests.ProgramTests.Main_WithNoWebsiteOption_ShouldSucceed [SKIP]
+[xUnit.net 00:00:02.08]       Integration test - requires real HTTP service
+  Passed UnifiWatch.Tests.ProgramTests.Main_WithNoStoreSpecified_ShouldReturnError [56 ms]
+  Passed UnifiWatch.Tests.ProgramTests.Main_WithBothStoreAndLegacyStore_ShouldReturnError [4 ms]
+  Passed UnifiWatch.Tests.ProgramTests.Main_WithNoArguments_ShouldReturnError [1 ms]
+  Passed UnifiWatch.Tests.ProgramTests.Main_WithCollectionsFilter_ShouldSucceed [669 ms]
+  Skipped UnifiWatch.Tests.ProgramTests.Main_WithNoSoundOption_ShouldSucceed [1 ms]
+  Passed UnifiWatch.Tests.ProgramTests.Main_WithInvalidLegacyStore_ShouldReturnError [4 ms]
+  Skipped UnifiWatch.Tests.ProgramTests.Main_WithCustomCheckInterval_ShouldSucceed [1 ms]
+  Passed UnifiWatch.Tests.ProgramTests.Main_WithInvalidStore_ShouldReturnError [1 ms]
+  Skipped UnifiWatch.Tests.ProgramTests.Main_WithNoWebsiteOption_ShouldSucceed [1 ms]
+warn: UnifiWatch.Configuration.ConfigurationProvider[0]
+      Configuration file not found at C:\Users\JohnMcCrae\AppData\Roaming\UnifiWatch\config.json
+Error: Cannot specify both --stock and --wait
+warn: UnifiWatch.Configuration.ConfigurationProvider[0]
+      Configuration file not found at C:\Users\JohnMcCrae\AppData\Roaming\UnifiWatch\config.json
+Found 0 products:
+Name                                               Available    Category                       SKU                       Price
+-----------------------------------------------------------------------------------------------------------------------------
+[xUnit.net 00:00:02.08]     UnifiWatch.Tests.ProgramTests.Main_WithProductSKUsFilter_ShouldSucceed [SKIP]
+[xUnit.net 00:00:02.08]       Integration test - requires real HTTP service
+[xUnit.net 00:00:02.08]     UnifiWatch.Tests.ProgramTests.Main_WithWaitAndStore_ShouldSucceed [SKIP]
+[xUnit.net 00:00:02.08]       Integration test - requires real HTTP service
+warn: UnifiWatch.Configuration.ConfigurationProvider[0]
+      Configuration file not found at C:\Users\JohnMcCrae\AppData\Roaming\UnifiWatch\config.json
+Getting Unifi products from USA store...
+Retrieved 501 products
+Found 793 products:
+Name                                               Available    Category                       SKU                       Price
+-----------------------------------------------------------------------------------------------------------------------------
+Optical Data Transport for Outdoor PoE Devices     ? Out of Stock PoEPower                       F-POE-G2                  29.00
+Fixed Rack Shelf (Cantilever)                      ? Out of Stock Unknown                        UACC-Rack-Shelf-CLV       49.00
+Camera G4 Bullet                                   ? Out of Stock Unknown                        UVC-G4-BULLET             99.00
+AI Theta Pro Long-Distance Lens                    ? Out of Stock Unknown                        UVC-AI-Theta-ProLens50     129.00
+G5 PTZ In-Ceiling Mount                            ? Out of Stock Unknown                        UACC-G5-PTZ-ICM-SB-B      49.00
+G5 PTZ In-Ceiling Mount                            ? Out of Stock Unknown                        UACC-G5-PTZ-ICM           39.00
+100G LR4 Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-QSFP28-LR4       299.00
+WiFi Smart Chime                                   ? Out of Stock Unknown                        UP-Chime-US               59.00
+UniFi Indoor Cable Cat6 CMR                        ? Out of Stock Unknown                        U-Cable-C6-CMR           179.00
+G4 Doorbell Power Supply                           ? Out of Stock PoEPower                       UVC-G4-Doorbell-PS-US      29.00
+Basic Capacity 3.5" HDD, 4 TB                      ? Out of Stock Unknown                        UACC-HDD-S-4TB            99.00
+Switch Ultra 210W                                  ? Out of Stock Unknown                        USW-Ultra-210W           199.00
+Mobile Router Industrial                           ? Out of Stock Unknown                        UMR-Industrial-US        199.00
+Access G3 Reader Pro                               ? Out of Stock CameraSecurityDoorAccessRea... UA-G3-Pro-B              379.00
+Access G3 Reader Pro                               ? Out of Stock CameraSecurityDoorAccessRea... UA-G3-Pro-W              379.00
+SuperLink                                          ? Out of Stock Unknown                        USL-Gateway-US           129.00
+Access Point AC Mesh Pro                           ? Out of Stock Unknown                        UAP-AC-M-PRO-US          199.00
+Access Point AC Mesh Pro                           ? Out of Stock Unknown                        UAP-AC-M-PRO-5-US        945.00
+Switch Pro Max 16                                  ? Out of Stock Unknown                        USW-Pro-Max-16           279.00
+Switch Pro Max 16 PoE                              ? Out of Stock Unknown                        USW-Pro-Max-16-PoE       399.00
+Camera AI Multi Sensor 4                           ? Out of Stock Unknown                        UVC-AI-MS-4-B              0.00
+Camera AI Multi Sensor 4                           ? Out of Stock Unknown                        UVC-AI-MS-4-W              0.00
+Pro Bullet Enhancer                                ? Out of Stock Unknown                        UACC-Pro-Bullet-Enhancer-B     179.00
+Pro Bullet Enhancer                                ? Out of Stock Unknown                        UACC-Pro-Bullet-Enhancer-W     179.00
+AmpliFi Alien Router and MeshPoint                 ? Out of Stock AmpliFiAlien                   AFi-ALN-US               299.00
+Ethernet Surge Protection Outdoor (20kA)           ? Out of Stock Unknown                        UACC-ETH-SP-Pro           19.00
+Device Bridge IoT                                  ? Out of Stock Unknown                        UDB-IoT-US                49.00
+Hot-Swappable Power Module (550W)                  ? Out of Stock Unknown                        UACC-PSU-12V-550W        159.00
+AI Theta Pro 360 Lens                              ? Out of Stock Unknown                        UVC-AI-Theta-ProLens360     129.00
+Switch Pro Max 48                                  ? Out of Stock Unknown                        USW-Pro-Max-48           649.00
+G4 Doorbell Pro                                    ? Out of Stock Unknown                        UVC-G4 Doorbell Pro-US     299.00
+G4 Doorbell Pro                                    ? Out of Stock Unknown                        UVC-G4 Doorbell Pro-White-US     299.00
+UPS PoE Switch Mission Critical                    ? Out of Stock Unknown                        USW-Mission-Critical-US     999.00
+EV Station Pro                                     ? Out of Stock NewIntegrationsEVCharging      UC-EV-Station-Pro-US    1199.00
+CloudKey                                           ? Out of Stock HostingAndGatewaysSmallScal... UCK-G2                   149.00
+OS2 MPO-12 APC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-SA-MPMP-0.5M      66.00
+OS2 MPO-12 APC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-SA-MPMP-1M       67.00
+OS2 MPO-12 APC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-SA-MPMP-3M       69.00
+OS2 MPO-12 APC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-SA-MPMP-5M       72.00
+OS2 MPO-12 APC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-SA-MPMP-10M      79.00
+OS2 MPO-12 APC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-SA-MPMP-0.5M-10     589.00
+OS2 MPO-12 APC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-SA-MPMP-1M-10     599.00
+OS2 MPO-12 APC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-SA-MPMP-3M-10     609.00
+Full Depth Rack Shelf                              ? Out of Stock Unknown                        UACC-Rack-Shelf-FD        49.00
+Connect Display Arm Mount                          ? Out of Stock Unknown                        UACC-Display-AM          299.00
+AI Pro Enhancer                                    ? Out of Stock Unknown                        UACC-AI-Pro-Enhancer     179.00
+AI Pro Enhancer                                    ? Out of Stock Unknown                        UACC-AI-Pro-Enhancer-W     179.00
+Switch Pro XG 8 PoE                                ? Out of Stock Unknown                        USW-Pro-XG-8-PoE         499.00
+Toolless Mini Rack                                 ? Out of Stock Unknown                        U-Rack-6U-TL             299.00
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-1M-W       8.99
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-2M-W      10.00
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-3M-W      12.00
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-5M-W      15.00
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-8M-W      20.00
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-12M-W      30.00
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-15M-W      35.00
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-1M-BK       8.99
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-2M-BK      10.00
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-3M-BK      12.00
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-5M-BK      15.00
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-8M-BK      20.00
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-12M-BK      30.00
+UniFi Premium Patch Cable Outdoor                  ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-C6A-15M-BK      35.00
+Compact Flagship AP Retrofit Mount                 ? Out of Stock AccessPointMounting            nanoHD-RetroFit-3         29.00
+G6/G5 PTZ Conduit Adapter                          ? Out of Stock Unknown                        UACC-G5-PTZ-CA-B          29.00
+G6/G5 PTZ Conduit Adapter                          ? Out of Stock Unknown                        UACC-G5-PTZ-CA            29.00
+Switch 48 PoE                                      ? Out of Stock Unknown                        USW-48-POE               589.00
+AI Theta Angle Mount                               ? Out of Stock Unknown                        UACC-AI-Theta-Angle Mount-Camera      29.00
+Flex Pendant Mount                                 ? Out of Stock DeviceMounting                 UVC-G3-F-PENDANT          10.00
+Flex Pendant Mount                                 ? Out of Stock DeviceMounting                 UVC-G3-F-PENDANT-3        25.00
+Access Point U7 Pro XGS                            ? Out of Stock Unknown                        U7-Pro-XGS-B-US          299.00
+Access Point U7 Pro XGS                            ? Out of Stock Unknown                        U7-Pro-XGS-US            299.00
+Camera G6 Instant                                  ? Out of Stock Unknown                        UVC-G6-INS-W-US          179.00
+Access Intercom Surface Angle Mount                ? Out of Stock Unknown                        UACC-Intercom-SAM         49.00
+UniFi UPS 2U                                       ? Out of Stock Unknown                        UPS-2U-US                279.00
+Siren PoE                                          ? Out of Stock Unknown                        UP-Siren-PoE             109.00
+OM4 MPO-12 UPC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-MA-MPMP-0.5M      45.00
+OM4 MPO-12 UPC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-MA-MPMP-1M       49.00
+OM4 MPO-12 UPC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-MA-MPMP-3M       59.00
+OM4 MPO-12 UPC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-MA-MPMP-5M       69.00
+OM4 MPO-12 UPC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-MA-MPMP-10M     109.00
+OM4 MPO-12 UPC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-MA-MPMP-15M     149.00
+OM4 MPO-12 UPC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-MA-MPMP-30M     199.00
+OM4 MPO-12 UPC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-MA-MPMP-60M     299.00
+OM4 MPO-12 UPC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-MA-MPMP-100M     499.00
+OM4 MPO-12 UPC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-MA-MPMP-0.5M-10     399.00
+OM4 MPO-12 UPC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-MA-MPMP-1M-10     409.00
+OM4 MPO-12 UPC Fiber Patch Cable                   ? Out of Stock Unknown                        UACC-OFC-MA-MPMP-3M-10     569.00
+Switch Pro 48                                      ? Out of Stock Unknown                        USW-Pro-48               599.00
+Switch Pro HD 24 PoE                               ? Out of Stock Unknown                        USW-Pro-HD-24-PoE        999.00
+Keystone Blank Insert Pass-Through, 12-Pack        ? Out of Stock Unknown                        UACC-Keystone-Blank-Insert-TH      19.00
+Camera AI PTZ Precision                            ? Out of Stock CameraSecurityPTZ              UVC-AI-PTZ-Precision-B    1999.00
+Camera AI PTZ Precision                            ? Out of Stock CameraSecurityPTZ              UVC-AI-PTZ-Precision-W    1999.00
+Official UniFi Hosting                             ? Out of Stock HostingAndGatewaysCloud        Official UniFi Hosting      29.00
+Flex Utility Pro                                   ? Out of Stock Unknown                        UACC-Flex-Utility-Pro      59.00
+Dream Machine Special Edition                      ? Out of Stock DreamMachine                   UDM-SE                   499.00
+Vertical Rack Cable Management                     ? Out of Stock Unknown                        UACC-Rack-42U-VCM         59.00
+Camera G5 Dome                                     ? Out of Stock Unknown                        UVC-G5-Dome              179.00
+Camera G5 Dome                                     ? Out of Stock Unknown                        UVC-G5-Dome-3            529.00
+UniFi 10G PoE++ Adapter (60W)                      ? Out of Stock Unknown                        UACC-PoE++-10G            39.00
+Switch Aggregation                                 ? Out of Stock SwitchingEnterpriseAggregat... USW-Aggregation          269.00
+Camera G3 Instant                                  ? Out of Stock Unknown                        UVC-G3-INS-US             79.00
+Switch Flex 2.5G                                   ? Out of Stock Unknown                        USW-Flex-2.5G-8          159.00
+Camera AI Dome                                     ? Out of Stock Unknown                        UVC-AI-Dome-B            399.00
+Camera AI Dome                                     ? Out of Stock Unknown                        UVC-AI-Dome-W            399.00
+AI Theta Pro Flush Mount                           ? Out of Stock Unknown                        UACC-AI-Theta-Pro-PFM-Camera      29.00
+UniFi 5G Max                                       ? Out of Stock Unknown                        U5G-Max                  399.00
+25G Direct Attach Cable                            ? Out of Stock Unknown                        UACC-DAC-SFP28-0.5M       23.00
+25G Direct Attach Cable                            ? Out of Stock Unknown                        UACC-DAC-SFP28-1M         25.00
+25G Direct Attach Cable                            ? Out of Stock Unknown                        UACC-DAC-SFP28-3M         39.00
+10 Gbps OM3 Duplex LC Cable                        ? Out of Stock CableSFP                       UACC-OFC-MM-0.5M           5.00
+10 Gbps OM3 Duplex LC Cable                        ? Out of Stock CableSFP                       UACC-OFC-MM-1M             6.00
+10 Gbps OM3 Duplex LC Cable                        ? Out of Stock CableSFP                       UACC-OFC-MM-2M             7.00
+10 Gbps OM3 Duplex LC Cable                        ? Out of Stock CableSFP                       UACC-OFC-MM-3M             8.00
+10 Gbps OM3 Duplex LC Cable                        ? Out of Stock CableSFP                       UOC-5                      9.00
+Switch 48 (750W)                                   ? Out of Stock SwitchingStandardPoE           US-48-750W              1025.00
+UNAS Pro 4                                         ? Out of Stock Unknown                        UNAS-Pro-4               499.00
+PoE to USB-C Adapter                               ? Out of Stock PoEPower                       UACC-Adapter-PoE-USBC      49.00
+Connect Display VESA Mount Adapter                 ? Out of Stock Unknown                        UACC-Display-VA           99.00
+Enterprise NVR Bezel                               ? Out of Stock Unknown                        UACC-ENVR-Bezel          299.00
+Floating Mount                                     ? Out of Stock Unknown                        UACC-Switch-FM            15.00
+Gang Box Mounting Plate                            ? Out of Stock Unknown                        UACC-GB-Plate-B           39.00
+Gang Box Mounting Plate                            ? Out of Stock Unknown                        UACC-GB-Plate-W           39.00
+G4 Doorbell Pro PoE Kit                            ? Out of Stock Unknown                        UVC-G4 Doorbell Pro PoE Kit     379.00
+G4 Doorbell Pro PoE Kit                            ? Out of Stock Unknown                        UVC-G4 Doorbell Pro PoE Kit-White     379.00
+Access G3 Reader Flex                              ? Out of Stock CameraSecurityDoorAccessRea... UA-G3-Flex-B             199.00
+Access G3 Reader Flex                              ? Out of Stock CameraSecurityDoorAccessRea... UA-G3-Flex-W             199.00
+Switch Pro 24                                      ? Out of Stock SwitchingProEthernet           USW-Pro-24               399.00
+Enterprise Access Hub                              ? Out of Stock CameraSecurityDoorAccessHub    EAH-8                    999.00
+Rack Mount OCD Panels                              ? Out of Stock Unknown                        UACC-Rack-Panel-Blank-1U      19.00
+Rack Mount OCD Panels                              ? Out of Stock Unknown                        UACC-Rack-Panel-Blank-2U      29.00
+Rack Mount OCD Panels                              ? Out of Stock Unknown                        UACC-Rack-Panel-Vented-1U      29.00
+Rack Mount OCD Panels                              ? Out of Stock Unknown                        UACC-Rack-Panel-Vented-2U      39.00
+Rack Mount OCD Panels                              ? Out of Stock Unknown                        UACC-Rack-Panel-Brush-1U      39.00
+Access Point U6 Extender                           ? Out of Stock Unknown                        U6-Extender-US           149.00
+Access Point U7 Lite                               ? Out of Stock Unknown                        U7-Lite-US                99.00
+Access Point AC Mesh                               ? Out of Stock Unknown                        UAP-AC-M-US               99.00
+Access Point AC Mesh                               ? Out of Stock Unknown                        UAP-AC-M-5-US            470.00
+Access Point U6 Lite                               ? Out of Stock Unknown                        U6-Lite-US                99.00
+Switch Pro XG 10 PoE                               ? Out of Stock Unknown                        USW-Pro-XG-10-PoE        699.00
+Camera G6 Pro Turret                               ? Out of Stock Unknown                        UVC-G6-Pro-Turret-B      479.00
+Camera G6 Pro Turret                               ? Out of Stock Unknown                        UVC-G6-Pro-Turret-W      479.00
+UniFi WAN Switch                                   ? Out of Stock Unknown                        USW-WAN                  249.00
+Hot-Swappable Power Module (600W)                  ? Out of Stock Unknown                        UACC-PSU-54V-600W        159.00
+Access Point AC Pro                                ? Out of Stock Unknown                        UAP-AC-PRO-US            149.00
+Access Point AC Pro                                ? Out of Stock Unknown                        UAP-AC-PRO-5-US          699.00
+Motion Sensor                                      ? Out of Stock Unknown                        USL-Motion-US              0.00
+Access Point U7 Pro Outdoor                        ? Out of Stock Unknown                        U7-Pro-Outdoor-US        279.00
+Access G3 Intercom                                 ? Out of Stock Unknown                        UA-G3-Intercom           479.00
+G5 PTZ Surface Mount                               ? Out of Stock Unknown                        UACC-G5-PTZ-SM-B          29.00
+G5 PTZ Surface Mount                               ? Out of Stock Unknown                        UACC-G5-PTZ-SM            29.00
+Connect Display Table Stand                        ? Out of Stock Unknown                        UACC-Display21-TS        149.00
+Connect Display                                    ? Out of Stock Unknown                        UC-Display               699.00
+UniFi 5G Max Outdoor                               ? Out of Stock Unknown                        U5G-Max-Outdoor          399.00
+42U Rack Cabinet, 1,000 mm, Perforated Door        ? Out of Stock Unknown                        UACC-Rack-42U-1000-P    1199.00
+Network Video Recorder Instant                     ? Out of Stock Unknown                        UNVR-Instant-US          199.00
+UniFi Indoor Cable Cat6 CMP                        ? Out of Stock Unknown                        U-Cable-C6-CMP           299.00
+Gateway Lite                                       ? Out of Stock Unknown                        UXG-Lite                 129.00
+Flex Pro Mount                                     ? Out of Stock Unknown                        UACC-Flex-Cam-PWM-Black      12.00
+Flex Pro Mount                                     ? Out of Stock Unknown                        UACC-Flex-Cam-PWM-Black-3      35.00
+Flex Pro Mount                                     ? Out of Stock Unknown                        UACC-Flex-Cam-PWM-White      12.00
+Flex Pro Mount                                     ? Out of Stock Unknown                        UACC-Flex-Cam-PWM-White-3      35.00
+10 Gbps Direct Attach Copper Cable                 ? Out of Stock AccessoriesCabling             UDC-1                     20.00
+10 Gbps Direct Attach Copper Cable                 ? Out of Stock AccessoriesCabling             UDC-2                     25.00
+10 Gbps Direct Attach Copper Cable                 ? Out of Stock AccessoriesCabling             UDC-3                     30.00
+Camera G6 Dome                                     ? Out of Stock Unknown                        UVC-G6-Dome-B            279.00
+Camera G6 Dome                                     ? Out of Stock Unknown                        UVC-G6-Dome-W            279.00
+Switch Pro XG Aggregation                          ? Out of Stock SwitchingEnterpriseAggregat... USW-Pro-XG-Aggregation    2499.00
+UniFi PoE Adapter (15W)                            ? Out of Stock Unknown                        U-PoE                      8.00
+AmpliFi Alien Router                               ? Out of Stock AmpliFiAlien                   AFi-ALN-R-US             179.00
+Access Point AC Lite                               ? Out of Stock Unknown                        UAP-AC-LITE-US            89.00
+Access Point AC Lite                               ? Out of Stock Unknown                        UAP-AC-LITE-5-US         399.00
+Ethernet Surge Protection (Single-Port)            ? Out of Stock Unknown                        UACC-ETH-SP-DIN           29.00
+Switch 8 PoE (60W)                                 ? Out of Stock Unknown                        US-8-60W                 109.00
+Access Point FlexHD                                ? Out of Stock Unknown                        UAP-FlexHD-US            179.00
+Camera AI DSLR                                     ? Out of Stock Unknown                        UVC-AI-DSLR             1499.00
+Camera AI DSLR                                     ? Out of Stock Unknown                        UVC-AI-DSLR-LD          1499.00
+G5 Dome Ultra Flush Mount                          ? Out of Stock Unknown                        UACC-G5-Dome-Ultra-FM-SB-B      39.00
+G5 Dome Ultra Flush Mount                          ? Out of Stock Unknown                        UACC-G5-Dome-Ultra-FM-SB-W      39.00
+Access Point U6 Mesh Pro                           ? Out of Stock Unknown                        U6-Mesh-Pro-US           199.00
+Access Point U7 Pro Max                            ? Out of Stock Unknown                        U7-Pro-Max-US            279.00
+RJ45 Dust Cover, 24-Pack                           ? Out of Stock Unknown                        UACC-RJ45-Cover           19.00
+Switch Hi-Capacity Aggregation                     ? Out of Stock SwitchingEnterpriseAggregat... USW-Pro-Aggregation      899.00
+Camera G4 Instant Cover                            ? Out of Stock CameraSkins                    UACC-G4-INS-Cover-Dark Grey      11.00
+Camera G4 Instant Cover                            ? Out of Stock CameraSkins                    UACC-G4-INS-Cover-Grey      11.00
+Camera G4 Instant Cover                            ? Out of Stock CameraSkins                    UACC-G4-INS-Cover-Light Grey      11.00
+PoE Over 2-Wire Retrofit Extender                  ? Out of Stock Unknown                        UACC-Retrofit-PoE-2Wire      99.00
+G4 Doorbell Pro PoE Gang Box Mount                 ? Out of Stock Unknown                        UACC-G4 Doorbell Pro PoE-Gang Box      39.00
+G4 Doorbell Pro PoE Gang Box Mount                 ? Out of Stock Unknown                        UACC-G4 Doorbell Pro PoE-Gang Box-White      39.00
+Access Point XG                                    ? Out of Stock WiFiFlagshipCompact            UAP-XG-US                799.00
+Switch Pro 8 PoE                                   ? Out of Stock Unknown                        USW-Pro-8-PoE            349.00
+Camera G5 Pro                                      ? Out of Stock Unknown                        UVC-G5-Pro               199.00
+Access G2 Reader Pro                               ? Out of Stock CameraSecurityDoorAccessRea... UA-G2-Pro-Black          359.00
+Access G2 Reader Pro                               ? Out of Stock CameraSecurityDoorAccessRea... UA-G2-Pro                359.00
+5G Ethernet Adapter                                ? Out of Stock Unknown                        UACC-Adapter-RJ45-USBC-5GE      49.00
+U7 Pro XG Wall Table Stand                         ? Out of Stock Unknown                        UACC-U7-Pro-XG-Wall-TS      39.00
+Camera AI Pro                                      ? Out of Stock Unknown                        UVC-AI-Pro               499.00
+Camera AI Pro                                      ? Out of Stock Unknown                        UVC-AI-Pro-White         499.00
+Redundant Power                                    ? Out of Stock PowerTechPowerRedundancy       USP-RPS                  399.00
+UI Trucker Hat                                     ? Out of Stock Unknown                        UA-HT23-BLK               20.00
+AI Port Rack Mount                                 ? Out of Stock Unknown                        UACC-AI-Port-RM           69.00
+Access Point U6 Extender/BeaconHD Cover            ? Out of Stock AccessPointSkins               EXTD-cover-Black-3        49.00
+Access Point U6 Extender/BeaconHD Cover            ? Out of Stock AccessPointSkins               EXTD-cover-Concrete-3      49.00
+Access Point U6 Extender/BeaconHD Cover            ? Out of Stock AccessPointSkins               EXTD-cover-Wood-3         49.00
+Mobile Router Ultra                                ? Out of Stock Unknown                        UMR-Ultra-US             129.00
+Display Cast Pro                                   ? Out of Stock Unknown                        UC-Cast-Pro              279.00
+G4 Doorbell Pro Cover                              ? Out of Stock Unknown                        UACC-G4-DB-Pro-Cover-Brick      29.00
+G4 Doorbell Pro Cover                              ? Out of Stock Unknown                        UACC-G4-DB-Pro-Cover-Concrete      29.00
+G4 Doorbell Pro Cover                              ? Out of Stock Unknown                        UACC-G4-DB-Pro-Cover-Silver      29.00
+G4 Doorbell Pro Cover                              ? Out of Stock Unknown                        UACC-G4-DB-Pro-Cover-White      29.00
+G4 Doorbell Pro Cover                              ? Out of Stock Unknown                        UACC-G4-DB-Pro-Cover-Wood      29.00
+Panel Antenna Ultra                                ? Out of Stock Unknown                        UACC-UK-Ultra-Panel-Antenna      39.00
+PoE Smart Chime                                    ? Out of Stock Unknown                        UACC-Chime-PoE            79.00
+Glass Break Sensor                                 ? Out of Stock Unknown                        USL-GlassBreak-US         49.00
+Gateway Enterprise                                 ? Out of Stock Unknown                        UXG-Enterprise          1999.00
+G3 Starter Kit Pro                                 ? Out of Stock CameraSecurityDoorAccessSta... UA-G3-SK-Pro             599.00
+Switch Pro XG 48                                   ? Out of Stock Unknown                        USW-Pro-XG-48           1999.00
+Hot-Swappable Power Module (1,200W)                ? Out of Stock Unknown                        UACC-PSU-54V-1200W       299.00
+PoE Adapter, 24V DC, 12W                           ? Out of Stock Unknown                        UACC-Adapter-PoE-24-12W       8.00
+PoE Adapter, 24V DC, 12W                           ? Out of Stock Unknown                        UACC-Adapter-PoE-24-12W-5      39.00
+PoE Adapter, 24V DC, 12W                           ? Out of Stock Unknown                        UACC-Adapter-PoE-24-12W-20     149.00
+Dream Machine Pro Max                              ? Out of Stock DreamMachine                   UDM-Pro-Max              599.00
+Instant Outdoor PoE Converter                      ? Out of Stock Unknown                        INS-3AF-O-G               21.00
+Gateway Pro                                        ? Out of Stock HostingAndGatewaysLargeScal... UXG-Pro-US               499.00
+SFP to RJ45 Adapter                                ? Out of Stock Unknown                        UACC-CM-RJ45-1G           19.50
+Access Electric Lock                               ? Out of Stock CameraSecurityDoorAccessAcc... UACC-Lock-Strike-Secure-15mm      79.00
+Camera G3 Flex                                     ? Out of Stock Unknown                        UVC-G3-FLEX               79.00
+Camera G3 Flex                                     ? Out of Stock Unknown                        UVC-G3-FLEX-3            225.00
+UI T-Shirt                                         ? Out of Stock Unknown                        UA-T23-BLK-S              20.00
+UI T-Shirt                                         ? Out of Stock Unknown                        UA-T23-BLK-M              20.00
+UI T-Shirt                                         ? Out of Stock Unknown                        UA-T23-BLK-L              20.00
+UI T-Shirt                                         ? Out of Stock Unknown                        UA-T23-BLK-XL             20.00
+UI T-Shirt                                         ? Out of Stock Unknown                        UA-T23-BLK-XXL            20.00
+UI T-Shirt                                         ? Out of Stock Unknown                        UA-T23-BLK-XXXL           20.00
+Uplink Cable                                       ? Out of Stock Unknown                        UACC-Uplink-SFP28-0.15M      29.00
+Uplink Cable                                       ? Out of Stock Unknown                        UACC-Uplink-SFP28-0.3M      39.00
+Uplink Cable                                       ? Out of Stock Unknown                        UACC-Uplink-SFP28-3M      59.00
+Uplink Cable                                       ? Out of Stock Unknown                        UACC-Uplink-SFP28-30M      79.00
+Uplink Cable                                       ? Out of Stock Unknown                        UACC-Uplink-SFP28-0.15M-10     249.00
+Camera G6 Pro 360                                  ? Out of Stock Unknown                        UVC-G6-Pro-360-B         499.00
+Camera G6 Pro 360                                  ? Out of Stock Unknown                        UVC-G6-Pro-360-W         499.00
+Camera G3 Flex Cover                               ? Out of Stock CameraSkins                    UVC-G3F-Cover-Black-3      50.00
+Camera G3 Flex Cover                               ? Out of Stock CameraSkins                    UVC-G3F-cover-Camo-3      50.00
+Camera G3 Flex Cover                               ? Out of Stock CameraSkins                    UVC-G3F-cover-Concrete-3      50.00
+Camera G3 Flex Cover                               ? Out of Stock CameraSkins                    UVC-G3F-cover-Marble-3      50.00
+Camera G3 Flex Cover                               ? Out of Stock CameraSkins                    UVC-G3F-cover-Wood-3      50.00
+Protect All-In-One Sensor                          ? Out of Stock Unknown                        UP-Sense                  59.00
+Protect All-In-One Sensor                          ? Out of Stock Unknown                        UP-Sense-3               169.00
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-RJ45         2.00
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-0.3M-RJ45       2.20
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-1M-RJ45       2.60
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-2M-RJ45       3.40
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-3M-RJ45       4.00
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-5M-RJ45       5.40
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-8M-RJ45       7.40
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-RJ45-50      92.00
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-RJ45-BL       2.00
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-0.3M-RJ45-BL       2.20
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-1M-RJ45-BL       2.60
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-2M-RJ45-BL       3.40
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-3M-RJ45-BL       4.00
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-5M-RJ45-BL       5.40
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-8M-RJ45-BL       7.40
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-RJ45-BL-50      92.00
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-RJ45-BK       2.00
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-0.3M-RJ45-BK       2.20
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-1M-RJ45-BK       2.60
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-2M-RJ45-BK       3.40
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-3M-RJ45-BK       4.00
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-5M-RJ45-BK       5.40
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-8M-RJ45-BK       7.40
+UniFi Patch Cable                                  ? Out of Stock Unknown                        U-Cable-Patch-RJ45-BK-50      92.00
+UniFi 2.5G PoE+ Adapter (30W)                      ? Out of Stock Unknown                        UACC-PoE+-2.5G            19.00
+Camera G4 Instant                                  ? Out of Stock Unknown                        UVC-G4-INS-US             99.00
+Connect Display Flush Mount                        ? Out of Stock Unknown                        UACC-Display-FM          199.00
+Switch 24 PoE                                      ? Out of Stock Unknown                        USW-24-POE               379.00
+UniFi Premium Patch Cable                          ? Out of Stock Unknown                        UACC-Cable-Patch-EL-C6A-0.15M-W       4.99
+UniFi Premium Patch Cable                          ? Out of Stock Unknown                        UACC-Cable-Patch-EL-C6A-0.3M-W       6.00
+UniFi Premium Patch Cable                          ? Out of Stock Unknown                        UACC-Cable-Patch-EL-C6A-1M-W       7.00
+UniFi Premium Patch Cable                          ? Out of Stock Unknown                        UACC-Cable-Patch-EL-C6A-2M-W       8.00
+UniFi Premium Patch Cable                          ? Out of Stock Unknown                        UACC-Cable-Patch-EL-C6A-3M-W      10.00
+UniFi Premium Patch Cable                          ? Out of Stock Unknown                        UACC-Cable-Patch-EL-C6A-5M-W      13.00
+UniFi Premium Patch Cable                          ? Out of Stock Unknown                        UACC-Cable-Patch-EL-C6A-8M-W      18.00
+UniFi Premium Patch Cable                          ? Out of Stock Unknown                        UACC-Cable-Patch-EL-C6A-12M-W      28.00
+UniFi Premium Patch Cable                          ? Out of Stock Unknown                        UACC-Cable-Patch-EL-C6A-15M-W      33.00
+UniFi Premium Patch Cable                          ? Out of Stock Unknown                        UACC-Cable-Patch-EL-C6A-0.15M-W-24      99.00
+Camera Compact Junction Box                        ? Out of Stock Unknown                        UACC-Camera-CJB-B         49.00
+Camera Compact Junction Box                        ? Out of Stock Unknown                        UACC-Camera-CJB-W         49.00
+Enterprise 3.5" HDD, 16 TB                         ? Out of Stock Unknown                        UACC-HDD-E-16TB          349.00
+Camera G5 Bullet                                   ? Out of Stock Unknown                        UVC-G5-Bullet            129.00
+Camera G5 Bullet                                   ? Out of Stock Unknown                        UVC-G5-Bullet-3          359.00
+Cloud Gateway Fiber                                ? Out of Stock Unknown                        UCG-Fiber                279.00
+EV Station Pro Payment Terminal                    ? Out of Stock Unknown                        UACC-EVSP-Card-Reader     349.00
+Switch 24 PoE (250W)                               ? Out of Stock Unknown                        US-24-250W               399.00
+Access Point AC SHD                                ? Out of Stock Unknown                        UAP-AC-SHD-US            549.00
+Access Point AC SHD                                ? Out of Stock Unknown                        UAP-AC-SHD-5-US         2608.00
+G6 180 Camera Pendant Mount                        ? Out of Stock Unknown                        UACC-G6-180-PM-B          29.00
+G6 180 Camera Pendant Mount                        ? Out of Stock Unknown                        UACC-G6-180-PM-W          29.00
+G4 Doorbell Pro AC Adapter                         ? Out of Stock PoEPower                       UACC-Adapter-DBAC-US      30.00
+U7 Pro Wall Paintable Flush Mount                  ? Out of Stock Unknown                        UACC-U7-Pro-Wall-FM       39.00
+4.5M USB-C Cable                                   ? Out of Stock PoEPower                       UACC-G4-INS-Cable-USB-4.5M      19.00
+PoE Audio Port                                     ? Out of Stock Unknown                        UPL-Port-B-US            199.00
+PoE Audio Port                                     ? Out of Stock Unknown                        UPL-Port-W-US            199.00
+Bullet Camera Adjustable Angled Base               ? Out of Stock Unknown                        UACC-Bullet-AB-B          19.00
+Bullet Camera Adjustable Angled Base               ? Out of Stock Unknown                        UACC-Bullet-AB-W          19.00
+UniFi Express                                      ? Out of Stock Unknown                        UX-US                    149.00
+Access Reader Lite                                 ? Out of Stock CameraSecurityDoorAccessRea... UA-Reader Lite            99.00
+Fiber Outdoor Terminal Box                         ? Out of Stock Unknown                        UACC-UF-Terminal-Box      29.00
+Switch Flex Mini 2.5G                              ? Out of Stock Unknown                        USW-Flex-2.5G-5           49.00
+Camera AI 360                                      ? Out of Stock Unknown                        UVC-AI-360               399.00
+Camera AI 360                                      ? Out of Stock Unknown                        UVC-AI-360-W             399.00
+G4 Doorbell Cover                                  ? Out of Stock CameraSkins                    UVC-G4-DB-Cover-Black      15.00
+G4 Doorbell Cover                                  ? Out of Stock CameraSkins                    UVC-G4-DB-Cover-Brick      15.00
+G4 Doorbell Cover                                  ? Out of Stock CameraSkins                    UVC-G4-DB-Cover-Concrete      15.00
+G4 Doorbell Cover                                  ? Out of Stock CameraSkins                    UVC-G4-DB-Cover-Fabric      15.00
+G4 Doorbell Cover                                  ? Out of Stock CameraSkins                    UVC-G4-DB-Cover-Silver      15.00
+G4 Doorbell Cover                                  ? Out of Stock CameraSkins                    UVC-G4-DB-Cover-Wood      15.00
+Switch Pro Max 48 PoE                              ? Out of Stock Unknown                        USW-Pro-Max-48-PoE      1299.00
+Easy Cable, 2-Pack                                 ? Out of Stock Unknown                        UACC-Cable-Extender-C6A      19.00
+Access Reader Pro Junction Box                     ? Out of Stock Unknown                        UACC-Reader-Pro-JB-B      30.00
+Access Reader Pro Junction Box                     ? Out of Stock Unknown                        UACC-Reader-Pro-JB-W      30.00
+Phone G2 Touch Max                                 ? Out of Stock Unknown                        UTP-TouchMax-U           249.00
+Phone G2 Touch Max                                 ? Out of Stock Unknown                        UTP-TouchMax-White-U     249.00
+Rack Ear Kit                                       ? Out of Stock Unknown                        UACC-Rack-Ear-1U           9.00
+Rack Ear Kit                                       ? Out of Stock Unknown                        UACC-Rack-Ear-2U          15.00
+Network Video Recorder Instant Kit                 ? Out of Stock Unknown                        UNVR-Instant-Kit-US      699.00
+Camera G5 Turret Ultra                             ? Out of Stock Unknown                        UVC-G5-Turret-Ultra-B     129.00
+Camera G5 Turret Ultra                             ? Out of Stock Unknown                        UVC-G5-Turret-Ultra      129.00
+Phone G3 Touch Pro                                 ? Out of Stock Unknown                        UTP-G3-Touch-Pro         199.00
+UniFi Travel Router                                ? Out of Stock Unknown                        UTR-US                    79.00
+Network Video Recorder Pro                         ? Out of Stock Unknown                        UNVR-Pro                 499.00
+42U Rack Cabinet                                   ? Out of Stock Unknown                        UACC-Rack-42U           1399.00
+Access Reader Pro Angle Mount                      ? Out of Stock Unknown                        UACC-Reader-Pro-AM-B      30.00
+Access Reader Pro Angle Mount                      ? Out of Stock Unknown                        UACC-Reader-Pro-AM-W      30.00
+Switch 8                                           ? Out of Stock SwitchingUtilityPoE            US-8                      99.00
+AP Arm Mount                                       ? Out of Stock Unknown                        UACC-AP-AM                29.00
+Access Intercom Sunshield                          ? Out of Stock Unknown                        UACC-Intercom-Sunshield      49.00
+Cat6 Keystone Jack, 12-Pack                        ? Out of Stock Unknown                        UACC-Keystone-Jack-C6      29.00
+Switch Pro Max 24 PoE                              ? Out of Stock Unknown                        USW-Pro-Max-24-PoE       799.00
+UniFi Sliding Rack Rails                           ? Out of Stock Unknown                        UACC-Rack-Rails-Slide      79.00
+Dream Router 5G Max                                ? Out of Stock Unknown                        UDR-5G-Max-US            499.00
+Switch Flex Mini                                   ? Out of Stock Unknown                        USW-Flex-Mini             29.00
+Switch Flex Mini                                   ? Out of Stock Unknown                        USW-Flex-Mini-3           85.00
+Switch Flex Mini                                   ? Out of Stock Unknown                        USW-Flex-Mini-5          140.00
+Switch Pro 24 PoE                                  ? Out of Stock Unknown                        USW-Pro-24-POE           699.00
+EV Station Lite                                    ? Out of Stock NewIntegrationsEVCharging      UC-EV-Station-Lite-US     499.00
+AI Theta Video Extension Cable                     ? Out of Stock Unknown                        UACC-AI-Theta-Video-Cable-Ext-5M      99.00
+Camera G6 Bullet                                   ? Out of Stock Unknown                        UVC-G6-Bullet-B          199.00
+Camera G6 Bullet                                   ? Out of Stock Unknown                        UVC-G6-Bullet-W          199.00
+AI Key Rack Mount                                  ? Out of Stock Unknown                        UACC-AI-Key-RM            79.00
+Switch Pro XG 24                                   ? Out of Stock Unknown                        USW-Pro-XG-24           1099.00
+12U Rack Cabinet, 450 mm, Glass Door               ? Out of Stock Unknown                        UACC-Rack-12U-Wall-450-G     279.00
+Access Gate Hub                                    ? Out of Stock CameraSecurityDoorAccessHub    UA-Hub-Gate              279.00
+Dream Router 7                                     ? Out of Stock Unknown                        UDR7-US                  279.00
+CloudKey+ SSD                                      ? Out of Stock Unknown                        UCK-G2-SSD               159.00
+Dream Router                                       ? Out of Stock Unknown                        UDR-US                   199.00
+Door Lock Relay Cable                              ? Out of Stock Unknown                        UACC-Cable-DoorLockRelay-1P     129.00
+Door Lock Relay Cable                              ? Out of Stock Unknown                        UACC-Cable-DoorLockRelay-2P     159.00
+Horizontal Rack Cable Management                   ? Out of Stock Unknown                        UACC-Rack-HCM             29.00
+Toolless Mini Rack Stacking Kit                    ? Out of Stock Unknown                        UACC-Rack-Stacking-Kit      59.00
+Switch Flex XG                                     ? Out of Stock Unknown                        USW-Flex-XG              299.00
+Retrofit PSU 12V                                   ? Out of Stock Unknown                        UACC-Retrofit-PSU-12V      79.00
+Access Point U7 Outdoor                            ? Out of Stock Unknown                        U7-Outdoor-US            199.00
+AI Theta Video Cable                               ? Out of Stock Unknown                        UACC-AI-Theta-Video-Cable-1M      29.00
+Enterprise Fortress Gateway                        ? Out of Stock Unknown                        EFG                     1999.00
+CWDM Mux Demux 4                                   ? Out of Stock Unknown                        UACC-CWDM-4              199.00
+12U Rack Cabinet, 600 mm, Perforated Door          ? Out of Stock Unknown                        UACC-Rack-12U-Wall-600-P     399.00
+Switch Pro HD 24                                   ? Out of Stock Unknown                        USW-Pro-HD-24            599.00
+Access Point Lite Arm Mount                        ? Out of Stock AccessPointMounting            UACC-Lite-AP-AM           20.00
+Access Point E7 Campus                             ? Out of Stock Unknown                        E7-Campus-US             799.00
+Compact Flagship AP Recessed Ceiling Mount         ? Out of Stock AccessPointMounting            nanoHD-RCM-3              49.00
+Floating Mount 16 cm                               ? Out of Stock Unknown                        UACC-FM-16cm              29.00
+Access G2 Reader                                   ? Out of Stock CameraSecurityDoorAccessRea... UA-G2-Black              139.00
+Access G2 Reader                                   ? Out of Stock CameraSecurityDoorAccessRea... UA-G2                    139.00
+G4 Bullet IR Enhancer                              ? Out of Stock CameraEnhancers                UVC-G4-IRExtender         79.00
+G5 Pro Long-Range IR LED & Floodlight              ? Out of Stock Unknown                        UACC-G5-Enhancer          99.00
+G6 Pro 360 Flush Mount                             ? Out of Stock Unknown                        UACC-G6-Pro-360-FM-B      39.00
+G6 Pro 360 Flush Mount                             ? Out of Stock Unknown                        UACC-G6-Pro-360-FM-W      39.00
+Enterprise Network Video Recorder                  ? Out of Stock Unknown                        ENVR                    1999.00
+Camera Dual Mount                                  ? Out of Stock Unknown                        UACC-Camera-DM-B          59.00
+Camera Dual Mount                                  ? Out of Stock Unknown                        UACC-Camera-DM-W          59.00
+24-Port Blank Keystone Patch Panel                 ? Out of Stock Unknown                        UACC-Rack-Panel-Patch-Blank-24      29.00
+Phone G2 Touch                                     ? Out of Stock Unknown                        UTP-Touch-U              149.00
+Phone G2 Touch                                     ? Out of Stock Unknown                        UTP-Touch-White-U        149.00
+CloudKey Stand                                     ? Out of Stock Unknown                        UACC-CKG2-Plus Stand      19.00
+Analog Telephone Adapter                           ? Out of Stock Unknown                        UT-ATA-US                 99.00
+Intercom Viewer Table Stand                        ? Out of Stock Unknown                        UACC-Intercom-Viewer-TS      29.00
+Access Pocket Keyfob                               ? Out of Stock CameraSecurityDoorAccessAcc... UA-Pocket                 99.00
+Access Point U6 Plus                               ? Out of Stock WiFiFlagshipCompact            U6+-US                   129.00
+EV Station Stand                                   ? Out of Stock Unknown                        UACC-EV-Station-Stand     399.00
+Switch Pro 48 PoE                                  ? Out of Stock Unknown                        USW-Pro-48-POE          1099.00
+25G Multi-Mode Optical Module                      ? Out of Stock Unknown                        UACC-OM-SFP28-SR          49.00
+Access G2 Starter Kit                              ? Out of Stock CameraSecurityDoorAccessSta... UA-G2-SK                 289.00
+Cat6A Keystone Coupler, 12-Pack                    ? Out of Stock Unknown                        UACC-Keystone-Coupler-C6A      39.00
+Switch 48 PoE (500W)                               ? Out of Stock SwitchingStandardPoE           US-48-500W               835.00
+UniFi LTE Backup Pro                               ? Out of Stock Unknown                        U-LTE-Backup Pro-US      279.00
+42U Rack Cabinet, 800 mm, Glass Door               ? Out of Stock Unknown                        UACC-Rack-42U-800-G      999.00
+OS1 Simplex LC UPC Fiber Patch Cable               ? Out of Stock CableSFP                       FC-SM-100                 59.00
+OS1 Simplex LC UPC Fiber Patch Cable               ? Out of Stock CableSFP                       FC-SM-200                 89.00
+OS1 Simplex LC UPC Fiber Patch Cable               ? Out of Stock CableSFP                       FC-SM-300                119.00
+WiFiMan Wizard                                     ? Out of Stock WiFiMan                        WM-W                      99.00
+Gateway Fiber                                      ? Out of Stock Unknown                        UXG-Fiber                279.00
+Switch Enterprise Campus 48S PoE                   ? Out of Stock Unknown                        ECS-48S-PoE             3999.00
+Access Point In-Wall HD                            ? Out of Stock Unknown                        UAP-IW-HD-US             129.00
+UNAS 4                                             ? Out of Stock Unknown                        UNAS-4-B                 379.00
+UNAS 4                                             ? Out of Stock Unknown                        UNAS-4-W                 379.00
+Access Point U7 Long-Range                         ? Out of Stock Unknown                        U7-LR-US                 159.00
+Hot-Swappable Power Module (150W)                  ? Out of Stock Unknown                        UACC-PSU-12V-150W        119.00
+1G Bidirectional Single-Mode Optical Module        ? Out of Stock Unknown                        UACC-OM-SM-1G-S-2         22.00
+1G Bidirectional Single-Mode Optical Module        ? Out of Stock Unknown                        UACC-OM-SM-1G-S-20       190.00
+12U Rack Cabinet, Swing, Perforated Door           ? Out of Stock Unknown                        UACC-Rack-12U-Wall-SW-P     499.00
+Access G3 Starter Kit                              ? Out of Stock CameraSecurityDoorAccessSta... UA-G3-SK                 299.00
+Switch Lite 8 PoE                                  ? Out of Stock Unknown                        USW-Lite-8-POE           109.00
+UI Hoodie                                          ? Out of Stock Unknown                        UA-HD23-BLK-S             40.00
+UI Hoodie                                          ? Out of Stock Unknown                        UA-HD23-BLK-M             40.00
+UI Hoodie                                          ? Out of Stock Unknown                        UA-HD23-BLK-L             40.00
+UI Hoodie                                          ? Out of Stock Unknown                        UA-HD23-BLK-XL            40.00
+UI Hoodie                                          ? Out of Stock Unknown                        UA-HD23-BLK-XXL           40.00
+42U Rack Cabinet, 1,000 mm, Glass Door             ? Out of Stock Unknown                        UACC-Rack-42U-1000-G    1199.00
+UniFi UPS Tower                                    ? Out of Stock Unknown                        UPS-Tower-US             159.00
+100G SR4 Multi-Mode Optical Module                 ? Out of Stock Unknown                        UACC-OM-QSFP28-SR4        69.00
+Access Point U6 Mesh                               ? Out of Stock Unknown                        U6-Mesh-US               179.00
+UniFi Indoor Cable Cat6A CMR                       ? Out of Stock Unknown                        UACC-Cable-C6A-CMR       279.00
+SmartPower Cable                                   ? Out of Stock Unknown                        USP-Cable                 29.00
+Access Junction Utility                            ? Out of Stock Unknown                        UACC-Junction-Utility     119.00
+Phone G3 Touch Wall                                ? Out of Stock Unknown                        UTP-G3-Touch-Wall        399.00
+Building-to-Building Bridge XG                     ? Out of Stock Unknown                        UBB-XG-US                999.00
+G5 Dome Ultra Flush Mount                          ? Out of Stock Unknown                        UACC-G5-Dome-Ultra-FM-B      39.00
+G5 Dome Ultra Flush Mount                          ? Out of Stock Unknown                        UACC-G5-Dome-Ultra-FM-W      39.00
+Access Point U7 Pro Wall                           ? Out of Stock Unknown                        U7-Pro-Wall-US           199.00
+UniFi PoE+ Adapter (30W)                           ? Out of Stock Unknown                        U-PoE+                    15.00
+Device Bridge Pro Sector                           ? Out of Stock Unknown                        UDB-Pro-Sector-US        199.00
+RJ45 Inline Coupler Outdoor, 2-Pack                ? Out of Stock Unknown                        UACC-RJ45-Coupler-C6A-Outdoor      19.00
+G6/G5 PTZ Corner Mount                             ? Out of Stock Unknown                        UACC-G5-PTZ-CM-B          19.00
+G6/G5 PTZ Corner Mount                             ? Out of Stock Unknown                        UACC-G5-PTZ-CM            19.00
+Camera Junction Box                                ? Out of Stock Unknown                        UACC-Camera-JB-B          49.00
+Camera Junction Box                                ? Out of Stock Unknown                        UACC-Camera-JB-W          49.00
+Camera AI Theta                                    ? Out of Stock Unknown                        UVC-AI-Theta             299.00
+Protect Viewport                                   ? Out of Stock Unknown                        UFP-VIEWPORT             199.00
+42U Rack Cabinet, 800 mm, Perforated Door          ? Out of Stock Unknown                        UACC-Rack-42U-800-P      999.00
+Switch Enterprise 48 PoE (Vintage)                 ? Out of Stock Unknown                        USW-Enterprise-48-PoE     999.00
+Switch Enterprise Campus Aggregation               ? Out of Stock SwitchingEnterpriseAggregat... ECS-Aggregation         3999.00
+Switch 48                                          ? Out of Stock SwitchingStandardEthernet      US-48                    399.00
+AI Theta Long-Distance Lens                        ? Out of Stock Unknown                        UVC-AI-Theta-Lens-LD      59.00
+Instant PoE to USB Converter                       ? Out of Stock Unknown                        INS-3AF-USB               19.00
+UniFi Patch Cable Outdoor                          ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-1M-W       4.00
+UniFi Patch Cable Outdoor                          ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-2M-W       5.00
+UniFi Patch Cable Outdoor                          ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-3M-W       6.00
+UniFi Patch Cable Outdoor                          ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-5M-W       8.00
+UniFi Patch Cable Outdoor                          ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-8M-W      11.00
+UniFi Patch Cable Outdoor                          ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-1M-BK       4.00
+UniFi Patch Cable Outdoor                          ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-2M-BK       5.00
+UniFi Patch Cable Outdoor                          ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-3M-BK       6.00
+UniFi Patch Cable Outdoor                          ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-5M-BK       8.00
+UniFi Patch Cable Outdoor                          ? Out of Stock Unknown                        UACC-Cable-Patch-Outdoor-8M-BK      11.00
+Gateway Max                                        ? Out of Stock Unknown                        UXG-Max                  199.00
+Keystone Blank Insert, 24-Pack                     ? Out of Stock Unknown                        UACC-Keystone-Blank-Insert      19.00
+Access Intercom Flush Mount                        ? Out of Stock Unknown                        UACC-Intercom-FM          49.00
+Network Video Recorder                             ? Out of Stock Unknown                        UNVR                     299.00
+Cloud Gateway Max NS                               ? Out of Stock Unknown                        UCG-Max-NS               199.00
+Switch 48                                          ? Out of Stock Unknown                        USW-48                   399.00
+Camera G6 PTZ                                      ? Out of Stock CameraSecurityPTZ              UVC-G6-PTZ-B             399.00
+Camera G6 PTZ                                      ? Out of Stock CameraSecurityPTZ              UVC-G6-PTZ-W             399.00
+Environmental Sensor                               ? Out of Stock Unknown                        USL-Environmental-US      49.00
+2.5" SSD, 1 TB                                     ? Out of Stock Unknown                        UACC-SSD-2.5-1TB          99.00
+Access Ultra                                       ? Out of Stock CameraSecurityDoorAccessHub    UA-Ultra                 129.00
+Cloud Gateway Max                                  ? Out of Stock Unknown                        UCG-Max                  279.00
+EV Station Lite Stand Adapter                      ? Out of Stock Unknown                        UACC-EVSL-Stand-Adapter      29.00
+Cloud Gateway Ultra                                ? Out of Stock Unknown                        UCG-Ultra                129.00
+Access G2 Starter Kit Pro                          ? Out of Stock CameraSecurityDoorAccessSta... UA-G2-SK-Pro             599.00
+Access Point U6 Pro                                ? Out of Stock Unknown                        U6-Pro-US                159.00
+Entry Sensor                                       ? Out of Stock Unknown                        USL-Entry-US              39.00
+UniFi LTE Backup                                   ? Out of Stock Unknown                        U-LTE-US                 199.00
+Access Door Hub                                    ? Out of Stock CameraSecurityDoorAccessHub    UA-Hub-Door              199.00
+Precision Rack Mount Kit                           ? Out of Stock Unknown                        UACC-Rack-PM-Kit          49.00
+10G Single-Mode Optical Module                     ? Out of Stock Unknown                        UACC-OM-SM-10G-D-2        85.00
+10G Single-Mode Optical Module                     ? Out of Stock Unknown                        UACC-OM-SM-10G-D-20      750.00
+Access Point nanoHD                                ? Out of Stock Unknown                        UAP-nanoHD-US            179.00
+Access Point nanoHD                                ? Out of Stock Unknown                        UAP-nanoHD-3-US          510.00
+Access Point nanoHD                                ? Out of Stock Unknown                        UAP-nanoHD-5-US          850.00
+CloudKey+ HDD                                      ? Out of Stock Unknown                        UCK-G2-PLUS              199.00
+Access Point E7                                    ? Out of Stock Unknown                        E7-US                    499.00
+CloudKey Enterprise                                ? Out of Stock Unknown                        CK-Enterprise           4999.00
+Enterprise 3.5" HDD, 24 TB                         ? Out of Stock Unknown                        UACC-HDD-E-24TB          499.00
+Camera G4 Pro                                      ? Out of Stock Unknown                        UVC-G4-PRO               299.00
+Access Door Hub Mini                               ? Out of Stock CameraSecurityDoorAccessHub    UA-Hub-Door-Mini         129.00
+Dream Machine                                      ? Out of Stock Unknown                        UDM-US                   299.00
+UniFi Outdoor Cable                                ? Out of Stock Unknown                        UACC-Cable-C5e-Outdoor-Pro-305M-W     149.00
+Dome Camera Weather Shield                         ? Out of Stock Unknown                        UACC-Dome-WS-B            29.00
+Dome Camera Weather Shield                         ? Out of Stock Unknown                        UACC-AI-Pro-Dome-WS-W      29.00
+Access Card                                        ? Out of Stock Unknown                        UA-Card-B-10-US           30.00
+Access Card                                        ? Out of Stock Unknown                        UA-Card-B-100-US         279.00
+Access Card                                        ? Out of Stock Unknown                        UA-Card-W-10-US           30.00
+Access Card                                        ? Out of Stock Unknown                        UA-Card-W-100-US         279.00
+Access Point Lite Cover                            ? Out of Stock Unknown                        nHD-cover-Black-3         49.00
+Access Point Lite Cover                            ? Out of Stock Unknown                        nHD-cover-Camo-3          49.00
+Access Point Lite Cover                            ? Out of Stock Unknown                        nHD-cover-Concrete-3      49.00
+Access Point Lite Cover                            ? Out of Stock Unknown                        nHD-cover-Fabric-3        49.00
+Access Point Lite Cover                            ? Out of Stock Unknown                        nHD-cover-Marble-3        49.00
+Access Point Lite Cover                            ? Out of Stock Unknown                        nHD-cover-Wood-3          49.00
+AmpliFi Router Power Supply                        ? Out of Stock AmpliFiMesh                    AFi-R-PS-US               12.00
+10G Direct Attach Cable                            ? Out of Stock Unknown                        UACC-DAC-SFP10-0.5M       13.00
+10G Direct Attach Cable                            ? Out of Stock Unknown                        UACC-DAC-SFP10-1M         15.00
+10G Direct Attach Cable                            ? Out of Stock Unknown                        UACC-DAC-SFP10-3M         20.00
+Access Point E7 Audience                           ? Out of Stock Unknown                        E7-Audience-US          1999.00
+UniFi Cable Internet                               ? Out of Stock Unknown                        UCI                      279.00
+Camera AI Turret                                   ? Out of Stock Unknown                        UVC-AI-Turret-B          399.00
+Camera AI Turret                                   ? Out of Stock Unknown                        UVC-AI-Turret-W          399.00
+Access Point E7 Campus Indoor                      ? Out of Stock Unknown                        E7-Campus-Indoor-US      799.00
+WiFi BaseStation XG                                ? Out of Stock WiFiMegaCapacity               UWB-XG-US               1499.00
+AmpliFi Mesh WiFi System                           ? Out of Stock AmpliFiMesh                    AFi-HD-US                139.00
+AI Theta Pro Wide-Angle Lens                       ? Out of Stock Unknown                        UVC-AI-Theta-ProLens110     129.00
+Dream Wall Cable Raceway                           ? Out of Stock Unknown                        UACC-CRB                  25.00
+Dream Wall Cable Raceway                           ? Out of Stock Unknown                        UACC-CRE                  20.00
+Dream Wall Cable Raceway                           ? Out of Stock Unknown                        UACC-CRS                  25.00
+AI Port                                            ? Out of Stock Unknown                        UP-AI-Port               199.00
+UniFi Indoor Cable Cat6A CMP                       ? Out of Stock Unknown                        UACC-Cable-C6A-CMP       499.00
+Access Button                                      ? Out of Stock Unknown                        UA-Button                 39.00
+AI Theta Hub                                       ? Out of Stock Unknown                        UVC-AI-Theta-Hub         199.00
+Access Point AC In-Wall                            ? Out of Stock Unknown                        UAP-AC-IW-US              99.00
+Access Point AC In-Wall                            ? Out of Stock Unknown                        UAP-AC-IW-5-US           470.00
+Floating Mount 17 cm                               ? Out of Stock Unknown                        UACC-FM-17cm              29.00
+Dream Machine Pro                                  ? Out of Stock DreamMachine                   UDM-Pro                  379.00
+Access Point U6 In-Wall                            ? Out of Stock Unknown                        U6-IW-US                 179.00
+Siren                                              ? Out of Stock Unknown                        USL-Siren-US               0.00
+AC Adapter 210W                                    ? Out of Stock Unknown                        UACC-Adapter-AC-210W      79.00
+Access Point U7 In-Wall                            ? Out of Stock Unknown                        U7-IW-US                 149.00
+Floating Mount                                     ? Out of Stock Unknown                        UACC-FM                   29.00
+12U Rack Cabinet, 450 mm, Perforated Door          ? Out of Stock Unknown                        UACC-Rack-12U-Wall-450-P     279.00
+Switch Enterprise 24 PoE (Vintage)                 ? Out of Stock Unknown                        USW-Enterprise-24-PoE     799.00
+12U Rack Cabinet                                   ? Out of Stock Unknown                        UACC-Rack-12U-Wall       599.00
+G3 Wireless Handset                                ? Out of Stock Unknown                        UT-G3-Handset             99.00
+Switch Flex Utility                                ? Out of Stock Unknown                        USW-Flex-Utility          49.00
+UniFi Device Bridge                                ? Out of Stock Unknown                        UDB-US                    99.00
+Connect Display Surface Mount                      ? Out of Stock Unknown                        UACC-Display-SM          129.00
+Camera G4/G5 Dome Arm Mount                        ? Out of Stock DeviceMounting                 UACC-G4-Dome-Arm Mount      19.00
+Protect Floodlight                                 ? Out of Stock Unknown                        UP-FloodLight             99.00
+Access Magnetic Lock                               ? Out of Stock CameraSecurityDoorAccessAcc... UA-Lock-Magnetic-270kg     149.00
+Access Magnetic Lock                               ? Out of Stock CameraSecurityDoorAccessAcc... UA-Lock-Magnetic-540kg     199.00
+Ethernet Surge Protection (24-Port)                ? Out of Stock Unknown                        UACC-ETH-SP-Panel-24     399.00
+Access Point U7 Pro XG                             ? Out of Stock Unknown                        U7-Pro-XG-B-US           199.00
+Access Point U7 Pro XG                             ? Out of Stock Unknown                        U7-Pro-XG-US             199.00
+Camera AI 360 Junction Box                         ? Out of Stock Unknown                        UACC-AI-360-JB            49.00
+Camera AI 360 Junction Box                         ? Out of Stock Unknown                        UACC-AI-360-JB-W          49.00
+Enterprise 3.5" HDD, 8 TB                          ? Out of Stock Unknown                        UACC-HDD-E-8TB           249.00
+CloudKey Rack Mount                                ? Out of Stock InstallationsRackmount         CKG2-RM                   99.00
+Access Rescue KeySwitch                            ? Out of Stock CameraSecurityDoorAccessAcc... UA-Rescue                 79.00
+AI Dome Camera Flush Mount                         ? Out of Stock Unknown                        UACC-Dome-FM-B            39.00
+AI Dome Camera Flush Mount                         ? Out of Stock Unknown                        UACC-AI-Pro-Dome-FM-W      39.00
+U7 Pro Wall Table Stand                            ? Out of Stock Unknown                        UACC-U7-Pro-Wall-TS       39.00
+25G Single-Mode Optical Module                     ? Out of Stock Unknown                        UACC-OM-SFP28-LR         119.00
+UniFi PoE++ Adapter (60W)                          ? Out of Stock Unknown                        U-PoE++                   29.00
+Switch Enterprise Campus 24S PoE                   ? Out of Stock Unknown                        ECS-24S-PoE             2999.00
+G3 Gate Access Starter Kit                         ? Out of Stock CameraSecurityDoorAccessSta... UA-G3-SK-Gate            799.00
+CWDM Mux Demux 8                                   ? Out of Stock Unknown                        UACC-CWDM-8              349.00
+Device Bridge Pro                                  ? Out of Stock Unknown                        UDB-Pro-US               199.00
+Pro Max 16 Rack Mount                              ? Out of Stock Unknown                        UACC-Pro-Max-16-RM        49.00
+Switch 16 PoE                                      ? Out of Stock Unknown                        USW-16-POE               299.00
+1G Multi-Mode Optical Module                       ? Out of Stock Unknown                        UACC-OM-MM-1G-D            9.00
+1G Multi-Mode Optical Module                       ? Out of Stock Unknown                        UACC-OM-MM-1G-D-2         17.00
+1G Multi-Mode Optical Module                       ? Out of Stock Unknown                        UACC-OM-MM-1G-D-20       150.00
+OM4 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-M2-LULU-0.5M       4.80
+OM4 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-M2-LULU-1M        5.00
+OM4 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-M2-LULU-3M        7.00
+OM4 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-M2-LULU-5M        9.00
+OM4 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-M2-LULU-10M      13.00
+OM4 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-M2-LULU-15M      20.00
+OM4 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-M2-LULU-30M      30.00
+OM4 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-M2-LULU-0.5M-50     169.00
+OM4 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-M2-LULU-1M-50     179.00
+OM4 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-M2-LULU-3M-50     269.00
+Gate Access Starter Kit                            ? Out of Stock CameraSecurityDoorAccessSta... UA-SK-Gate               699.00
+Camera AI LPR                                      ? Out of Stock Unknown                        UVC-AI-LPR-B             499.00
+Access Point BeaconHD                              ? Out of Stock Unknown                        UAP-BeaconHD-US          129.00
+Toolless Mini Rack Shelf (Sliding)                 ? Out of Stock Unknown                        UACC-Rack-Shelf-TL-SD      49.00
+Camera G5 Flex                                     ? Out of Stock Unknown                        UVC-G5-Flex              129.00
+Nano-Thin HDMI Cable                               ? Out of Stock Unknown                        UACC-Cable-UHS-1M         19.00
+Power Distribution Pro                             ? Out of Stock PowerTechPowerDistribution     USP-PDU-Pro              279.00
+Basic Capacity 3.5" HDD, 1 TB                      ? Out of Stock Unknown                        HDD-1TB                   48.00
+Display Cast Lite                                  ? Out of Stock Unknown                        UC-Cast-Lite-US          179.00
+AI Theta 360 Lens                                  ? Out of Stock Unknown                        UVC-AI-Theta-Lens-360      59.00
+G6/G5 PTZ Pendant Mount                            ? Out of Stock Unknown                        UACC-G5-PTZ-PM-B          19.00
+G6/G5 PTZ Pendant Mount                            ? Out of Stock Unknown                        UACC-G5-PTZ-PM            19.00
+UniFi 10G PoE+++ Adapter (90W)                     ? Out of Stock Unknown                        UACC-PoE+++-10G           49.00
+Switch Pro XG 48 PoE                               ? Out of Stock Unknown                        USW-Pro-XG-48-PoE       2499.00
+DIN Rail Mount                                     ? Out of Stock Unknown                        UACC-Switch-DIN           15.00
+AI Horn Speaker                                    ? Out of Stock Unknown                        UP-AI-Horn-Speaker-B     299.00
+AI Horn Speaker                                    ? Out of Stock Unknown                        UP-AI-Horn-Speaker-W     299.00
+Access Point AC HD                                 ? Out of Stock Unknown                        UAP-AC-HD-US             349.00
+Access Point AC HD                                 ? Out of Stock Unknown                        UAP-AC-HD-5-US          1658.00
+Camera G6 PTZ In-Ceiling Mount                     ? Out of Stock Unknown                        UACC-G6-PTZ-ICM-B         39.00
+Camera G6 PTZ In-Ceiling Mount                     ? Out of Stock Unknown                        UACC-G6-PTZ-ICM-W         39.00
+7M USB-C Cable                                     ? Out of Stock PoEPower                       UACC-G4-DBP-Cable-USB-7M      29.00
+Intercom Wedge Mount                               ? Out of Stock Unknown                        UACC-Intercom-WM          49.00
+Phone G3 Touch Enterprise                          ? Out of Stock Unknown                        UTP-G3-Touch-Enterprise     299.00
+Switch Pro XG 24 PoE                               ? Out of Stock Unknown                        USW-Pro-XG-24-PoE       1799.00
+Cat6A Keystone Jack, 12-Pack                       ? Out of Stock Unknown                        UACC-Keystone-Jack-C6A      39.00
+Instant Indoor PoE Converter                       ? Out of Stock Unknown                        INS-3AF-I-G               20.00
+Flagship AP Replacement Mounting System            ? Out of Stock AccessPointMounting            U-PRO-MP                   8.50
+UniFi PowerAmp                                     ? Out of Stock Unknown                        UPL-Amp-B-US             599.00
+UniFi PowerAmp                                     ? Out of Stock Unknown                        UPL-Amp-W-US             599.00
+Camera Arm Mount                                   ? Out of Stock Unknown                        UACC-Camera-AM-B          49.00
+Camera Arm Mount                                   ? Out of Stock Unknown                        UACC-Camera-AM-W          49.00
+Access Retrofit Reader                             ? Out of Stock CameraSecurityDoorAccessRea... UA-Retrofit-Reader-B     159.00
+Access Retrofit Reader                             ? Out of Stock CameraSecurityDoorAccessRea... UA-Retrofit-Reader-W     159.00
+Long-Range Ethernet Repeater                       ? Out of Stock PoEPower                       UACC-LRE                  29.00
+Dream Wall Power Module                            ? Out of Stock Unknown                        UACC-PSU-UDW             129.00
+10G Bidirectional Single-Mode Optical Module       ? Out of Stock Unknown                        UACC-OM-SM-10G-S-2       160.00
+10G Bidirectional Single-Mode Optical Module       ? Out of Stock Unknown                        UACC-OM-SM-10G-S-20     1450.00
+UniFi Etherlighting Patch Cable                    ? Out of Stock Unknown                        UACC-Cable-Patch-EL-0.15M-W       4.00
+UniFi Etherlighting Patch Cable                    ? Out of Stock Unknown                        UACC-Cable-Patch-EL-0.3M-W       4.99
+UniFi Etherlighting Patch Cable                    ? Out of Stock Unknown                        UACC-Cable-Patch-EL-1M-W       5.99
+UniFi Etherlighting Patch Cable                    ? Out of Stock Unknown                        UACC-Cable-Patch-EL-2M-W       6.99
+UniFi Etherlighting Patch Cable                    ? Out of Stock Unknown                        UACC-Cable-Patch-EL-3M-W       8.99
+UniFi Etherlighting Patch Cable                    ? Out of Stock Unknown                        UACC-Cable-Patch-EL-5M-W      10.99
+UniFi Etherlighting Patch Cable                    ? Out of Stock Unknown                        UACC-Cable-Patch-EL-8M-W      14.99
+UniFi Etherlighting Patch Cable                    ? Out of Stock Unknown                        UACC-Cable-Patch-EL-12M-W      23.00
+UniFi Etherlighting Patch Cable                    ? Out of Stock Unknown                        UACC-Cable-Patch-EL-15M-W      26.00
+UniFi Etherlighting Patch Cable                    ? Out of Stock Unknown                        UACC-Cable-Patch-EL-0.15M-W-24      85.00
+G6 Dome Camera Weather Shield                      ? Out of Stock Unknown                        UACC-G6-Dome-WS-B         29.00
+G6 Dome Camera Weather Shield                      ? Out of Stock Unknown                        UACC-G6-Dome-WS-W         29.00
+Omni Antenna & Desktop Stand Kit                   ? Out of Stock Unknown                        UACC-UK-Ultra-Omni-Antenna      19.00
+Camera AI PTZ Industrial                           ? Out of Stock CameraSecurityPTZ              UVC-AI-PTZ-B            1299.00
+Camera AI PTZ Industrial                           ? Out of Stock CameraSecurityPTZ              UVC-AI-PTZ-W            1299.00
+UI Beanie                                          ? Out of Stock Unknown                        UA-B23-BLK                15.00
+Device Bridge Switch                               ? Out of Stock Unknown                        UDB-Switch-US            299.00
+Switch Enterprise Campus 48 PoE                    ? Out of Stock Unknown                        ECS-48-PoE              3499.00
+Access Intercom                                    ? Out of Stock Unknown                        UA-Intercom              399.00
+SFP Wizard                                         ? Out of Stock Unknown                        UACC-SFP-Wizard           49.00
+Camera G6 180                                      ? Out of Stock Unknown                        UVC-G6-180-B             299.00
+Camera G6 180                                      ? Out of Stock Unknown                        UVC-G6-180-W             299.00
+Flex In-Ceiling Mount                              ? Out of Stock DeviceMounting                 UVC-G3-F-C                19.00
+Flex In-Ceiling Mount                              ? Out of Stock DeviceMounting                 UVC-G3-F-C-3              50.00
+Camera G5 Dome Ultra                               ? Out of Stock Unknown                        UVC-G5-Dome-Ultra-B      129.00
+Camera G5 Dome Ultra                               ? Out of Stock Unknown                        UVC-G5-Dome-Ultra        129.00
+UniFi WAN Switch RJ45                              ? Out of Stock Unknown                        USW-WAN-RJ45             249.00
+Camera G6 Pro Bullet                               ? Out of Stock Unknown                        UVC-G6-Pro-Bullet-B      479.00
+Camera G6 Pro Bullet                               ? Out of Stock Unknown                        UVC-G6-Pro-Bullet-W      479.00
+Swiss Army Knife Table Stand                       ? Out of Stock Unknown                        UACC-UK-Ultra-TS          15.00
+Floating Mount 23 cm                               ? Out of Stock Unknown                        UACC-FM-23cm              39.00
+25G Long-Range Direct Attach Cable                 ? Out of Stock Unknown                        UACC-AOC-SFP28-5M         59.00
+25G Long-Range Direct Attach Cable                 ? Out of Stock Unknown                        UACC-AOC-SFP28-10M        65.00
+25G Long-Range Direct Attach Cable                 ? Out of Stock Unknown                        UACC-AOC-SFP28-20M        69.00
+25G Long-Range Direct Attach Cable                 ? Out of Stock Unknown                        UACC-AOC-SFP28-30M        75.00
+UNAS Pro                                           ? Out of Stock Unknown                        UNAS-Pro                 499.00
+Access Point U7 Pro XG Wall                        ? Out of Stock Unknown                        U7-Pro-XG-Wall-US        279.00
+UNAS Pro 8                                         ? Out of Stock Unknown                        UNAS-Pro-8               799.00
+10G Ethernet Adapter                               ? Out of Stock Unknown                        UACC-Adapter-RJ45-USBC-10GE     169.00
+Power Distribution Hi-Density                      ? Out of Stock PowerTechPowerDistribution     USP-PDU-HD               999.00
+Switch Flex                                        ? Out of Stock Unknown                        USW-Flex                  99.00
+Switch Flex                                        ? Out of Stock Unknown                        USW-Flex-3               282.00
+OS2 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-S2-LULU-0.5M       4.80
+OS2 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-S2-LULU-1M        5.00
+OS2 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-S2-LULU-3M        7.00
+OS2 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-S2-LULU-5M        9.00
+OS2 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-S2-LULU-10M      13.00
+OS2 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-S2-LULU-15M      20.00
+OS2 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-S2-LULU-30M      30.00
+OS2 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-S2-LULU-0.5M-50     169.00
+OS2 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-S2-LULU-1M-50     179.00
+OS2 Duplex LC UPC Fiber Patch Cable                ? Out of Stock Unknown                        UACC-OFC-S2-LULU-3M-50     269.00
+G6 Dome Camera Flush Mount                         ? Out of Stock Unknown                        UACC-G6-Dome-FMS-B        39.00
+UI Baseball Cap                                    ? Out of Stock Unknown                        UA-BaseballCap-BLK        25.00
+Camera G6 Turret                                   ? Out of Stock Unknown                        UVC-G6-Turret-B          199.00
+Camera G6 Turret                                   ? Out of Stock Unknown                        UVC-G6-Turret-W          199.00
+Doorbell Lite                                      ? Out of Stock Unknown                        UVC-Doorbell-B            99.00
+Doorbell Lite                                      ? Out of Stock Unknown                        UVC-Doorbell-W            99.00
+Access Reader Junction Box                         ? Out of Stock Unknown                        UACC-Reader-JB-B          30.00
+Access Reader Junction Box                         ? Out of Stock Unknown                        UACC-Reader-JB-W          30.00
+Cat6 Keystone Coupler, 12-Pack                     ? Out of Stock Unknown                        UACC-Keystone-Coupler-C6      29.00
+Access Intercom Viewer                             ? Out of Stock Unknown                        UA-Intercom-Viewer       199.00
+Access Intercom Viewer                             ? Out of Stock Unknown                        UA-Intercom-Viewer-3     579.00
+Camera G6 Pro Entry                                ? Out of Stock Unknown                        UVC-G6-Pro-Entry           0.00
+microSD Card                                       ? Out of Stock Unknown                        UACC-MSD-1TB             129.00
+microSD Card                                       ? Out of Stock Unknown                        UACC-MSD-512GB            79.00
+microSD Card                                       ? Out of Stock Unknown                        MSD-256GB                 49.00
+microSD Card                                       ? Out of Stock Unknown                        MSD-128GB                 29.00
+10G Long-Range Direct Attach Cable                 ? Out of Stock Unknown                        UACC-AOC-SFP10-5M         39.00
+10G Long-Range Direct Attach Cable                 ? Out of Stock Unknown                        UACC-AOC-SFP10-10M        45.00
+10G Long-Range Direct Attach Cable                 ? Out of Stock Unknown                        UACC-AOC-SFP10-20M        55.00
+10G Long-Range Direct Attach Cable                 ? Out of Stock Unknown                        UACC-AOC-SFP10-30M        65.00
+Camera G3 Instant Cover                            ? Out of Stock CameraSkins                    UVC-G3-INS-Cover-Dark Grey      10.00
+Camera G3 Instant Cover                            ? Out of Stock CameraSkins                    UVC-G3-INS-Cover-Grey      10.00
+Camera G3 Instant Cover                            ? Out of Stock CameraSkins                    UVC-G3-INS-Cover-Light Grey      10.00
+Switch Ultra 60W                                   ? Out of Stock Unknown                        USW-Ultra-60W            159.00
+12U Rack Cabinet, 600 mm, Glass Door               ? Out of Stock Unknown                        UACC-Rack-12U-Wall-600-G     399.00
+Mobile Router Table Stand                          ? Out of Stock Unknown                        UACC-UMR-TS               19.00
+100G Direct Attach Cable                           ? Out of Stock Unknown                        UACC-DAC-QSFP28-0.5M      35.00
+100G Direct Attach Cable                           ? Out of Stock Unknown                        UACC-DAC-QSFP28-1M        39.00
+100G Direct Attach Cable                           ? Out of Stock Unknown                        UACC-DAC-QSFP28-3M        55.00
+100G Direct Attach Cable                           ? Out of Stock Unknown                        UACC-DAC-QSFP28-0.5M-10     289.00
+100G Direct Attach Cable                           ? Out of Stock Unknown                        UACC-DAC-QSFP28-1M-10     319.00
+UniFi Express 7                                    ? Out of Stock Unknown                        UX7-US                   199.00
+Switch 24                                          ? Out of Stock Unknown                        USW-24                   225.00
+UNAS 2                                             ? Out of Stock Unknown                        UNAS-2-B                 199.00
+UNAS 2                                             ? Out of Stock Unknown                        UNAS-2-W                 199.00
+Switch Ultra                                       ? Out of Stock Unknown                        USW-Ultra                129.00
+12U Slim Rack Cabinet                              ? Out of Stock Unknown                        UACC-Rack-12U-Wall-Slim     499.00
+Universal Table Stand                              ? Out of Stock Unknown                        UACC-UTS                  29.00
+Building-to-Building Bridge                        ? Out of Stock Unknown                        UBB-US                   499.00
+PoE Integrated AC Adapter                          ? Out of Stock Unknown                        UACC-PoE+-USBC            49.00
+Access Point AC Long-Range                         ? Out of Stock Unknown                        UAP-AC-LR-US             109.00
+Access Point AC Long-Range                         ? Out of Stock Unknown                        UAP-AC-LR-5-US           499.00
+Switch XG 6 PoE                                    ? Out of Stock SwitchingUtility10GbpsEther... US-XG-6POE               599.00
+Mesh AP In-Ceiling Mount                           ? Out of Stock AccessPointMounting            FlexHD-CM-3               49.00
+Access Point U6 Long-Range                         ? Out of Stock Unknown                        U6-LR-US                 179.00
+Camera AI Theta Pro                                ? Out of Stock Unknown                        UVC-AI-Theta-Pro         329.00
+RJ45 Inline Coupler Indoor, 10-Pack                ? Out of Stock Unknown                        UACC-RJ45-Coupler-C6A      29.00
+Door Closer                                        ? Out of Stock Unknown                        UACC-DoorCloser-US       129.00
+100G PSM4 Single-Mode Optical Module               ? Out of Stock Unknown                        UACC-OM-QSFP28-PSM4      179.00
+SFP+ to RJ45 Adapter                               ? Out of Stock Unknown                        UACC-CM-RJ45-MG           65.00
+Access Point E7 Audience Indoor                    ? Out of Stock Unknown                        E7-Audience-Indoor-US    1999.00
+Switch Pro Max 24                                  ? Out of Stock Unknown                        USW-Pro-Max-24           449.00
+12U Rack Cabinet, Swing, Glass Door                ? Out of Stock Unknown                        UACC-Rack-12U-Wall-SW-G     499.00
+Switch EnterpriseXG 24 (Gen1)                      ? Out of Stock Unknown                        USW-EnterpriseXG-24     1299.00
+Dream Wall                                         ? Out of Stock Unknown                        UDW-US                   999.00
+100G Long-Range Direct Attach Cable                ? Out of Stock Unknown                        UACC-AOC-QSFP28-5M       169.00
+100G Long-Range Direct Attach Cable                ? Out of Stock Unknown                        UACC-AOC-QSFP28-10M      179.00
+100G Long-Range Direct Attach Cable                ? Out of Stock Unknown                        UACC-AOC-QSFP28-20M      199.00
+100G Long-Range Direct Attach Cable                ? Out of Stock Unknown                        UACC-AOC-QSFP28-30M      219.00
+Camera G6 Entry                                    ? Out of Stock Unknown                        UVC-G6-Entry             249.00
+AI Theta Audio Cable                               ? Out of Stock Unknown                        UACC-AI-Theta-Audio-Cable-1M      19.00
+10G Multi-Mode Optical Module                      ? Out of Stock Unknown                        UACC-OM-MM-10G-D          20.00
+10G Multi-Mode Optical Module                      ? Out of Stock Unknown                        UACC-OM-MM-10G-D-2        38.00
+10G Multi-Mode Optical Module                      ? Out of Stock Unknown                        UACC-OM-MM-10G-D-20      360.00
+Panic Bar                                          ? Out of Stock Unknown                        UACC-PanicBar            399.00
+AI Theta Lens                                      ? Out of Stock Unknown                        UVC-AI-Theta-Lens         59.00
+U7 Pro Wall Paintable Cover                        ? Out of Stock Unknown                        UACC-U7-Pro-Wall-Cover      29.00
+AI Theta Audio Extension Cable                     ? Out of Stock Unknown                        UACC-AI-Theta-Audio-Cable-Ext-10M      59.00
+Camera G5 PTZ                                      ? Out of Stock CameraSecurityPTZ              UVC-G5-PTZ-B             299.00
+Camera G5 PTZ                                      ? Out of Stock CameraSecurityPTZ              UVC-G5-PTZ               299.00
+AI Theta Audio                                     ? Out of Stock Unknown                        UVC-AI-Theta-Audio        69.00
+Ethernet Surge Protection Outdoor (10kA)           ? Out of Stock Unknown                        ETH-SP-G2                 12.50
+Shallow Depth Rack Shelf                           ? Out of Stock Unknown                        UACC-Rack-Shelf-SD        39.00
+AC Mesh Dual-Band Antenna                          ? Out of Stock AccessPointAntennas            UMA-D                     99.00
+M.2 SSD Tray                                       ? Out of Stock Unknown                        UACC-SSD-Tray             19.00
+Switch Lite 16 PoE                                 ? Out of Stock Unknown                        USW-Lite-16-POE          199.00
+Access Point Pro Arm Mount                         ? Out of Stock Unknown                        UACC-Pro-AP-AM            25.00
+UniFi Mobile Router                                ? Out of Stock Unknown                        UMR-US                   199.00
+AI Theta Pro Angle Mount                           ? Out of Stock Unknown                        UACC-AI-Theta-Pro-Angle Mount-Camera      29.00
+Switch 24 (500W)                                   ? Out of Stock SwitchingStandardPoE           US-24-500W               545.00
+Switch Industrial                                  ? Out of Stock Unknown                        USW-Industrial           499.00
+Swiss Army Knife Omni Antenna                      ? Out of Stock Unknown                        UACC-UK-Ultra-Omni-Antenna-AO      15.00
+Switch Flex 2.5G PoE                               ? Out of Stock Unknown                        USW-Flex-2.5G-8-PoE      199.00
+Camera G4 Dome                                     ? Out of Stock Unknown                        UVC-G4-Dome              129.00
+Access Point In-Wall HD Cover                      ? Out of Stock Unknown                        IW-HD-BK-3                38.00
+Access Point In-Wall HD Cover                      ? Out of Stock Unknown                        IW-HD-CF-3                38.00
+Access Point In-Wall HD Cover                      ? Out of Stock Unknown                        IW-HD-CT-3                38.00
+Access Point In-Wall HD Cover                      ? Out of Stock Unknown                        IW-HD-MB-3                38.00
+Access Point In-Wall HD Cover                      ? Out of Stock Unknown                        IW-HD-WD-3                38.00
+G6 Dome Camera Flush Mount                         ? Out of Stock Unknown                        UACC-G6-Dome-FM-W         39.00
+Camera G6 Pro Dome                                 ? Out of Stock Unknown                        UVC-G6-Pro-Dome-B        499.00
+Camera G6 Pro Dome                                 ? Out of Stock Unknown                        UVC-G6-Pro-Dome-W        499.00
+Toolless Mini Rack Shelf (Fixed)                   ? Out of Stock Unknown                        UACC-Rack-Shelf-TL        49.00
+Swiss Army Knife                                   ? Out of Stock Unknown                        UK-Ultra-US               89.00
+Access Elevator Starter Kit                        ? Out of Stock CameraSecurityDoorAccessSta... UA-SK-Elevator           999.00
+Access Point U7 Cover                              ? Out of Stock Unknown                        UACC-U7-Cover             39.00
+Access G3 Reader                                   ? Out of Stock CameraSecurityDoorAccessRea... UA-G3-B                  159.00
+Access G3 Reader                                   ? Out of Stock CameraSecurityDoorAccessRea... UA-G3-W                  159.00
+AI Theta Ceiling Mount System                      ? Out of Stock Unknown                        UACC-AI-Theta-CMS         19.00
+Hot-Swappable Fan Module                           ? Out of Stock Unknown                        UACC-Fan-F2B-4020         69.00
+Access Point U6 Enterprise In-Wall                 ? Out of Stock Unknown                        U6-Enterprise-IW-US      299.00
+AI Key                                             ? Out of Stock Unknown                        AI-Key-US                799.00
+G6 180 Camera Flush Mount                          ? Out of Stock Unknown                        UACC-G6-180-FM-B          29.00
+G6 180 Camera Flush Mount                          ? Out of Stock Unknown                        UACC-G6-180-FM-W          29.00
+USB-C Cable with Charge Display                    ? Out of Stock Unknown                        UACC-Cable-USB-100W-0.3M-BK      19.00
+USB-C Cable with Charge Display                    ? Out of Stock Unknown                        UACC-Cable-USB-100W-1M-BK      25.00
+USB-C Cable with Charge Display                    ? Out of Stock Unknown                        UACC-Cable-USB-100W-2M-BK      29.00
+Switch Enterprise Campus 24 PoE                    ? Out of Stock Unknown                        ECS-24-PoE              2499.00
+Access Retrofit Hub                                ? Out of Stock CameraSecurityDoorAccessHub    UA-Retrofit-Hub-2        229.00
+Access Point U6 Enterprise                         ? Out of Stock Unknown                        U6-Enterprise-US         279.00
+G4 Doorbell                                        ? Out of Stock CameraSecuritySpecialWiFiDo... UVC-G4-Doorbell-US       199.00
+Switch Enterprise 8 PoE (Vintage)                  ? Out of Stock Unknown                        USW-Enterprise-8-PoE     479.00
+Access Point U7 Pro                                ? Out of Stock Unknown                        U7-Pro-US                189.00
+Access Point U7 Pro                                ? Out of Stock Unknown                        U7-Pro-5-US              899.00
+Media Converter                                    ? Out of Stock Unknown                        UACC-AE                   27.00
+U7 Pro XG Wall Paintable Cover                     ? Out of Stock Unknown                        UACC-U7-Pro-XG-Wall-Cover      29.00
+Switch 24                                          ? Out of Stock SwitchingStandardEthernet      US-24                    225.00
+10G CWDM Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-SFP10-1270        99.00
+10G CWDM Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-SFP10-1290        99.00
+10G CWDM Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-SFP10-1310        99.00
+10G CWDM Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-SFP10-1330        99.00
+10G CWDM Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-SFP10-1450       149.00
+10G CWDM Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-SFP10-1470       149.00
+10G CWDM Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-SFP10-1490       149.00
+10G CWDM Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-SFP10-1510       149.00
+10G CWDM Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-SFP10-1530       149.00
+10G CWDM Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-SFP10-1550       149.00
+10G CWDM Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-SFP10-1570       149.00
+10G CWDM Single-Mode Optical Module                ? Out of Stock Unknown                        UACC-OM-SFP10-1590       149.00
+Doorbell Lite Gang Box Mounting Plate              ? Out of Stock Unknown                        UACC-DB-GB-Plate-B        19.00
+Doorbell Lite Gang Box Mounting Plate              ? Out of Stock Unknown                        UACC-DB-GB-Plate-W        19.00
+Switch 8 PoE (150W)                                ? Out of Stock Unknown                        US-8-150W                199.00
+  Passed UnifiWatch.Tests.ProgramTests.Main_WithBothStockAndWait_ShouldReturnError [1 ms]
+  Passed UnifiWatch.Tests.ProgramTests.Main_WithLegacyStore_ShouldSucceed [1 ms]
+  Skipped UnifiWatch.Tests.ProgramTests.Main_WithProductSKUsFilter_ShouldSucceed [1 ms]
+  Skipped UnifiWatch.Tests.ProgramTests.Main_WithWaitAndStore_ShouldSucceed [1 ms]
+  Passed UnifiWatch.Tests.ProgramTests.Main_WithStockAndStore_ShouldSucceed [401 ms]
+  Passed UnifiWatch.Tests.LocalizationParityTests.ResourceFiles_HaveMatchingKeysPerCategory [4 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.SaveAsync_WithSmsConfig_ShouldPersistCorrectly [14 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.GetDefaultConfiguration_ShouldReturnValidConfig [< 1 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.Validate_WithInvalidCheckInterval_ShouldReturnError [2 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.SmsNotificationConfig_IsValid_WhenEnabledAndComplete_ShouldReturnTrue [< 1 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.EmailNotificationConfig_IsValid_WhenEnabledButMissingRecipients_ShouldReturnFalse [< 1 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.SaveAsync_ThenLoadAsync_ShouldReturnSameConfig [3 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.DeleteAsync_ShouldRemoveConfigurationFile [2 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.ConfigurationExists_AfterSave_ShouldReturnTrue [1 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.EmailNotificationConfig_IsValid_WhenEnabledAndComplete_ShouldReturnTrue [< 1 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.LoadAsync_WithInvalidJson_ShouldReturnNull [2 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.SaveAsync_CreateMultipleBackups_ShouldSucceed [318 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.SaveAsync_WithEmailConfig_ShouldPersistCorrectly [3 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.Constructor_ShouldCreateConfigurationDirectory [< 1 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.BackupAsync_ShouldCreateBackupFile [104 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.Validate_WithNullStore_ShouldReturnError [< 1 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.SmsNotificationConfig_IsValid_WhenDisabled_ShouldReturnTrue [< 1 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.LoadAsync_WhenFileDoesNotExist_ShouldReturnNull [1 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.Validate_WithDefaultConfig_ShouldReturnNoErrors [< 1 ms]
+  Passed UnifiWatch.Tests.ConfigurationProviderTests.EmailNotificationConfig_IsValid_WhenDisabled_ShouldReturnTrue [< 1 ms]
+  Passed UnifiWatch.Tests.LocalizationTests.CultureProvider_UsesConfigLanguage_WhenSpecified [< 1 ms]
+  Passed UnifiWatch.Tests.LocalizationTests.ResourceLocalizer_MissingKey_ReturnsKeyAcrossFiles [< 1 ms]
+  Passed UnifiWatch.Tests.LocalizationTests.ResourceLocalizer_FallsBackToEnCA_WhenKeyMissing [< 1 ms]
+  Passed UnifiWatch.Tests.LocalizationTests.ResourceLocalizer_FormatsDateCurrency_UsingCurrentCulture [8 ms]
+  Passed UnifiWatch.Tests.LocalizationTests.ResourceLocalizer_FormatsUsingCulture [< 1 ms]
+  Passed UnifiWatch.Tests.CultureProviderTests.GetUserCultureAsync_WithVariousCultures_ShouldReturnCorrectCulture(configLang: "it-IT", expectedCulture: "it-IT") [2 ms]
+  Passed UnifiWatch.Tests.CultureProviderTests.GetUserCultureAsync_WithVariousCultures_ShouldReturnCorrectCulture(configLang: "de-DE", expectedCulture: "de-DE") [< 1 ms]
+  Passed UnifiWatch.Tests.CultureProviderTests.GetUserCultureAsync_WithVariousCultures_ShouldReturnCorrectCulture(configLang: "es-ES", expectedCulture: "es-ES") [< 1 ms]
+  Passed UnifiWatch.Tests.CultureProviderTests.GetUserCultureAsync_WithVariousCultures_ShouldReturnCorrectCulture(configLang: "fr-FR", expectedCulture: "fr-FR") [< 1 ms]
+  Passed UnifiWatch.Tests.CultureProviderTests.GetUserCultureAsync_WithNullLanguage_ShouldReturnSystemCulture [< 1 ms]
+  Passed UnifiWatch.Tests.CultureProviderTests.GetUserCultureAsync_WithAutoLanguage_ShouldReturnSystemCulture [< 1 ms]
+Getting Unifi products from USA store...
+Retrieved 1 products
+Getting Unifi products from USA store...
+Getting Unifi products from USA store...
+Retrieved 1 products
+Getting Unifi products from USA store...
+[UnifiWatch Alert] Test Title: Test Message
+  Passed UnifiWatch.Tests.CultureProviderTests.GetUserCultureAsync_WithConfigLanguage_ShouldReturnSpecifiedCulture [< 1 ms]
+  Passed UnifiWatch.Tests.CultureProviderTests.GetUserCultureAsync_WithConfigLoadFailure_ShouldFallbackToSystemCulture [< 1 ms]
+  Passed UnifiWatch.Tests.CultureProviderTests.GetUserCultureAsync_WithInvalidLanguage_ShouldFallbackToSystemCulture [< 1 ms]
+  Passed UnifiWatch.Tests.unifiwatchServiceTests.GetStockAsync_WithInvalidStore_ShouldThrowArgumentException [6 ms]
+  Passed UnifiWatch.Tests.unifiwatchServiceTests.GetStockAsync_WithValidStore_ShouldReturnProducts [10 ms]
+  Passed UnifiWatch.Tests.unifiwatchServiceTests.GetStockAsync_WithHttpError_ShouldThrowException [< 1 ms]
+  Passed UnifiWatch.Tests.unifiwatchServiceTests.GetStockAsync_WithCollectionsFilter_ShouldFilterProducts [< 1 ms]
+  Passed UnifiWatch.Tests.unifiwatchServiceTests.GetStockAsync_WithInvalidJsonResponse_ShouldThrowException [< 1 ms]
+  Passed UnifiWatch.Tests.NotificationServiceTests.ShowNotification_ShouldNotThrowExceptions [< 1 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendAsync_WithInvalidEmailFormats_ShouldReturnFalse(invalidEmail: "") [4 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendAsync_WithInvalidEmailFormats_ShouldReturnFalse(invalidEmail: "user@") [< 1 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendAsync_WithInvalidEmailFormats_ShouldReturnFalse(invalidEmail: "@domain.com") [< 1 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendAsync_WithInvalidEmailFormats_ShouldReturnFalse(invalidEmail: "user name@domain.com") [< 1 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendBatchAsync_WithEmptyList_ShouldReturnEmptyDictionary [2 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendAsync_WithPlainAndHtmlBody_ShouldAttemptSend [120 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendBatchAsync_WithMultipleRecipients_ShouldReturnResults [238 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendAsync_WithVariousValidEmails_ShouldPassValidation(email: "test@domain.com") [123 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendAsync_WithVariousValidEmails_ShouldPassValidation(email: "user.name+tag@example.co.uk") [120 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendAsync_WithVariousValidEmails_ShouldPassValidation(email: "firstname.lastname@company.museum") [131 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendAsync_WithCancellationToken_ShouldRespectCancellation [< 1 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendAsync_WithInvalidEmail_ShouldReturnFalse [< 1 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendAsync_WithSmtpSettingsConfiguration_ShouldUseTlsWhenEnabled [119 ms]
+  Passed UnifiWatch.Tests.SmtpEmailProviderTests.SendAsync_WithValidEmail_ShouldAttemptConnection [111 ms]
+  Passed UnifiWatch.Tests.UnitTest1.UnifiProduct_ShouldAllowPropertyAssignment [15 ms]
+  Passed UnifiWatch.Tests.UnitTest1.StoreConfiguration_LegacyStores_ShouldContainExpectedStores [1 ms]
+  Passed UnifiWatch.Tests.UnitTest1.StoreConfiguration_ModernStoreLinks_ShouldContainExpectedLinks [< 1 ms]
+  Passed UnifiWatch.Tests.UnitTest1.StoreConfiguration_ModernStores_ShouldContainExpectedStores [< 1 ms]
+[xUnit.net 00:00:04.00]   Finished:    UnifiWatch.Tests
+  Passed UnifiWatch.Tests.UnitTest1.StoreConfiguration_LegacyCollections_ShouldContainExpectedCollections [< 1 ms]
+  Passed UnifiWatch.Tests.UnitTest1.StoreConfiguration_CollectionToCategory_ShouldContainMappings [< 1 ms]
+  Passed UnifiWatch.Tests.UnitTest1.UnifiProduct_ShouldInitializeWithDefaultValues [< 1 ms]
+  Passed UnifiWatch.Tests.ResourceLocalizerFallbackTests.ResourceLocalizer_Load_WithMalformedJson_ShouldNotThrow [1 ms]
+  Passed UnifiWatch.Tests.ResourceLocalizerFallbackTests.ResourceLocalizer_Format_WithArguments_ShouldInterpolateValues [< 1 ms]
+  Passed UnifiWatch.Tests.ResourceLocalizerFallbackTests.ResourceLocalizer_Notification_ShouldReturnValidString [< 1 ms]
+  Passed UnifiWatch.Tests.ResourceLocalizerFallbackTests.ResourceLocalizer_Error_ShouldReturnValidString [< 1 ms]
+  Passed UnifiWatch.Tests.ResourceLocalizerFallbackTests.ResourceLocalizer_Cli_WithValidKey_ShouldReturnTranslation [2 ms]
+
+Test Run Failed.
+Total tests: 116
+     Passed: 109
+     Failed: 1
+    Skipped: 6
+ Total time: 4.3040 Seconds
+     1>Project "C:\localrepo\UnifiWatch\UnifiWatch.sln" (1) is building "C:\localrepo\UnifiWatch\UnifiWatch.Tests\UnifiWatch.Tests.csproj" (3) on node 2 (VSTest target(s)).
+     3>_VSTestConsole:
+         MSB4181: The "VSTestTask" task returned false but did not log an error.
+     3>Done Building Project "C:\localrepo\UnifiWatch\UnifiWatch.Tests\UnifiWatch.Tests.csproj" (VSTest target(s)) -- FAILED.
+     1>Done Building Project "C:\localrepo\UnifiWatch\UnifiWatch.sln" (VSTest target(s)) -- FAILED.
+
+Build FAILED.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:05.04
+
+Workload updates are available. Run `dotnet workload list` for more information.
