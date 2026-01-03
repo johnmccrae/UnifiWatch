@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace UnifiStockTracker.Utilities;
+namespace UnifiWatch.Utilities;
 
 /// <summary>
 /// Platform detection and OS-specific utilities
@@ -15,38 +15,38 @@ public static class PlatformUtilities
     /// Gets the appropriate configuration directory for the current platform
     /// </summary>
     /// <returns>
-    /// Windows: %APPDATA%\UnifiStockTracker
-    /// macOS: ~/.config/unifistock (preferred) or ~/Library/Application Support/UnifiStockTracker
-    /// Linux: ~/.config/unifistock (preferred) or /etc/unifistock (system-wide)
+    /// Windows: %APPDATA%\UnifiWatch
+    /// macOS: ~/.config/unifiwatch (preferred) or ~/Library/Application Support/UnifiWatch
+    /// Linux: ~/.config/unifiwatch (preferred) or /etc/unifiwatch (system-wide)
     /// </returns>
     public static string GetConfigurationDirectory()
     {
         if (IsWindows)
         {
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(appData, "UnifiStockTracker");
+            return Path.Combine(appData, "UnifiWatch");
         }
         else if (IsMacOS)
         {
-            // Prefer ~/.config/unifistock, fall back to ~/Library/Application Support
+            // Prefer ~/.config/unifiwatch, fall back to ~/Library/Application Support
             var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var configDir = Path.Combine(home, ".config", "unifistock");
+            var configDir = Path.Combine(home, ".config", "unifiwatch");
             if (Directory.Exists(configDir))
                 return configDir;
 
-            return Path.Combine(home, "Library", "Application Support", "UnifiStockTracker");
+            return Path.Combine(home, "Library", "Application Support", "UnifiWatch");
         }
         else if (IsLinux)
         {
-            // Prefer ~/.config/unifistock for user, but check /etc/unifistock for system-wide
+            // Prefer ~/.config/unifiwatch for user, but check /etc/unifiwatch for system-wide
             var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var userConfig = Path.Combine(home, ".config", "unifistock");
+            var userConfig = Path.Combine(home, ".config", "unifiwatch");
 
             // Check if running as root or with system privileges
             var uid = Environment.GetEnvironmentVariable("UID");
             if (uid == "0") // Running as root
             {
-                var systemConfig = "/etc/unifistock";
+                var systemConfig = "/etc/unifiwatch";
                 if (Directory.Exists(systemConfig))
                     return systemConfig;
             }

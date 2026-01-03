@@ -1,0 +1,30 @@
+{
+  "StockApiUrl": "https://unifi.ubnt.com/graphql",
+  "Notifications": {
+    "Desktop": {
+      "Enabled": true
+    },
+    "Email": {
+      "Enabled": false
+    },
+    "Sms": {
+      "Enabled": true,
+      "Provider": "twilio",
+      "Recipients": [
+        "+1-555-0123",
+        "+1-555-0456"
+      ]
+    }
+  },
+  "NotificationSettings": {
+    "NotifyOnStockAvailable": true,
+    "NotifyOnPriceChange": false,
+    "MinimumPriceDropPercentage": 5.0
+  },
+  "Products": [
+    {
+      "ProductId": "your-product-id-here",
+      "Name": "Example Product"
+    }
+  ]
+}

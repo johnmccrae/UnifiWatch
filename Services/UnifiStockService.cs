@@ -1,17 +1,18 @@
 using System.Text;
 using System.Text.Json;
-using UnifiStockTracker.Configuration;
-using UnifiStockTracker.Models;
+using UnifiWatch.Configuration;
+using UnifiWatch.Models;
+using UnifiWatch.Services.Localization;
 
-namespace UnifiStockTracker.Services;
+namespace UnifiWatch.Services;
 
-public class UnifiStockService : IUnifiStockService
+public class unifiwatchService : IunifiwatchService
 {
     private readonly HttpClient _httpClient;
     private const string GraphQLEndpoint = "https://ecomm.svc.ui.com/graphql";
     private const int PageLimit = 250;
 
-    public UnifiStockService(HttpClient httpClient)
+    public unifiwatchService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }
@@ -28,7 +29,10 @@ public class UnifiStockService : IUnifiStockService
             throw new ArgumentException($"Store link not found for '{store}'");
         }
 
-        Console.WriteLine($"Getting Unifi products from {store} store...");
+        var loc = ServiceProviderHolder.GetService<ResourceLocalizer>()
+                  ?? ResourceLocalizerHolder.Instance
+                  ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
+        Console.WriteLine(loc.CLI("Store.GettingProducts", store));
 
         var allProducts = new List<StorefrontProduct>();
         var offset = 0;
@@ -68,7 +72,7 @@ public class UnifiStockService : IUnifiStockService
             }
         }
 
-        Console.WriteLine($"Retrieved {allProducts.Count} products");
+        Console.WriteLine(loc.CLI("Store.RetrievedProducts", allProducts.Count));
 
         return ConvertToUnifiProducts(allProducts, storeLink, collections);
     }
@@ -206,11 +210,14 @@ fragment MoneyFragment on Money {
                     continue;
                 }
 
+                // Check variant status for availability (API returns PascalCase like "Available")
+                var isAvailable = variant.Status?.Equals("Available", StringComparison.OrdinalIgnoreCase) ?? false;
+
                 result.Add(new UnifiProduct
                 {
                     Name = product.Title,
                     ShortName = product.ShortTitle,
-                    Available = variant.Status == "AVAILABLE",
+                    Available = isAvailable,
                     Category = category,
                     Collection = product.CollectionSlug,
                     OrganizationalCollectionSlug = product.OrganizationalCollectionSlug,
@@ -239,6 +246,17 @@ fragment MoneyFragment on Money {
             StoreConfiguration.CollectionToCategory.TryGetValue(product.OrganizationalCollectionSlug, out category))
         {
             return category;
+        }
+
+        // Fallback: use the collection slug directly if we don't have a mapping
+        if (!string.IsNullOrEmpty(product.CollectionSlug))
+        {
+            return product.CollectionSlug;
+        }
+
+        if (!string.IsNullOrEmpty(product.OrganizationalCollectionSlug))
+        {
+            return product.OrganizationalCollectionSlug;
         }
 
         return "Unknown";

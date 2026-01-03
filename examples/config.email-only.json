@@ -1,0 +1,33 @@
+{
+  "StockApiUrl": "https://unifi.ubnt.com/graphql",
+  "Notifications": {
+    "Desktop": {
+      "Enabled": true
+    },
+    "Email": {
+      "Enabled": true,
+      "SmtpServer": "smtp.gmail.com",
+      "SmtpPort": 587,
+      "UseTls": true,
+      "FromAddress": "your-email@gmail.com",
+      "Recipients": [
+        "your-email@gmail.com",
+        "other-recipient@example.com"
+      ]
+    },
+    "Sms": {
+      "Enabled": false
+    }
+  },
+  "NotificationSettings": {
+    "NotifyOnStockAvailable": true,
+    "NotifyOnPriceChange": false,
+    "MinimumPriceDropPercentage": 5.0
+  },
+  "Products": [
+    {
+      "ProductId": "your-product-id-here",
+      "Name": "Example Product"
+    }
+  ]
+}

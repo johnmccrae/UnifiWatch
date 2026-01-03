@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace UnifiStockTracker.Configuration;
+namespace UnifiWatch.Configuration;
 
 /// <summary>
 /// Main service configuration loaded from config.json
@@ -36,6 +36,12 @@ public class ServiceSettings
 
     [JsonPropertyName("paused")]
     public bool Paused { get; set; } = false;
+
+    [JsonPropertyName("language")]
+    public string Language { get; set; } = "auto"; // auto, en-CA, fr-CA, fr-FR, de-DE, es-ES
+
+    [JsonPropertyName("timeZone")]
+    public string TimeZone { get; set; } = "auto"; // auto or IANA timezone like America/Toronto
 }
 
 /// <summary>
@@ -72,6 +78,9 @@ public class NotificationSettings
 
     [JsonPropertyName("sms")]
     public SmsNotificationConfig Sms { get; set; } = new();
+
+    [JsonPropertyName("dedupeMinutes")]
+    public int DedupeMinutes { get; set; } = 5; // Default 5 minutes, min 1, max 60
 }
 
 /// <summary>
@@ -109,6 +118,21 @@ public class EmailNotificationConfig
     [JsonPropertyName("credentialKey")]
     public string CredentialKey { get; set; } = "email-smtp";
 
+    [JsonPropertyName("useOAuth")]
+    public bool UseOAuth { get; set; } = false;
+
+    [JsonPropertyName("oauthTenantId")]
+    public string OAuthTenantId { get; set; } = string.Empty;
+
+    [JsonPropertyName("oauthClientId")]
+    public string OAuthClientId { get; set; } = string.Empty;
+
+    [JsonPropertyName("oauthCredentialKey")]
+    public string OAuthCredentialKey { get; set; } = "email-oauth";
+
+    [JsonPropertyName("oauthMailbox")]
+    public string OAuthMailbox { get; set; } = string.Empty;
+
     /// <summary>
     /// Validates email configuration
     /// </summary>
@@ -116,6 +140,15 @@ public class EmailNotificationConfig
     {
         if (!Enabled)
             return true;
+        
+        if (UseOAuth)
+        {
+            return Recipients.Count > 0 &&
+                   !string.IsNullOrWhiteSpace(OAuthTenantId) &&
+                   !string.IsNullOrWhiteSpace(OAuthClientId) &&
+                   !string.IsNullOrWhiteSpace(OAuthCredentialKey) &&
+                   !string.IsNullOrWhiteSpace(OAuthMailbox);
+        }
 
         return !string.IsNullOrWhiteSpace(SmtpServer) &&
                SmtpPort > 0 && SmtpPort <= 65535 &&

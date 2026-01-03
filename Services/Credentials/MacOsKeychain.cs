@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
-namespace UnifiStockTracker.Services.Credentials;
+namespace UnifiWatch.Services.Credentials;
 
 /// <summary>
 /// macOS Keychain implementation using native security command
@@ -10,7 +10,7 @@ namespace UnifiStockTracker.Services.Credentials;
 public class MacOsKeychain : ICredentialProvider
 {
     private readonly ILogger<MacOsKeychain> _logger;
-    private const string ServiceName = "UnifiStockTracker";
+    private const string ServiceName = "UnifiWatch";
 
     public string StorageMethodDescription => "macOS Keychain";
     public string StorageMethod => "macos-keychain";
@@ -37,7 +37,7 @@ public class MacOsKeychain : ICredentialProvider
 
                 // Create the credential description
                 var credentialDescription = string.IsNullOrWhiteSpace(label)
-                    ? $"UnifiStockTracker: {key}"
+                    ? $"UnifiWatch: {key}"
                     : label;
 
                 // Use security add-generic-password command
