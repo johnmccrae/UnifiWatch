@@ -2,9 +2,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using UnifiWatch.Utilities;
+using UnifiStockTracker.Utilities;
 
-namespace UnifiWatch.Services.Credentials;
+namespace UnifiStockTracker.Services.Credentials;
 
 /// <summary>
 /// Encrypted file-based credential provider using DPAPI (Windows) or AES (others)
@@ -156,22 +156,10 @@ public class EncryptedFileCredentialProvider : ICredentialProvider
         try
         {
             var encryptedJson = File.ReadAllBytes(_credentialsFilePath);
-            try
-            {
-                var decryptedJson = Decrypt(encryptedJson);
-                var credentials = JsonSerializer.Deserialize<Dictionary<string, string>>(decryptedJson);
-                return credentials ?? new Dictionary<string, string>();
-            }
-            catch (CryptographicException ex)
-            {
-                _logger.LogWarning(ex, "Credential file at {Path} could not be decrypted. Treating as empty and continuing.", _credentialsFilePath);
-                return new Dictionary<string, string>();
-            }
-            catch (JsonException ex)
-            {
-                _logger.LogWarning(ex, "Credential file at {Path} contained invalid JSON. Treating as empty and continuing.", _credentialsFilePath);
-                return new Dictionary<string, string>();
-            }
+            var decryptedJson = Decrypt(encryptedJson);
+            var credentials = JsonSerializer.Deserialize<Dictionary<string, string>>(decryptedJson);
+
+            return credentials ?? new Dictionary<string, string>();
         }
         catch (Exception ex)
         {
@@ -213,22 +201,30 @@ public class EncryptedFileCredentialProvider : ICredentialProvider
     /// </summary>
     private byte[] DeriveEncryptionKey(byte[] salt)
     {
-        // Derive key from machine ID + username + hostname (used for AES path)
+#if WINDOWS
+        // Windows: Let DPAPI handle key derivation (this method not used on Windows)
+        throw new NotSupportedException("Key derivation not needed on Windows - DPAPI handles this");
+#else
+        // Linux/macOS: Derive key from machine ID + username + hostname
+        // This ties the key to the specific user on the specific machine
         var machineId = GetMachineIdentifier();
         var username = Environment.UserName;
         var hostname = Environment.MachineName;
-
+        
+        // Combine identifiers to create passphrase
         var passphrase = $"{machineId}:{username}:{hostname}";
         var passphraseBytes = Encoding.UTF8.GetBytes(passphrase);
-
+        
+        // Use PBKDF2 with 100,000 iterations (OWASP recommendation for 2023+)
         using var deriveBytes = new Rfc2898DeriveBytes(
             passphraseBytes,
             salt,
             100000,
             HashAlgorithmName.SHA256
         );
-
+        
         return deriveBytes.GetBytes(32); // 256-bit key for AES-256
+#endif
     }
 
     /// <summary>
@@ -364,50 +360,52 @@ public class EncryptedFileCredentialProvider : ICredentialProvider
     {
         try
         {
-            if (OperatingSystem.IsWindows())
+#if WINDOWS
+            // Use DPAPI on Windows
+            var plainBytes = Encoding.UTF8.GetBytes(plainJson);
+            var encryptedBytes = System.Security.Cryptography.ProtectedData.Protect(
+                plainBytes,
+                null,
+                System.Security.Cryptography.DataProtectionScope.CurrentUser
+            );
+            return encryptedBytes;
+#else
+            // Use AES-256-CBC on Linux/macOS with PBKDF2-derived key
+            // Generate random salt (32 bytes for extra security)
+            var salt = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
             {
-                // Use DPAPI on Windows
-                var plainBytes = Encoding.UTF8.GetBytes(plainJson);
-                var encryptedBytes = System.Security.Cryptography.ProtectedData.Protect(
-                    plainBytes,
-                    null,
-                    System.Security.Cryptography.DataProtectionScope.CurrentUser
-                );
-                return encryptedBytes;
+                rng.GetBytes(salt);
             }
-            else
-            {
-                // Use AES-256-CBC on non-Windows with PBKDF2-derived key
-                var salt = new byte[32];
-                using (var rng = RandomNumberGenerator.Create())
-                {
-                    rng.GetBytes(salt);
-                }
+            
+            // Derive encryption key from machine/user context
+            var key = DeriveEncryptionKey(salt);
+            
+            using var aes = Aes.Create();
+            aes.KeySize = 256;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
+            aes.Key = key;
+            aes.GenerateIV();
 
-                var key = DeriveEncryptionKey(salt);
+            var plainBytes = Encoding.UTF8.GetBytes(plainJson);
+            
+            using var encryptor = aes.CreateEncryptor();
+            var ciphertext = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
 
-                using var aes = Aes.Create();
-                aes.KeySize = 256;
-                aes.Mode = CipherMode.CBC;
-                aes.Padding = PaddingMode.PKCS7;
-                aes.Key = key;
-                aes.GenerateIV();
+            // Return: [salt length: 1 byte][salt: 32 bytes][iv length: 1 byte][iv: 16 bytes][ciphertext]
+            // NOTE: Salt is stored, NOT the key (key is derived from salt + machine context)
+            using var ms = new MemoryStream();
+            
+            ms.WriteByte((byte)salt.Length);
+            ms.Write(salt, 0, salt.Length);
 
-                var plainBytes = Encoding.UTF8.GetBytes(PadPlaintext(plainJson));
+            ms.WriteByte((byte)aes.IV.Length);
+            ms.Write(aes.IV, 0, aes.IV.Length);
 
-                using var encryptor = aes.CreateEncryptor();
-                var ciphertext = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
-
-                using var ms = new MemoryStream();
-                ms.WriteByte((byte)salt.Length);
-                ms.Write(salt, 0, salt.Length);
-
-                ms.WriteByte((byte)aes.IV.Length);
-                ms.Write(aes.IV, 0, aes.IV.Length);
-
-                ms.Write(ciphertext, 0, ciphertext.Length);
-                return ms.ToArray();
-            }
+            ms.Write(ciphertext, 0, ciphertext.Length);
+            return ms.ToArray();
+#endif
         }
         catch (Exception ex)
         {
@@ -423,68 +421,33 @@ public class EncryptedFileCredentialProvider : ICredentialProvider
     {
         try
         {
-            if (OperatingSystem.IsWindows())
-            {
-                // First try DPAPI
-                try
-                {
-                    var decryptedBytes = System.Security.Cryptography.ProtectedData.Unprotect(
-                        encryptedData,
-                        null,
-                        System.Security.Cryptography.DataProtectionScope.CurrentUser
-                    );
-                    var json = Encoding.UTF8.GetString(decryptedBytes);
-                    // Basic sanity check to ensure this is JSON
-                    if (json.StartsWith("{") || json.StartsWith("["))
-                    {
-                        return json;
-                    }
-                }
-                catch (CryptographicException)
-                {
-                    // Fall through to AES parsing if DPAPI fails (e.g., file created by non-Windows path)
-                }
-            }
-
-            // AES-256-CBC with PBKDF2-derived key (non-Windows or DPAPI fallback failed)
+#if WINDOWS
+            // Use DPAPI on Windows
+            var decryptedBytes = System.Security.Cryptography.ProtectedData.Unprotect(
+                encryptedData,
+                null,
+                System.Security.Cryptography.DataProtectionScope.CurrentUser
+            );
+            return Encoding.UTF8.GetString(decryptedBytes);
+#else
+            // Use AES-256-CBC on Linux/macOS with PBKDF2-derived key
             using var ms = new MemoryStream(encryptedData);
-
+            
+            // Read salt (used for key derivation)
             var saltLength = ms.ReadByte();
-            if (saltLength <= 0 || saltLength > 64)
-            {
-                throw new CryptographicException("Invalid salt length in encrypted credential file.");
-            }
             var salt = new byte[saltLength];
-            var readSalt = ms.Read(salt, 0, saltLength);
-            if (readSalt != saltLength)
-            {
-                throw new CryptographicException("Failed to read full salt from encrypted credential file.");
-            }
+            ms.Read(salt, 0, saltLength);
 
+            // Read IV
             var ivLength = ms.ReadByte();
-            if (ivLength != 16)
-            {
-                throw new CryptographicException("Invalid IV length in encrypted credential file.");
-            }
             var iv = new byte[ivLength];
-            var readIv = ms.Read(iv, 0, ivLength);
-            if (readIv != ivLength)
-            {
-                throw new CryptographicException("Failed to read full IV from encrypted credential file.");
-            }
+            ms.Read(iv, 0, ivLength);
 
-            var remaining = (int)(ms.Length - ms.Position);
-            if (remaining <= 0)
-            {
-                throw new CryptographicException("Encrypted credential file contains no ciphertext.");
-            }
-            var ciphertext = new byte[remaining];
-            var readCt = ms.Read(ciphertext, 0, ciphertext.Length);
-            if (readCt != ciphertext.Length)
-            {
-                throw new CryptographicException("Failed to read full ciphertext from encrypted credential file.");
-            }
+            // Read ciphertext
+            var ciphertext = new byte[ms.Length - ms.Position];
+            ms.Read(ciphertext, 0, ciphertext.Length);
 
+            // Derive encryption key from machine/user context + salt
             var key = DeriveEncryptionKey(salt);
 
             using var aes = Aes.Create();
@@ -496,30 +459,13 @@ public class EncryptedFileCredentialProvider : ICredentialProvider
 
             using var decryptor = aes.CreateDecryptor();
             var plaintext = decryptor.TransformFinalBlock(ciphertext, 0, ciphertext.Length);
-            var jsonText = Encoding.UTF8.GetString(UnpadPlaintext(plaintext));
-            return jsonText;
+            return Encoding.UTF8.GetString(plaintext);
+#endif
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error decrypting credentials");
             throw;
         }
-    }
-
-    private static string PadPlaintext(string json)
-    {
-        // Some runtimes can be sensitive to TransformFinalBlock with exact block boundaries.
-        // Add a single newline to avoid rare edge-cases with empty or exact-block inputs.
-        return json.Length == 0 ? "\n" : json;
-    }
-
-    private static byte[] UnpadPlaintext(byte[] bytes)
-    {
-        // Remove a single trailing newline if present (paired with PadPlaintext)
-        if (bytes.Length > 0 && bytes[bytes.Length - 1] == (byte)'\n')
-        {
-            Array.Resize(ref bytes, bytes.Length - 1);
-        }
-        return bytes;
     }
 }

@@ -10,8 +10,8 @@
 
 ## Overview
 
-Transform UnifiWatch into a dual-mode application:
-1. **CLI Mode** (existing): `UnifiWatch --stock --store USA` 
+Transform UnifiStockTracker into a dual-mode application:
+1. **CLI Mode** (existing): `UnifiStockTracker --stock --store USA` 
 2. **Service Mode** (in development): Background daemon that monitors stock and sends notifications
 
 ## Architecture Components
@@ -32,9 +32,9 @@ Transform UnifiWatch into a dual-mode application:
   - `Configuration/ServiceConfiguration.cs`
 
 **Location by Platform:**
-- Windows: `%APPDATA%\UnifiWatch\config.json`
-- macOS: `~/.config/unifiwatch/config.json` (preferred) or `~/Library/Application Support/UnifiWatch/config.json`
-- Linux: `~/.config/unifiwatch/config.json` (user) or `/etc/unifiwatch/config.json` (system-wide)
+- Windows: `%APPDATA%\UnifiStockTracker\config.json`
+- macOS: `~/.config/unifistock/config.json` (preferred) or `~/Library/Application Support/UnifiStockTracker/config.json`
+- Linux: `~/.config/unifistock/config.json` (user) or `/etc/unifistock/config.json` (system-wide)
 
 **Configuration Schema:**
 ```json
@@ -108,7 +108,7 @@ Transform UnifiWatch into a dual-mode application:
 - **Storage**: `HKEY_CURRENT_USER\Software\Microsoft\Credentials`
 - **Implementation**: 
   - C# wrapper using P/Invoke or `CredentialManagement` NuGet package
-  - Store as: `UnifiWatch:email-smtp`, `UnifiWatch:twilio-api`
+  - Store as: `UnifiStockTracker:email-smtp`, `UnifiStockTracker:twilio-api`
   - User-friendly: credentials appear in Windows Credential Manager
 
 #### macOS: Keychain
@@ -116,7 +116,7 @@ Transform UnifiWatch into a dual-mode application:
 - **Implementation**:
   - Use `security add-generic-password` command (fallback approach)
   - Or P/Invoke to macOS Security framework
-  - Service: "UnifiWatch"
+  - Service: "UnifiStockTracker"
   - Account: "email-smtp", "twilio-api", etc.
 
 #### Linux: Multiple Options
@@ -125,10 +125,10 @@ Transform UnifiWatch into a dual-mode application:
   - NuGet: `Tmds.DBus` for D-Bus communication
 - **Fallback #1**: `pass` (password manager) CLI integration
 - **Fallback #2**: Encrypted file with DPAPI-like encryption using OpenSSL
-  - Store in `~/.config/unifiwatch/credentials.enc`
+  - Store in `~/.config/unifistock/credentials.enc`
   - Show warning: "Credentials stored in encrypted file, not hardware keyring"
 - **Fallback #3**: Environment variables (for headless/automation scenarios)
-  - `unifiwatch_EMAIL_PASSWORD`, `unifiwatch_TWILIO_KEY`
+  - `UNIFISTOCK_EMAIL_PASSWORD`, `UNIFISTOCK_TWILIO_KEY`
 
 ### 3. Notification Providers
 
@@ -186,13 +186,13 @@ INotificationProvider (interface)
 ### 4. BackgroundService Implementation
 
 ```csharp
-public class UnifiWatchService : BackgroundService
+public class UnifiStockTrackerService : BackgroundService
 {
-    private readonly IunifiwatchService _stockService;
+    private readonly IUnifiStockService _stockService;
     private readonly INotificationProvider _notificationProvider;
     private readonly IConfigurationProvider _configProvider;
     private readonly ICredentialProvider _credentialProvider;
-    private readonly ILogger<UnifiWatchService> _logger;
+    private readonly ILogger<UnifiStockTrackerService> _logger;
     private bool _isPaused;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -244,34 +244,34 @@ public class UnifiWatchService : BackgroundService
 #### Windows
 ```powershell
 # Install
-UnifiWatch --install-service
+UnifiStockTracker --install-service
 
 # Commands generated:
-# New-Service -Name "UnifiWatch" -BinaryPathName "C:\path\to\UnifiWatch.exe" `
-#   -StartupType Automatic -Description "UnifiWatch Service"
+# New-Service -Name "UnifiStockTracker" -BinaryPathName "C:\path\to\UnifiStockTracker.exe" `
+#   -StartupType Automatic -Description "Ubiquiti Stock Tracker Service"
 
 # Manage
-UnifiWatch --start-service
-UnifiWatch --stop-service
-UnifiWatch --pause-service
-UnifiWatch --resume-service
-UnifiWatch --uninstall-service
+UnifiStockTracker --start-service
+UnifiStockTracker --stop-service
+UnifiStockTracker --pause-service
+UnifiStockTracker --resume-service
+UnifiStockTracker --uninstall-service
 ```
 
 #### Linux (systemd)
 ```bash
 # Install
-sudo ./UnifiWatch --install-service
+sudo ./UnifiStockTracker --install-service
 
-# Generated file: /etc/systemd/system/unifiwatch.service
+# Generated file: /etc/systemd/system/unifistock.service
 # [Unit]
-# Description=UnifiWatch
+# Description=Ubiquiti Stock Tracker
 # After=network.target
 # 
 # [Service]
 # Type=simple
-# User=unifiwatch
-# ExecStart=/usr/local/bin/UnifiWatch --service-mode
+# User=unifistock
+# ExecStart=/usr/local/bin/UnifiStockTracker --service-mode
 # Restart=always
 # RestartSec=10
 # StandardOutput=journal
@@ -281,28 +281,28 @@ sudo ./UnifiWatch --install-service
 # WantedBy=multi-user.target
 
 # Manage
-sudo systemctl start unifiwatch
-sudo systemctl stop unifiwatch
-sudo systemctl enable unifiwatch  # auto-start on boot
-sudo systemctl restart unifiwatch
-sudo systemctl status unifiwatch
+sudo systemctl start unifistock
+sudo systemctl stop unifistock
+sudo systemctl enable unifistock  # auto-start on boot
+sudo systemctl restart unifistock
+sudo systemctl status unifistock
 ```
 
 #### macOS (launchd)
 ```bash
 # Install
-./UnifiWatch --install-service
+./UnifiStockTracker --install-service
 
-# Generated file: ~/Library/LaunchAgents/com.unifiwatch.tracker.plist
+# Generated file: ~/Library/LaunchAgents/com.unifistock.tracker.plist
 # <?xml version="1.0" encoding="UTF-8"?>
 # <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" ...>
 # <plist version="1.0">
 # <dict>
 #   <key>Label</key>
-#   <string>com.unifiwatch.tracker</string>
+#   <string>com.unifistock.tracker</string>
 #   <key>ProgramArguments</key>
 #   <array>
-#     <string>/usr/local/bin/UnifiWatch</string>
+#     <string>/usr/local/bin/UnifiStockTracker</string>
 #     <string>--service-mode</string>
 #   </array>
 #   <key>RunAtLoad</key>
@@ -312,26 +312,26 @@ sudo systemctl status unifiwatch
 # </plist>
 
 # Manage
-launchctl load ~/Library/LaunchAgents/com.unifiwatch.tracker.plist
-launchctl unload ~/Library/LaunchAgents/com.unifiwatch.tracker.plist
-launchctl start com.unifiwatch.tracker
-launchctl stop com.unifiwatch.tracker
+launchctl load ~/Library/LaunchAgents/com.unifistock.tracker.plist
+launchctl unload ~/Library/LaunchAgents/com.unifistock.tracker.plist
+launchctl start com.unifistock.tracker
+launchctl stop com.unifistock.tracker
 ```
 
 ### 6. Configuration Management Commands
 
 ```bash
 # Interactive configuration wizard
-UnifiWatch --configure
+UnifiStockTracker --configure
 
 # Display current config (redacts credentials)
-UnifiWatch --show-config
+UnifiStockTracker --show-config
 
 # Reset to defaults
-UnifiWatch --reset-config
+UnifiStockTracker --reset-config
 
 # Load from file
-UnifiWatch --config-file /path/to/config.json
+UnifiStockTracker --config-file /path/to/config.json
 ```
 
 ### 7. Dual-Mode Program Execution
@@ -393,7 +393,7 @@ Else
 4. **Audit logging** - Log all notification sends (redact partial credential)
 
 ### Service Security
-1. **Run as dedicated user** (Linux) - Create `unifiwatch` system user
+1. **Run as dedicated user** (Linux) - Create `unifistock` system user
 2. **Least privilege** - Don't run as root/admin
 3. **File permissions** - Config: 600, credentials key: 600
 4. **Systemd hardening** - Use `PrivateTmp=yes`, `NoNewPrivileges=yes`
@@ -490,7 +490,7 @@ Services/
   AzureCommunicationSmsProvider.cs  # Azure implementation
   SmtpGatewaySmsProvider.cs         # Carrier email implementation
   CompositeNotificationProvider.cs  # Multi-channel aggregator
-  UnifiWatchService.cs       # BackgroundService
+  UnifiStockTrackerService.cs       # BackgroundService
   ServiceLifecycleManager.cs        # Install/uninstall/start/stop
 
 Models/
@@ -521,9 +521,7 @@ Documentation/
 ```
 Program.cs                         # Dual-mode detection + HostBuilder
 NotificationService.cs             # Refactor to use INotificationProvider
-UnifiWatch.csproj          # New NuGet dependencies
+UnifiStockTracker.csproj          # New NuGet dependencies
 README.md                          # Service mode overview + link to docs
 ```
-
-
 

@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Extensions.Logging;
 
-namespace UnifiWatch.Services.Credentials;
+namespace UnifiStockTracker.Services.Credentials;
 
 /// <summary>
 /// Windows Credential Manager implementation using native Win32 API
@@ -11,7 +11,7 @@ namespace UnifiWatch.Services.Credentials;
 public class WindowsCredentialManager : ICredentialProvider
 {
     private readonly ILogger<WindowsCredentialManager> _logger;
-    private const string TargetNamePrefix = "UnifiWatch:";
+    private const string TargetNamePrefix = "UnifiStockTracker:";
 
     public string StorageMethodDescription => "Windows Credential Manager";
     public string StorageMethod => "windows-credential-manager";

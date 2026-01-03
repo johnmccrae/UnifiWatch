@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
-using UnifiWatch.Utilities;
+using UnifiStockTracker.Utilities;
 
-namespace UnifiWatch.Services.Credentials;
+namespace UnifiStockTracker.Services.Credentials;
 
 /// <summary>
 /// Factory for creating platform-appropriate credential providers

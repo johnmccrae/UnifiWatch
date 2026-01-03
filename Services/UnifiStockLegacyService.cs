@@ -1,25 +1,21 @@
 using System.Globalization;
 using System.Text.Json;
-using UnifiWatch.Configuration;
-using UnifiWatch.Models;
-using UnifiWatch.Services.Localization;
+using UnifiStockTracker.Configuration;
+using UnifiStockTracker.Models;
 
-namespace UnifiWatch.Services;
+namespace UnifiStockTracker.Services;
 
-public class unifiwatchLegacyService : IunifiwatchService
+public class UnifiStockLegacyService : IUnifiStockService
 {
     private readonly HttpClient _httpClient;
 
-    public unifiwatchLegacyService(HttpClient httpClient)
+    public UnifiStockLegacyService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }
 
     public async Task<List<UnifiProduct>> GetStockAsync(string store, string[]? collections = null, CancellationToken cancellationToken = default)
     {
-        var loc = ServiceProviderHolder.GetService<ResourceLocalizer>()
-                  ?? ResourceLocalizerHolder.Instance
-                  ?? ResourceLocalizer.Load(CultureInfo.CurrentUICulture);
         if (!StoreConfiguration.LegacyStores.TryGetValue(store, out var storeUrl))
         {
             throw new ArgumentException($"Store '{store}' is not supported. Valid stores: {string.Join(", ", StoreConfiguration.LegacyStores.Keys)}");
@@ -32,7 +28,7 @@ public class unifiwatchLegacyService : IunifiwatchService
         {
             if (!StoreConfiguration.LegacyCollections.TryGetValue(collectionKey, out var collectionSlug))
             {
-                Console.WriteLine(loc.Error("Warning.CollectionNotFound", collectionKey));
+                Console.WriteLine($"Warning: Collection '{collectionKey}' not found, skipping...");
                 continue;
             }
 
@@ -41,7 +37,7 @@ public class unifiwatchLegacyService : IunifiwatchService
 
             try
             {
-                Console.WriteLine(loc.Error("Info.FetchingCollectionProducts", productsUrl));
+                Console.WriteLine($"Fetching {productsUrl}...");
                 var response = await _httpClient.GetAsync(productsUrl, cancellationToken);
                 response.EnsureSuccessStatusCode();
 
@@ -50,7 +46,7 @@ public class unifiwatchLegacyService : IunifiwatchService
 
                 if (productsResponse?.Products == null)
                 {
-                    Console.WriteLine(loc.Error("Info.NoProductsInCollection", collectionKey));
+                    Console.WriteLine($"No products found for collection '{collectionKey}'");
                     continue;
                 }
 
@@ -78,7 +74,7 @@ public class unifiwatchLegacyService : IunifiwatchService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(loc.Error("Error.FetchingCollectionProducts", productsUrl, ex.Message));
+                Console.WriteLine($"Error fetching {productsUrl}: {ex.Message}");
             }
         }
 
