@@ -1,4 +1,4 @@
-namespace UnifiWatch.Services.Credentials;
+namespace UnifiStockTracker.Services.Credentials;
 
 /// <summary>
 /// Platform-agnostic credential storage interface

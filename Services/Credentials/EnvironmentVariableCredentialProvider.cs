@@ -1,17 +1,17 @@
 using Microsoft.Extensions.Logging;
 
-namespace UnifiWatch.Services.Credentials;
+namespace UnifiStockTracker.Services.Credentials;
 
 /// <summary>
 /// Environment variable-based credential provider
 /// Fallback for headless/containerized environments where no credential storage is available
-/// Format: unifiwatch_CRED_{KEY} (all uppercase, hyphens replaced with underscores)
+/// Format: UNIFISTOCK_CRED_{KEY} (all uppercase, hyphens replaced with underscores)
 /// WARNING: Least secure option - only use in controlled automation scenarios
 /// </summary>
 public class EnvironmentVariableCredentialProvider : ICredentialProvider
 {
     private readonly ILogger<EnvironmentVariableCredentialProvider> _logger;
-    private const string EnvPrefix = "unifiwatch_CRED_";
+    private const string EnvPrefix = "UNIFISTOCK_CRED_";
 
     public string StorageMethodDescription => "Environment variables (no persistence - headless only)";
     public string StorageMethod => "environment-variables";
@@ -160,7 +160,7 @@ public class EnvironmentVariableCredentialProvider : ICredentialProvider
 
     /// <summary>
     /// Converts a credential key to environment variable name
-    /// Example: "email-smtp" -> "unifiwatch_CRED_EMAIL_SMTP"
+    /// Example: "email-smtp" -> "UNIFISTOCK_CRED_EMAIL_SMTP"
     /// </summary>
     private string GetEnvironmentVariableName(string key)
     {

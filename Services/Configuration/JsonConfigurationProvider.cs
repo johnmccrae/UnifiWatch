@@ -1,16 +1,16 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
-using UnifiWatch.Configuration;
-using UnifiWatch.Utilities;
+using UnifiStockTracker.Models;
+using UnifiStockTracker.Utilities;
 
-namespace UnifiWatch.Services.Configuration;
+namespace UnifiStockTracker.Services.Configuration;
 
 /// <summary>
 /// JSON file-based configuration provider
 /// Handles loading, saving, and validating service configurations
 /// </summary>
-public class JsonConfigurationProvider : UnifiWatch.Configuration.IConfigurationProvider
+public class JsonConfigurationProvider : IConfigurationProvider
 {
     private readonly ILogger<JsonConfigurationProvider> _logger;
     private FileSystemWatcher? _fileWatcher;
@@ -40,7 +40,7 @@ public class JsonConfigurationProvider : UnifiWatch.Configuration.IConfiguration
     /// <summary>
     /// Loads configuration from JSON file or creates default
     /// </summary>
-    public async Task<ServiceConfiguration?> LoadAsync(CancellationToken cancellationToken = default)
+    public async Task<ServiceConfiguration> LoadAsync(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -111,66 +111,6 @@ public class JsonConfigurationProvider : UnifiWatch.Configuration.IConfiguration
         {
             _logger.LogError(ex, "Error saving configuration to {Path}", ConfigurationPath);
             return false;
-        }
-    }
-
-    /// <summary>
-    /// Gets the configuration file path
-    /// </summary>
-    public string ConfigurationFilePath => ConfigurationPath;
-
-    /// <summary>
-    /// Checks if configuration file exists
-    /// </summary>
-    public bool ConfigurationExists() => File.Exists(ConfigurationPath);
-
-    /// <summary>
-    /// Deletes the configuration file
-    /// </summary>
-    public async Task<bool> DeleteAsync(CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            if (File.Exists(ConfigurationPath))
-            {
-                File.Delete(ConfigurationPath);
-                _logger.LogInformation("Configuration file deleted: {Path}", ConfigurationPath);
-            }
-            await Task.CompletedTask;
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error deleting configuration file: {Path}", ConfigurationPath);
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// Creates a backup of the current configuration
-    /// </summary>
-    public async Task<string?> BackupAsync(CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            if (!File.Exists(ConfigurationPath))
-                return null;
-
-            var backupPath = Path.Combine(
-                ConfigurationDirectory,
-                $"config.backup.{DateTime.Now:yyyyMMdd-HHmmss}.json"
-            );
-
-            var json = await File.ReadAllTextAsync(ConfigurationPath, cancellationToken);
-            await File.WriteAllTextAsync(backupPath, json, cancellationToken);
-
-            _logger.LogInformation("Configuration backed up to: {Path}", backupPath);
-            return backupPath;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error creating configuration backup");
-            return null;
         }
     }
 
@@ -248,8 +188,8 @@ public class JsonConfigurationProvider : UnifiWatch.Configuration.IConfiguration
             },
             Notifications = new NotificationSettings
             {
-                Desktop = new DesktopNotificationConfig { Enabled = true },
-                Email = new EmailNotificationConfig
+                Desktop = new DesktopNotificationSettings { Enabled = true },
+                Email = new EmailNotificationSettings
                 {
                     Enabled = false,
                     Recipients = new(),
@@ -259,7 +199,7 @@ public class JsonConfigurationProvider : UnifiWatch.Configuration.IConfiguration
                     FromAddress = string.Empty,
                     CredentialKey = "email-smtp"
                 },
-                Sms = new SmsNotificationConfig
+                Sms = new SmsNotificationSettings
                 {
                     Enabled = false,
                     Provider = "twilio",
@@ -308,10 +248,7 @@ public class JsonConfigurationProvider : UnifiWatch.Configuration.IConfiguration
             {
                 _logger.LogDebug("Configuration file changed, reloading");
                 var updatedConfig = await LoadAsync();
-                if (updatedConfig != null)
-                {
-                    await onConfigurationChanged(updatedConfig);
-                }
+                await onConfigurationChanged(updatedConfig);
             }
             catch (Exception ex)
             {

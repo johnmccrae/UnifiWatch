@@ -1,9 +1,9 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
-using UnifiWatch.Utilities;
+using UnifiStockTracker.Utilities;
 
-namespace UnifiWatch.Configuration;
+namespace UnifiStockTracker.Configuration;
 
 /// <summary>
 /// File-based configuration provider with JSON serialization

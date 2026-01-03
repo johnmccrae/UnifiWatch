@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
 
-namespace UnifiStockTracker.Configuration;
+namespace UnifiStockTracker.Models;
 
 /// <summary>
-/// Main service configuration loaded from config.json
+/// Root configuration model for service mode
 /// </summary>
 public class ServiceConfiguration
 {
@@ -21,7 +21,7 @@ public class ServiceConfiguration
 }
 
 /// <summary>
-/// Service runtime settings
+/// Service-level configuration (auto-start, check intervals, pause state)
 /// </summary>
 public class ServiceSettings
 {
@@ -60,24 +60,24 @@ public class MonitoringSettings
 }
 
 /// <summary>
-/// Notification configuration container
+/// Notification channels configuration
 /// </summary>
 public class NotificationSettings
 {
     [JsonPropertyName("desktop")]
-    public DesktopNotificationConfig Desktop { get; set; } = new();
+    public DesktopNotificationSettings Desktop { get; set; } = new();
 
     [JsonPropertyName("email")]
-    public EmailNotificationConfig Email { get; set; } = new();
+    public EmailNotificationSettings Email { get; set; } = new();
 
     [JsonPropertyName("sms")]
-    public SmsNotificationConfig Sms { get; set; } = new();
+    public SmsNotificationSettings Sms { get; set; } = new();
 }
 
 /// <summary>
-/// Desktop/toast notification configuration
+/// Desktop notification configuration
 /// </summary>
-public class DesktopNotificationConfig
+public class DesktopNotificationSettings
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; } = true;
@@ -86,7 +86,7 @@ public class DesktopNotificationConfig
 /// <summary>
 /// Email notification configuration
 /// </summary>
-public class EmailNotificationConfig
+public class EmailNotificationSettings
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; } = false;
@@ -95,7 +95,7 @@ public class EmailNotificationConfig
     public List<string> Recipients { get; set; } = new();
 
     [JsonPropertyName("smtpServer")]
-    public string SmtpServer { get; set; } = "";
+    public string SmtpServer { get; set; } = string.Empty;
 
     [JsonPropertyName("smtpPort")]
     public int SmtpPort { get; set; } = 587;
@@ -104,56 +104,28 @@ public class EmailNotificationConfig
     public bool UseTls { get; set; } = true;
 
     [JsonPropertyName("fromAddress")]
-    public string FromAddress { get; set; } = "";
+    public string FromAddress { get; set; } = string.Empty;
 
     [JsonPropertyName("credentialKey")]
     public string CredentialKey { get; set; } = "email-smtp";
-
-    /// <summary>
-    /// Validates email configuration
-    /// </summary>
-    public bool IsValid()
-    {
-        if (!Enabled)
-            return true;
-
-        return !string.IsNullOrWhiteSpace(SmtpServer) &&
-               SmtpPort > 0 && SmtpPort <= 65535 &&
-               Recipients.Count > 0 &&
-               !string.IsNullOrWhiteSpace(FromAddress) &&
-               !string.IsNullOrWhiteSpace(CredentialKey);
-    }
 }
 
 /// <summary>
 /// SMS notification configuration
 /// </summary>
-public class SmsNotificationConfig
+public class SmsNotificationSettings
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; } = false;
 
     [JsonPropertyName("provider")]
-    public string Provider { get; set; } = "twilio";
+    public string Provider { get; set; } = "twilio"; // twilio, awssns, azure, smtp-gateway
 
     [JsonPropertyName("recipients")]
     public List<string> Recipients { get; set; } = new();
 
     [JsonPropertyName("credentialKey")]
-    public string CredentialKey { get; set; } = "sms-api";
-
-    /// <summary>
-    /// Validates SMS configuration
-    /// </summary>
-    public bool IsValid()
-    {
-        if (!Enabled)
-            return true;
-
-        return !string.IsNullOrWhiteSpace(Provider) &&
-               Recipients.Count > 0 &&
-               !string.IsNullOrWhiteSpace(CredentialKey);
-    }
+    public string CredentialKey { get; set; } = "sms-provider";
 }
 
 /// <summary>
@@ -165,5 +137,5 @@ public class CredentialSettings
     public bool Encrypted { get; set; } = true;
 
     [JsonPropertyName("storageMethod")]
-    public string StorageMethod { get; set; } = "auto";
+    public string StorageMethod { get; set; } = "auto"; // auto, windows-credential-manager, macos-keychain, linux-secret-service, encrypted-file, environment-variables
 }
