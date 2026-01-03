@@ -42,6 +42,11 @@ public class SmtpEmailProvider : IEmailProvider
                 return false;
             }
 
+            // Ensure TLS 1.2+ for secure connections
+            System.Net.ServicePointManager.SecurityProtocol = 
+                System.Net.SecurityProtocolType.Tls12 | 
+                System.Net.SecurityProtocolType.Tls13;
+
             using var client = new SmtpClient(_emailSettings.SmtpServer, _emailSettings.SmtpPort)
             {
                 EnableSsl = _emailSettings.UseTls,

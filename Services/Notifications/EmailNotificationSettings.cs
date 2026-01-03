@@ -48,4 +48,34 @@ public class EmailNotificationSettings
     /// </summary>
     [JsonPropertyName("credentialKey")]
     public string CredentialKey { get; set; } = "email-smtp";
+
+    /// <summary>
+    /// Whether to use OAuth 2.0 with Microsoft Graph API instead of SMTP
+    /// </summary>
+    [JsonPropertyName("useOAuth")]
+    public bool UseOAuth { get; set; } = false;
+
+    /// <summary>
+    /// Azure AD/Entra ID Tenant ID for OAuth
+    /// </summary>
+    [JsonPropertyName("oauthTenantId")]
+    public string OAuthTenantId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Azure AD/Entra ID Client ID (Application ID) for OAuth
+    /// </summary>
+    [JsonPropertyName("oauthClientId")]
+    public string OAuthClientId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Azure AD/Entra ID Client Secret for OAuth (stored in credential provider)
+    /// </summary>
+    [JsonPropertyName("oauthCredentialKey")]
+    public string OAuthCredentialKey { get; set; } = "email-oauth";
+
+    /// <summary>
+    /// Mailbox email address for OAuth (shared mailbox or service account)
+    /// </summary>
+    [JsonPropertyName("oauthMailbox")]
+    public string OAuthMailbox { get; set; } = string.Empty;
 }

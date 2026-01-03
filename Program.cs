@@ -57,6 +57,8 @@ public class Program
         var configureOption = new Option<bool>("--configure", "Interactive configuration wizard");
         var showConfigOption = new Option<bool>("--show-config", "Display current configuration");
 
+        var testEmailOption = new Option<bool>("--test-email", "Send a test email notification");
+
         // Initialize culture from CLI flag or configuration
         System.Globalization.CultureInfo? initializedCulture = null;
         ResourceLocalizer? localizer = null;
@@ -68,9 +70,32 @@ public class Program
         
         try
         {
-            using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+            // Check if running in test-email mode to enable info logging
+            var isTestEmailMode = args.Contains("--test-email");
+            var minLogLevel = isTestEmailMode ? LogLevel.Information : LogLevel.Warning;
+            
+            var loggerFactory = LoggerFactory.Create(builder => 
+            {
+                builder.AddConsole();
+                builder.SetMinimumLevel(minLogLevel);
+                // Always suppress ConfigurationProvider info unless in test mode
+                if (!isTestEmailMode)
+                {
+                    builder.AddFilter("UnifiWatch.Configuration.ConfigurationProvider", LogLevel.Warning);
+                }
+            });
             var services = new ServiceCollection();
             services.AddSingleton(loggerFactory);
+            services.AddLogging(builder => 
+            {
+                builder.AddConsole();
+                builder.SetMinimumLevel(minLogLevel);
+                // Always suppress ConfigurationProvider info unless in test mode
+                if (!isTestEmailMode)
+                {
+                    builder.AddFilter("UnifiWatch.Configuration.ConfigurationProvider", LogLevel.Warning);
+                }
+            });
             var configProvider = new ConfigurationProvider(loggerFactory.CreateLogger<ConfigurationProvider>());
             services.AddSingleton<IConfigurationProvider>(configProvider);
             
@@ -92,7 +117,10 @@ public class Program
             
             // Register notification services (email and SMS)
             // Load from config.json, with sensible defaults
-            
+
+            // HTTP client for Graph
+            services.AddHttpClient(nameof(GraphEmailProvider));
+
             // Email notification service
             services.AddSingleton<IOptions<Services.Notifications.EmailNotificationSettings>>(sp => 
             {
@@ -106,12 +134,39 @@ public class Program
                     UseTls = configEmail?.UseTls ?? true,
                     FromAddress = configEmail?.FromAddress ?? string.Empty,
                     Recipients = configEmail?.Recipients ?? new List<string>(),
-                    CredentialKey = configEmail?.CredentialKey ?? "email-smtp"
+                    CredentialKey = configEmail?.CredentialKey ?? "email-smtp",
+                    UseOAuth = configEmail?.UseOAuth ?? false,
+                    OAuthTenantId = configEmail?.OAuthTenantId ?? string.Empty,
+                    OAuthClientId = configEmail?.OAuthClientId ?? string.Empty,
+                    OAuthCredentialKey = configEmail?.OAuthCredentialKey ?? "email-oauth",
+                    OAuthMailbox = configEmail?.OAuthMailbox ?? string.Empty
                 };
                 return Options.Create(emailSettings);
             });
-            services.AddSingleton<IEmailProvider, SmtpEmailProvider>();
-            services.AddSingleton<EmailNotificationService>();
+
+            services.AddSingleton<IEmailProvider>(sp =>
+            {
+                var emailOpts = sp.GetRequiredService<IOptions<Services.Notifications.EmailNotificationSettings>>().Value;
+                if (emailOpts.UseOAuth)
+                {
+                    var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(nameof(GraphEmailProvider));
+                    return new GraphEmailProvider(
+                        sp.GetRequiredService<ILogger<GraphEmailProvider>>(),
+                        sp.GetRequiredService<IOptions<Services.Notifications.EmailNotificationSettings>>(),
+                        sp.GetRequiredService<ICredentialProvider>(),
+                        httpClient);
+                }
+
+                return new SmtpEmailProvider(
+                    sp.GetRequiredService<ILogger<SmtpEmailProvider>>(),
+                    sp.GetRequiredService<IOptions<Services.Notifications.EmailNotificationSettings>>(),
+                    sp.GetRequiredService<ICredentialProvider>());
+            });
+
+            services.AddSingleton<EmailNotificationService>(sp => new EmailNotificationService(
+                sp.GetRequiredService<IEmailProvider>(),
+                sp.GetRequiredService<IResourceLocalizer>(),
+                sp.GetRequiredService<ILogger<EmailNotificationService>>()));
             
             // SMS notification service
             services.AddSingleton<IOptions<Services.Notifications.SmsNotificationSettings>>(sp =>
@@ -127,6 +182,16 @@ public class Program
                 };
                 return Options.Create(smsSettings);
             });
+            
+            services.AddSingleton<ISmsProvider>(sp => new TwilioSmsProvider(
+                sp.GetRequiredService<IOptions<Services.Notifications.SmsNotificationSettings>>(),
+                sp.GetRequiredService<ICredentialProvider>(),
+                sp.GetRequiredService<ILogger<TwilioSmsProvider>>()));
+            services.AddSingleton<SmsNotificationService>(sp => new SmsNotificationService(
+                sp.GetRequiredService<ISmsProvider>(),
+                sp.GetRequiredService<IResourceLocalizer>(),
+                sp.GetRequiredService<ILogger<SmsNotificationService>>(),
+                sp.GetRequiredService<IOptions<Services.Notifications.SmsNotificationSettings>>().Value));
             
             // Register NotificationOrchestrator with configurable dedupe window
             services.AddSingleton<NotificationOrchestrator>(sp =>
@@ -144,9 +209,6 @@ public class Program
                 
                 return new NotificationOrchestrator(emailSvc, smsSvc, emailOpts, smsOpts, logger, dedupeWindow);
             });
-            
-            services.AddSingleton<ISmsProvider, TwilioSmsProvider>();
-            services.AddSingleton<SmsNotificationService>();
             
             System.Globalization.CultureInfo culture;
             if (!string.IsNullOrWhiteSpace(languageOverride))
@@ -201,6 +263,7 @@ public class Program
             serviceStatusOption.Description = localizer.CLI("ServiceStatus.Description", "Check UnifiWatch service status");
             configureOption.Description = localizer.CLI("Configure.Description", "Interactive configuration wizard");
             showConfigOption.Description = localizer.CLI("ShowConfig.Description", "Display current configuration");
+            testEmailOption.Description = localizer.CLI("TestEmail.Description", "Send a test email notification");
 
             rootCommand.AddOption(stockOption);
             rootCommand.AddOption(waitOption);
@@ -212,6 +275,7 @@ public class Program
             rootCommand.AddOption(serviceStatusOption);
             rootCommand.AddOption(configureOption);
             rootCommand.AddOption(showConfigOption);
+            rootCommand.AddOption(testEmailOption);
             rootCommand.AddOption(storeOption);
             rootCommand.AddOption(legacyApiStoreOption);
             rootCommand.AddOption(collectionsOption);
@@ -233,6 +297,7 @@ public class Program
             rootCommand.AddOption(serviceStatusOption);
             rootCommand.AddOption(configureOption);
             rootCommand.AddOption(showConfigOption);
+            rootCommand.AddOption(testEmailOption);
             rootCommand.AddOption(storeOption);
             rootCommand.AddOption(legacyApiStoreOption);
             rootCommand.AddOption(collectionsOption);
@@ -256,6 +321,7 @@ public class Program
             var configure = context.ParseResult.GetValueForOption(configureOption);
             var showConfig = context.ParseResult.GetValueForOption(showConfigOption);
             var store = context.ParseResult.GetValueForOption(storeOption);
+                        var testEmail = context.ParseResult.GetValueForOption(testEmailOption);
             var legacyStore = context.ParseResult.GetValueForOption(legacyApiStoreOption);
             var collections = context.ParseResult.GetValueForOption(collectionsOption);
             var productNames = context.ParseResult.GetValueForOption(productNamesOption);
@@ -316,6 +382,12 @@ public class Program
                 context.ExitCode = 0;
                 return;
             }
+            if (testEmail)
+            {
+                await HandleTestEmailAsync(serviceProvider);
+                context.ExitCode = 0;
+                return;
+            }
             if (showConfig)
             {
                 await HandleShowConfigAsync(serviceProvider);
@@ -370,7 +442,7 @@ public class Program
             {
                 if (stock)
                 {
-                    await GetStockAsync(selectedStore, collections, isLegacy);
+                    await GetStockAsync(selectedStore, collections, productNames, productSkus, isLegacy);
                 }
                 else // wait
                 {
@@ -387,7 +459,7 @@ public class Program
         return await rootCommand.InvokeAsync(args);
     }
 
-    static async Task GetStockAsync(string store, string[]? collections, bool isLegacy)
+    static async Task GetStockAsync(string store, string[]? collections, string[]? productNames, string[]? productSkus, bool isLegacy)
     {
         using var httpClient = new HttpClient();
 
@@ -398,6 +470,20 @@ public class Program
                 : new unifiwatchService(httpClient);
 
             var products = await service.GetStockAsync(store, collections);
+            
+            // Apply product filters if specified
+            if ((productNames?.Length ?? 0) > 0)
+            {
+                var nameSet = new HashSet<string>(productNames!, StringComparer.OrdinalIgnoreCase);
+                products = products.Where(p => nameSet.Contains(p.Name)).ToList();
+            }
+            
+            if ((productSkus?.Length ?? 0) > 0)
+            {
+                var skuSet = new HashSet<string>(productSkus!, StringComparer.OrdinalIgnoreCase);
+                products = products.Where(p => !string.IsNullOrEmpty(p.SKU) && skuSet.Contains(p.SKU)).ToList();
+            }
+            
             DisplayProducts(products);
         }
         catch (Exception ex)
@@ -435,19 +521,19 @@ public class Program
     {
         var loc = ResourceLocalizerHolder.Instance ?? ResourceLocalizer.Load(System.Globalization.CultureInfo.CurrentUICulture);
         Console.WriteLine("\n" + loc.CLI("List.FoundProducts", products.Count) + "\n");
-        Console.WriteLine("{0,-50} {1,-12} {2,-30} {3,-20} {4,10}", 
+        Console.WriteLine("{0,-46} {1,-16} {2,-35} {3,-23} {4,10}", 
             loc.CLI("List.Headers.Name"), loc.CLI("List.Headers.Available"), loc.CLI("List.Headers.Category"), loc.CLI("List.Headers.SKU"), loc.CLI("List.Headers.Price"));
-        Console.WriteLine(new string('-', 125));
+        Console.WriteLine(new string('-', 135));
 
         foreach (var product in products)
         {
             var availability = product.Available ? loc.CLI("List.InStock") : loc.CLI("List.OutOfStock");
             var price = product.Price.HasValue ? (product.Price.Value / 100).ToString("F2", System.Globalization.CultureInfo.CurrentCulture) : loc.CLI("List.PriceNA");
             
-            Console.WriteLine("{0,-50} {1,-12} {2,-30} {3,-20} {4,10}",
-                product.Name.Length > 47 ? product.Name.Substring(0, 47) + "..." : product.Name,
+            Console.WriteLine("{0,-46} {1,-16} {2,-35} {3,-23} {4,10}",
+                product.Name.Length > 43 ? product.Name.Substring(0, 43) + "..." : product.Name,
                 availability,
-                product.Category?.Length > 27 ? product.Category.Substring(0, 27) + "..." : product.Category ?? loc.CLI("List.CategoryNA"),
+                product.Category?.Length > 32 ? product.Category.Substring(0, 32) + "..." : product.Category ?? loc.CLI("List.CategoryNA"),
                 product.SKU ?? loc.CLI("List.SKUNA"),
                 price);
         }
@@ -535,46 +621,105 @@ public class Program
                     return CredentialProviderFactory.CreateProvider("auto", loggerFactory);
                 });
                 
-                // Notification services with safe defaults (noop if not configured)
-                var logger = new LoggerFactory().CreateLogger<Program>();
-                var noopEmailSettings = new Services.Notifications.EmailNotificationSettings { Enabled = false };
-                var noopSmsSettings = new Services.Notifications.SmsNotificationSettings { Enabled = false };
-                
-                services.AddSingleton<IOptions<Services.Notifications.EmailNotificationSettings>>(sp => Options.Create(noopEmailSettings));
-                services.AddSingleton<IOptions<Services.Notifications.SmsNotificationSettings>>(sp => Options.Create(noopSmsSettings));
-                
-                services.AddSingleton<IEmailProvider>(sp => new SmtpEmailProvider(
-                    sp.GetRequiredService<ILogger<SmtpEmailProvider>>(),
-                    sp.GetRequiredService<IOptions<Services.Notifications.EmailNotificationSettings>>(),
-                    sp.GetRequiredService<ICredentialProvider>()));
+                // Notification services (load real config)
+                services.AddHttpClient(nameof(GraphEmailProvider));
+
+                services.AddSingleton<IOptions<Services.Notifications.EmailNotificationSettings>>(sp =>
+                {
+                    var cfgProvider = sp.GetRequiredService<IConfigurationProvider>();
+                    var cfg = cfgProvider.LoadAsync(CancellationToken.None).GetAwaiter().GetResult()
+                              ?? cfgProvider.GetDefaultConfiguration();
+
+                    var configEmail = cfg.Notifications.Email;
+                    var emailSettings = new Services.Notifications.EmailNotificationSettings
+                    {
+                        Enabled = configEmail.Enabled,
+                        SmtpServer = configEmail.SmtpServer,
+                        SmtpPort = configEmail.SmtpPort,
+                        UseTls = configEmail.UseTls,
+                        FromAddress = configEmail.FromAddress,
+                        Recipients = configEmail.Recipients,
+                        CredentialKey = configEmail.CredentialKey ?? "email-smtp",
+                        UseOAuth = configEmail.UseOAuth,
+                        OAuthTenantId = configEmail.OAuthTenantId,
+                        OAuthClientId = configEmail.OAuthClientId,
+                        OAuthCredentialKey = configEmail.OAuthCredentialKey ?? "email-oauth",
+                        OAuthMailbox = configEmail.OAuthMailbox
+                    };
+                    return Options.Create(emailSettings);
+                });
+
+                services.AddSingleton<IOptions<Services.Notifications.SmsNotificationSettings>>(sp =>
+                {
+                    var cfgProvider = sp.GetRequiredService<IConfigurationProvider>();
+                    var cfg = cfgProvider.LoadAsync(CancellationToken.None).GetAwaiter().GetResult()
+                              ?? cfgProvider.GetDefaultConfiguration();
+                    var configSms = cfg.Notifications.Sms;
+                    var smsSettings = new Services.Notifications.SmsNotificationSettings
+                    {
+                        Enabled = configSms.Enabled,
+                        ServiceType = configSms.Provider,
+                        Recipients = configSms.Recipients,
+                        AuthTokenKeyName = configSms.CredentialKey ?? "sms:auth-token"
+                    };
+                    return Options.Create(smsSettings);
+                });
+
+                services.AddSingleton<IEmailProvider>(sp =>
+                {
+                    var emailOpts = sp.GetRequiredService<IOptions<Services.Notifications.EmailNotificationSettings>>().Value;
+                    if (emailOpts.UseOAuth)
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(nameof(GraphEmailProvider));
+                        return new GraphEmailProvider(
+                            sp.GetRequiredService<ILogger<GraphEmailProvider>>(),
+                            sp.GetRequiredService<IOptions<Services.Notifications.EmailNotificationSettings>>(),
+                            sp.GetRequiredService<ICredentialProvider>(),
+                            httpClient);
+                    }
+
+                    return new SmtpEmailProvider(
+                        sp.GetRequiredService<ILogger<SmtpEmailProvider>>(),
+                        sp.GetRequiredService<IOptions<Services.Notifications.EmailNotificationSettings>>(),
+                        sp.GetRequiredService<ICredentialProvider>());
+                });
+
                 services.AddSingleton<EmailNotificationService>(sp => new EmailNotificationService(
                     sp.GetRequiredService<IEmailProvider>(),
                     sp.GetRequiredService<IResourceLocalizer>(),
                     sp.GetRequiredService<ILogger<EmailNotificationService>>()));
-                
+
                 services.AddSingleton<ISmsProvider>(sp => new TwilioSmsProvider(
                     sp.GetRequiredService<IOptions<Services.Notifications.SmsNotificationSettings>>(),
                     sp.GetRequiredService<ICredentialProvider>(), 
                     sp.GetRequiredService<ILogger<TwilioSmsProvider>>()));
+
                 services.AddSingleton<SmsNotificationService>(sp => new SmsNotificationService(
                     sp.GetRequiredService<ISmsProvider>(),
                     sp.GetRequiredService<IResourceLocalizer>(),
                     sp.GetRequiredService<ILogger<SmsNotificationService>>(),
-                    noopSmsSettings));
-                
-                // Notification orchestrator (always available, safe when nothing is enabled)
+                    sp.GetRequiredService<IOptions<Services.Notifications.SmsNotificationSettings>>().Value));
+
+                // Notification orchestrator (uses configured dedupe window)
                 services.AddSingleton<NotificationOrchestrator>(sp =>
                 {
+                    var cfgProvider = sp.GetRequiredService<IConfigurationProvider>();
+                    var cfg = cfgProvider.LoadAsync(CancellationToken.None).GetAwaiter().GetResult()
+                              ?? cfgProvider.GetDefaultConfiguration();
+
                     var emailSvc = sp.GetRequiredService<EmailNotificationService>();
                     var smsSvc = sp.GetRequiredService<SmsNotificationService>();
                     var emailOpts = sp.GetRequiredService<IOptions<Services.Notifications.EmailNotificationSettings>>();
                     var smsOpts = sp.GetRequiredService<IOptions<Services.Notifications.SmsNotificationSettings>>();
                     var orchLogger = sp.GetRequiredService<ILogger<NotificationOrchestrator>>();
                     
-                    orchLogger.LogInformation("NotificationOrchestrator initialized (email enabled: {Email}, sms enabled: {Sms})",
-                        emailOpts.Value.Enabled, smsOpts.Value.Enabled);
+                    var dedupeMinutes = Math.Clamp(cfg.Notifications.DedupeMinutes, 1, 60);
+                    var dedupeWindow = TimeSpan.FromMinutes(dedupeMinutes);
                     
-                    return new NotificationOrchestrator(emailSvc, smsSvc, emailOpts, smsOpts, orchLogger, TimeSpan.FromMinutes(5));
+                    orchLogger.LogInformation("NotificationOrchestrator initialized (email enabled: {Email}, sms enabled: {Sms}, dedupe: {Dedupe} minutes)",
+                        emailOpts.Value.Enabled, smsOpts.Value.Enabled, dedupeMinutes);
+                    
+                    return new NotificationOrchestrator(emailSvc, smsSvc, emailOpts, smsOpts, orchLogger, dedupeWindow);
                 });
                 
                 // The hosted service
@@ -809,4 +954,75 @@ public class Program
             Console.WriteLine($"✗ Error displaying configuration: {ex.Message}");
         }
     }
+    private static async Task HandleTestEmailAsync(IServiceProvider? serviceProvider)
+    {
+        try
+        {
+            if (serviceProvider == null)
+            {
+                Console.WriteLine("✗ Service provider not available");
+                return;
+            }
+
+            var emailService = serviceProvider.GetService<EmailNotificationService>();
+            if (emailService == null)
+            {
+                Console.WriteLine("✗ Email notification service not available");
+                return;
+            }
+
+            var emailSettings = serviceProvider.GetService<IOptions<Services.Notifications.EmailNotificationSettings>>()?.Value;
+            if (emailSettings == null || !emailSettings.Enabled || emailSettings.Recipients.Count == 0)
+            {
+                Console.WriteLine("✗ Email notifications are disabled or no recipients are configured.");
+                return;
+            }
+
+            Console.WriteLine("\nSending test email...");
+            
+            var testProduct = new UnifiProduct
+            {
+                Name = "Test Product",
+                Available = true,
+                Category = "Test",
+                SKU = "TEST-SKU",
+                Price = 99900
+            };
+
+            var allSuccess = true;
+            foreach (var recipient in emailSettings.Recipients)
+            {
+                var sent = await emailService.SendProductInStockNotificationAsync(
+                    testProduct,
+                    recipient,
+                    store: "TestStore",
+                    culture: System.Globalization.CultureInfo.CurrentCulture,
+                    cancellationToken: CancellationToken.None);
+
+                if (sent)
+                {
+                    Console.WriteLine($"✓ Test email sent to {recipient}");
+                }
+                else
+                {
+                    Console.WriteLine($"✗ Failed to send test email to {recipient}");
+                    allSuccess = false;
+                }
+            }
+
+            if (allSuccess)
+            {
+                Console.WriteLine("\n✓ All test emails sent successfully!");
+            }
+            else
+            {
+                Console.WriteLine("\n✗ One or more test emails failed. Please check your email configuration.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"✗ Error sending test email: {ex.Message}");
+        }
+    }
 }
+

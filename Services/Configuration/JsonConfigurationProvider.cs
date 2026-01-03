@@ -40,7 +40,7 @@ public class JsonConfigurationProvider : UnifiWatch.Configuration.IConfiguration
     /// <summary>
     /// Loads configuration from JSON file or creates default
     /// </summary>
-    public async Task<ServiceConfiguration> LoadAsync(CancellationToken cancellationToken = default)
+    public async Task<ServiceConfiguration?> LoadAsync(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -136,6 +136,7 @@ public class JsonConfigurationProvider : UnifiWatch.Configuration.IConfiguration
                 File.Delete(ConfigurationPath);
                 _logger.LogInformation("Configuration file deleted: {Path}", ConfigurationPath);
             }
+            await Task.CompletedTask;
             return true;
         }
         catch (Exception ex)
@@ -307,7 +308,10 @@ public class JsonConfigurationProvider : UnifiWatch.Configuration.IConfiguration
             {
                 _logger.LogDebug("Configuration file changed, reloading");
                 var updatedConfig = await LoadAsync();
-                await onConfigurationChanged(updatedConfig);
+                if (updatedConfig != null)
+                {
+                    await onConfigurationChanged(updatedConfig);
+                }
             }
             catch (Exception ex)
             {

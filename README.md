@@ -4,7 +4,7 @@
 
 UnifiWatch is a tool that automatically checks if Ubiquiti networking products are in stock at their online stores. Instead of manually refreshing the Ubiquiti store website hoping your desired product comes back in stock, this program does it for you automatically.
 
-This is a C# rewrite of the original PowerShell module created by [Evotec](https://github.com/EvotecIT) of Poland. The C# version provides better cross-platform support and performance while maintaining all the functionality of the original.
+This is a C# rewrite of the original PowerShell module [UnifiStockTracker](https://github.com/EvotecIT/UnifiStockTracker) created by [Evotec](https://github.com/EvotecIT/UnifiStockTracker) (Przemysław Kłys). The C# version provides better cross-platform support and performance while maintaining all the functionality of the original.
 
 Think of it as a personal shopping assistant that watches the store 24/7 and alerts you the moment your product becomes available.
 
@@ -13,8 +13,10 @@ Think of it as a personal shopping assistant that watches the store 24/7 and ale
 Ubiquiti products (like UniFi WiFi access points, security cameras, switches, and routers) are often sold out due to high demand. This tool helps you:
 
 - **Save Time**: No more constantly checking the website manually
-- **Never Miss a Restock**: Get notified immediately when products become available
-- **Monitor Multiple Products**: Watch several products at once
+- **Never Miss a Restock**: Get notified immediately when products become available via email, SMS, or desktop notifications
+- **Monitor Multiple Products**: Watch several products at once across different stores
+- **Multiple Notification Options**: Choose email (SMTP or OAuth), SMS, Discord, or desktop alerts
+- **Run as a Service**: 24/7 background monitoring on Windows, macOS, or Linux
 - **Open the Store Automatically**: When stock is found, it opens the product page in your browser
 - **Get Alerts**: Hear a beep notification when stock is available (Windows only)
 
@@ -445,11 +447,20 @@ Linux/macOS (Terminal):
 ### Features
 
 - **24/7 Background Monitoring**: Service runs continuously checking stock
-- **Multiple Notification Channels**: Email, SMS (Twilio), Desktop notifications, Discord
+- **Multiple Notification Channels**: 
+  - Email (SMTP or Microsoft Graph OAuth with shared mailbox support)
+  - SMS (Twilio)
+  - Desktop notifications (native OS integration)
+  - Discord webhooks
+- **Flexible Email Authentication**:
+  - **SMTP**: Traditional username/password authentication
+  - **OAuth 2.0**: Microsoft Graph API with client credentials flow for shared mailboxes
+- **Interactive Configuration Wizard**: Easy setup with guided prompts for all settings
 - **Secure Credential Storage**:
   - Windows: Windows Credential Manager (DPAPI encryption)
   - macOS: Keychain
   - Linux: Secret Service or encrypted file storage
+- **Multi-Language Support**: English, French, German, Spanish, Italian, Portuguese (Brazil)
 - **Cross-Platform**: Windows, Linux (systemd), macOS (launchd)
 - **Automatic Updates**: Updates configuration without service restart
 - **Detailed Logging**: View service logs for debugging and monitoring
@@ -473,7 +484,15 @@ Ready-made configuration examples in `examples/` directory:
 
 ## Localization
 
-- Resource files live under `Resources/` and are JSON per culture and category: `CLI.<culture>.json`, `Notifications.<culture>.json`, `Errors.<culture>.json`.
+UnifiWatch supports the following languages:
+- **English** (en-CA)
+- **French** (fr-CA, fr-FR)
+- **German** (de-DE)
+- **Spanish** (es-ES)
+- **Italian** (it-IT)
+- **Portuguese (Brazil)** (pt-BR)
+
+Resource files live under `Resources/` and are JSON per culture and category: `CLI.<culture>.json`, `Notifications.<culture>.json`, `Errors.<culture>.json`.
 - Fallback order is culture name → two-letter language code → `en-CA`. Missing keys return the key name.
 - To add a new locale:
   - Copy the `en-CA` files as a template and translate the values.
@@ -483,14 +502,13 @@ Ready-made configuration examples in `examples/` directory:
 - **Fallback & Robustness**: Run `dotnet test --filter ResourceLocalizerFallbackTests` to verify graceful handling of malformed JSON files and proper localization of all messages.
 - Testing: run `dotnet test` to ensure resource JSON is valid and look for localized output in CLI flows (`--wait` warnings, product lists, notifications).
 
-## Credits
+## Acknowledgments
 
-- Original PowerShell module by [EvotecIT/UnifiWatch](https://github.com/EvotecIT/UnifiWatch)
-- C# rewrite maintains the same API monitoring approach
-- API discovery and implementation patterns from original project
+This project is derived from [UnifiStockTracker](https://github.com/EvotecIT/UnifiStockTracker), a PowerShell module originally created by [EvotecIT](https://github.com/EvotecIT) (Przemysław Kłys). The C# rewrite adapts the original API monitoring strategies and command-line interface design while expanding functionality with email/SMS notifications, OAuth support, and multi-platform deployment. Both projects are distributed under the MIT License.
 
 ## License
 
-This project maintains the same open-source spirit as the original PowerShell module.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
+Both UnifiWatch and the original UnifiStockTracker are open-source projects distributed under the MIT License (Copyright © 2022 Evotec), permitting free use, modification, and distribution with proper attribution.
 

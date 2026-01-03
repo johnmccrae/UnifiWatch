@@ -32,11 +32,13 @@ public class StockWatcher
         // Get initial stock to validate products
         var currentStock = await _stockService.GetStockAsync(_store, null, cancellationToken);
 
-        var cache = currentStock.ToDictionary(p => p.Name, p => p);
+        // Build cache with SKU as primary key (SKU is unique), fallback to name if no SKU
+        var cache = new Dictionary<string, UnifiProduct>(StringComparer.OrdinalIgnoreCase);
         foreach (var product in currentStock)
         {
-            if (!cache.ContainsKey(product.SKU))
-                cache[product.SKU] = product;
+            var key = !string.IsNullOrWhiteSpace(product.SKU) ? product.SKU : product.Name;
+            if (!cache.ContainsKey(key))
+                cache[key] = product;
         }
 
         var applicableProducts = new List<string>();

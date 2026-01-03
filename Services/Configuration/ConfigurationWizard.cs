@@ -39,7 +39,7 @@ public class ConfigurationWizard
             // Step 1: Store selection
             var storeOptions = new[] { "USA", "Europe", "UK", "Brazil", "India", "Japan", "Taiwan", "Singapore", "Mexico", "China" };
             var selectedStoreIdx = PromptForChoice(
-                _localizer.CLI("ConfigWizard.SelectStore", "Select store to monitor"),
+                _localizer.CLI("ConfigWizard.SelectStore", "Which Ubiquiti store do you want to monitor?"),
                 storeOptions,
                 Array.IndexOf(storeOptions, config.Monitoring.Store)
             );
@@ -50,7 +50,7 @@ public class ConfigurationWizard
             config.Monitoring.UseModernApi = !legacyStores.Contains(config.Monitoring.Store);
 
             // Step 2: Product filters
-            Console.WriteLine($"\n{_localizer.CLI("ConfigWizard.ProductFilters", "Product Filters (leave empty to monitor all)")}");
+            Console.WriteLine($"\n{_localizer.CLI("ConfigWizard.ProductFilters", "Product Filters (optional - leave empty to monitor all products)")}");
             
             var productNames = PromptForStringArray(
                 _localizer.CLI("ConfigWizard.ProductNames", "Product names to monitor (comma-separated, or press Enter to skip)"),
@@ -59,14 +59,14 @@ public class ConfigurationWizard
             config.Monitoring.ProductNames = productNames;
 
             var productSkus = PromptForStringArray(
-                _localizer.CLI("ConfigWizard.ProductSkus", "Product SKUs to monitor (comma-separated, or press Enter to skip)"),
+                _localizer.CLI("ConfigWizard.ProductSkus", "Product SKUs to monitor (e.g., UDM-SE, comma-separated, or press Enter to skip)"),
                 config.Monitoring.ProductSkus
             );
             config.Monitoring.ProductSkus = productSkus;
 
             // Step 3: Check interval
             var checkIntervalSeconds = PromptForInt(
-                _localizer.CLI("ConfigWizard.CheckInterval", "Check interval (seconds, 30-3600)"),
+                _localizer.CLI("ConfigWizard.CheckInterval", "How often to check stock (in seconds, 30-3600)"),
                 config.Service.CheckIntervalSeconds,
                 30,
                 3600
@@ -74,10 +74,10 @@ public class ConfigurationWizard
             config.Service.CheckIntervalSeconds = checkIntervalSeconds;
 
             // Step 4: Notification channels
-            Console.WriteLine($"\n{_localizer.CLI("ConfigWizard.Notifications", "Notification Configuration")}");
+            Console.WriteLine($"\n{_localizer.CLI("ConfigWizard.Notifications", "How should we notify you when stock is available?")}");
 
             var enableEmail = PromptForYesNo(
-                _localizer.CLI("ConfigWizard.EnableEmail", "Enable email notifications?"),
+                _localizer.CLI("ConfigWizard.EnableEmail", "Send notifications via email?"),
                 config.Notifications.Email.Enabled
             );
             config.Notifications.Email.Enabled = enableEmail;
@@ -91,7 +91,7 @@ public class ConfigurationWizard
             }
 
             var enableSms = PromptForYesNo(
-                _localizer.CLI("ConfigWizard.EnableSms", "Enable SMS notifications?"),
+                _localizer.CLI("ConfigWizard.EnableSms", "Send notifications via SMS text?"),
                 config.Notifications.Sms.Enabled
             );
             config.Notifications.Sms.Enabled = enableSms;
@@ -106,7 +106,7 @@ public class ConfigurationWizard
 
             // Step 5: Dedupe window
             var dedupeMinutes = PromptForInt(
-                _localizer.CLI("ConfigWizard.DedupeWindow", "Notification dedupe window (minutes, 1-60)"),
+                _localizer.CLI("ConfigWizard.DedupeWindow", "How long to wait before sending the same notification again (in minutes, 1-60)"),
                 config.Notifications.DedupeMinutes,
                 1,
                 60
@@ -114,7 +114,7 @@ public class ConfigurationWizard
             config.Notifications.DedupeMinutes = dedupeMinutes;
 
             // Step 6: Language/culture
-            var cultures = new[] { "en-CA", "fr-CA", "fr-FR", "de-DE", "es-ES", "it-IT" };
+            var cultures = new[] { "en-CA", "fr-CA", "fr-FR", "de-DE", "es-ES", "it-IT", "pt-BR" };
             var cultureLookup = new Dictionary<string, string>
             {
                 { "en-CA", "English (Canada)" },
@@ -122,10 +122,11 @@ public class ConfigurationWizard
                 { "fr-FR", "Français (France)" },
                 { "de-DE", "Deutsch" },
                 { "es-ES", "Español" },
-                { "it-IT", "Italiano" }
+                { "it-IT", "Italiano" },
+                { "pt-BR", "Português (Brasil)" }
             };
             var selectedCultureIdx = PromptForChoice(
-                _localizer.CLI("ConfigWizard.SelectLanguage", "Select language"),
+                _localizer.CLI("ConfigWizard.SelectLanguage", "What language would you like to use?"),
                 cultures.Select(c => cultureLookup[c]).ToArray(),
                 Array.IndexOf(cultures, config.Service.Language ?? "en-CA")
             );
@@ -157,48 +158,151 @@ public class ConfigurationWizard
     /// </summary>
     private async Task<bool> ConfigureEmailAsync(ServiceConfiguration config, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"\n{_localizer.CLI("ConfigWizard.EmailConfig", "Email Configuration")}");
+        Console.WriteLine($"\n{_localizer.CLI("ConfigWizard.EmailConfig", "Email Settings")}");
 
-        config.Notifications.Email.SmtpServer = PromptForString(
-            _localizer.CLI("ConfigWizard.SmtpServer", "SMTP server (e.g., smtp.gmail.com)"),
-            config.Notifications.Email.SmtpServer
+        // Allow environment override for auth method
+        var useOAuthEnv = Environment.GetEnvironmentVariable("UNIFIWATCH_EMAIL_USE_OAUTH");
+        var useOAuthDefault = !string.IsNullOrEmpty(useOAuthEnv) && (useOAuthEnv.Equals("true", StringComparison.OrdinalIgnoreCase) || useOAuthEnv == "1");
+
+        var authMethods = new[]
+        {
+            _localizer.CLI("ConfigWizard.AuthMethod.Smtp", "SMTP (username/password or app password)"),
+            _localizer.CLI("ConfigWizard.AuthMethod.OAuth", "OAuth 2.0 (Microsoft Graph)")
+        };
+
+        var selectedAuthIdx = PromptForChoice(
+            _localizer.CLI("ConfigWizard.AuthMethod", "Which email authentication method do you use?"),
+            authMethods,
+            useOAuthDefault ? 1 : 0
         );
 
-        config.Notifications.Email.SmtpPort = PromptForInt(
-            _localizer.CLI("ConfigWizard.SmtpPort", "SMTP port (default 587)"),
-            config.Notifications.Email.SmtpPort,
-            1,
-            65535
-        );
+        config.Notifications.Email.UseOAuth = selectedAuthIdx == 1;
 
-        config.Notifications.Email.UseTls = PromptForYesNo(
-            _localizer.CLI("ConfigWizard.UseTls", "Use TLS?"),
-            config.Notifications.Email.UseTls
-        );
+        // Configure based on selection
+        var emailConfigured = config.Notifications.Email.UseOAuth
+            ? await ConfigureOAuthEmailAsync(config, cancellationToken)
+            : await ConfigureSmtpEmailAsync(config, cancellationToken);
 
-        config.Notifications.Email.FromAddress = PromptForString(
-            _localizer.CLI("ConfigWizard.FromAddress", "From address (your email)"),
-            config.Notifications.Email.FromAddress
-        );
+        if (!emailConfigured)
+        {
+            return false;
+        }
 
+        // Recipients (common)
         var recipients = PromptForStringArray(
-            _localizer.CLI("ConfigWizard.Recipients", "Recipient emails (comma-separated)"),
+            _localizer.CLI("ConfigWizard.Recipients", "Email addresses to send notifications to (comma-separated)"),
             config.Notifications.Email.Recipients
         );
         config.Notifications.Email.Recipients = recipients;
 
-        // Store credentials
+        return true;
+    }
+
+    private async Task<bool> ConfigureSmtpEmailAsync(ServiceConfiguration config, CancellationToken cancellationToken)
+    {
+        Console.WriteLine($"\n{_localizer.CLI("ConfigWizard.SmtpSettings", "SMTP Email Settings")}");
+
+        // Env overrides
+        var smtpServerEnv = Environment.GetEnvironmentVariable("UNIFIWATCH_EMAIL_SMTP_SERVER");
+        var smtpPortEnv = Environment.GetEnvironmentVariable("UNIFIWATCH_EMAIL_SMTP_PORT");
+        var useTlsEnv = Environment.GetEnvironmentVariable("UNIFIWATCH_EMAIL_USE_TLS");
+        var fromEnv = Environment.GetEnvironmentVariable("UNIFIWATCH_EMAIL_FROM_ADDRESS");
+        var credentialKeyEnv = Environment.GetEnvironmentVariable("UNIFIWATCH_EMAIL_CREDENTIAL_KEY");
+
+        config.Notifications.Email.SmtpServer = PromptForString(
+            _localizer.CLI("ConfigWizard.SmtpServer", "SMTP server address (e.g., smtp.gmail.com)"),
+            smtpServerEnv ?? config.Notifications.Email.SmtpServer
+        );
+
+        var defaultPort = config.Notifications.Email.SmtpPort;
+        if (!string.IsNullOrEmpty(smtpPortEnv) && int.TryParse(smtpPortEnv, out var envPort))
+        {
+            defaultPort = envPort;
+        }
+
+        config.Notifications.Email.SmtpPort = PromptForInt(
+            _localizer.CLI("ConfigWizard.SmtpPort", "SMTP port number (usually 587 for TLS, 465 for SSL)"),
+            defaultPort,
+            1,
+            65535
+        );
+
+        var defaultTls = config.Notifications.Email.UseTls;
+        if (!string.IsNullOrEmpty(useTlsEnv))
+        {
+            defaultTls = useTlsEnv.Equals("true", StringComparison.OrdinalIgnoreCase) || useTlsEnv == "1";
+        }
+
+        config.Notifications.Email.UseTls = PromptForYesNo(
+            _localizer.CLI("ConfigWizard.UseTls", "Use secure TLS encryption for email?"),
+            defaultTls
+        );
+
+        config.Notifications.Email.FromAddress = PromptForString(
+            _localizer.CLI("ConfigWizard.FromAddress", "Email address to send from (usually your email address)"),
+            fromEnv ?? config.Notifications.Email.FromAddress
+        );
+
+        // Credentials
         var password = PromptForPassword(
-            _localizer.CLI("ConfigWizard.EmailPassword", "Email password or app password")
+            _localizer.CLI("ConfigWizard.EmailPassword", "Email password or app-specific password (input is hidden)")
         );
 
         if (!string.IsNullOrWhiteSpace(password))
         {
-            var credentialKey = config.Notifications.Email.CredentialKey ?? "email-smtp";
+            var credentialKey = credentialKeyEnv ?? config.Notifications.Email.CredentialKey ?? "email-smtp";
+            config.Notifications.Email.CredentialKey = credentialKey;
             await _credentialProvider.StoreAsync(credentialKey, password);
             Console.WriteLine($"✓ {_localizer.CLI("ConfigWizard.CredentialStored", "Credentials stored")}");
         }
 
+        // Ensure UseOAuth flag is false for SMTP
+        config.Notifications.Email.UseOAuth = false;
+        return true;
+    }
+
+    private async Task<bool> ConfigureOAuthEmailAsync(ServiceConfiguration config, CancellationToken cancellationToken)
+    {
+        Console.WriteLine($"\n{_localizer.CLI("ConfigWizard.OAuthSettings", "OAuth 2.0 Email Settings (Microsoft Graph)")}");
+        Console.WriteLine(_localizer.CLI("ConfigWizard.OAuthInfo", "Requires Azure AD app with Mail.Send application permission (consent granted)."));
+
+        var tenantEnv = Environment.GetEnvironmentVariable("UNIFIWATCH_EMAIL_OAUTH_TENANT_ID");
+        var clientEnv = Environment.GetEnvironmentVariable("UNIFIWATCH_EMAIL_OAUTH_CLIENT_ID");
+        var mailboxEnv = Environment.GetEnvironmentVariable("UNIFIWATCH_EMAIL_OAUTH_MAILBOX");
+        var credentialKeyEnv = Environment.GetEnvironmentVariable("UNIFIWATCH_EMAIL_OAUTH_CREDENTIAL_KEY");
+
+        config.Notifications.Email.OAuthTenantId = PromptForString(
+            _localizer.CLI("ConfigWizard.OAuthTenantId", "Azure AD Tenant ID (GUID)"),
+            tenantEnv ?? config.Notifications.Email.OAuthTenantId
+        );
+
+        config.Notifications.Email.OAuthClientId = PromptForString(
+            _localizer.CLI("ConfigWizard.OAuthClientId", "Application (Client) ID"),
+            clientEnv ?? config.Notifications.Email.OAuthClientId
+        );
+
+        config.Notifications.Email.OAuthMailbox = PromptForString(
+            _localizer.CLI("ConfigWizard.OAuthMailbox", "Mailbox email address (shared mailbox or service account)"),
+            mailboxEnv ?? config.Notifications.Email.OAuthMailbox
+        );
+
+        var credentialKey = credentialKeyEnv ?? config.Notifications.Email.OAuthCredentialKey ?? "email-oauth";
+        config.Notifications.Email.OAuthCredentialKey = credentialKey;
+
+        // Store client secret
+        var clientSecret = PromptForPassword(
+            _localizer.CLI("ConfigWizard.OAuthClientSecret", "Client secret (input is hidden)")
+        );
+
+        if (!string.IsNullOrWhiteSpace(clientSecret))
+        {
+            await _credentialProvider.StoreAsync(credentialKey, clientSecret);
+            Console.WriteLine($"✓ {_localizer.CLI("ConfigWizard.OAuthSecretStored", "OAuth client secret stored")}");
+        }
+
+        // Ensure FromAddress matches mailbox for Graph send
+        config.Notifications.Email.FromAddress = config.Notifications.Email.OAuthMailbox;
+        config.Notifications.Email.UseOAuth = true;
         return true;
     }
 
@@ -207,25 +311,25 @@ public class ConfigurationWizard
     /// </summary>
     private async Task<bool> ConfigureSmsAsync(ServiceConfiguration config, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"\n{_localizer.CLI("ConfigWizard.SmsConfig", "SMS Configuration")}");
+        Console.WriteLine($"\n{_localizer.CLI("ConfigWizard.SmsConfig", "SMS Text Message Settings")}");
 
         var providers = new[] { "Twilio" };
         var selectedProviderIdx = PromptForChoice(
-            _localizer.CLI("ConfigWizard.SmsProvider", "SMS provider"),
+            _localizer.CLI("ConfigWizard.SmsProvider", "Which SMS provider do you use?"),
             providers,
             0
         );
         config.Notifications.Sms.Provider = providers[selectedProviderIdx];
 
         var recipients = PromptForStringArray(
-            _localizer.CLI("ConfigWizard.PhoneNumbers", "Recipient phone numbers (comma-separated, E.164 format)"),
+            _localizer.CLI("ConfigWizard.PhoneNumbers", "Phone numbers to send SMS to (comma-separated, include country code like +1)"),
             config.Notifications.Sms.Recipients
         );
         config.Notifications.Sms.Recipients = recipients;
 
         // Store credentials
         var authToken = PromptForPassword(
-            _localizer.CLI("ConfigWizard.AuthToken", "Auth token (Twilio Account SID or API key)")
+            _localizer.CLI("ConfigWizard.AuthToken", "Twilio Account SID or API authentication token (input is hidden)")
         );
 
         if (!string.IsNullOrWhiteSpace(authToken))

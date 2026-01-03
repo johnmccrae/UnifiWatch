@@ -41,6 +41,7 @@
   <ItemGroup>
     <Content Include="Resources\*.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>
 

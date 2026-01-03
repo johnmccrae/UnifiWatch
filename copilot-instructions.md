@@ -1,5 +1,32 @@
 # Copilot Instructions for UnifiWatch Project
 
+## 🚨 CRITICAL: Terminal Commands on Windows Node 🚨
+
+**⚠️ THIS WORKSPACE RUNS ON WINDOWS WITH POWERSHELL. DO NOT USE LINUX/UNIX COMMANDS.**
+
+**IF YOU SEE A COMMAND EXECUTION ERROR MENTIONING A COMMAND IS "NOT RECOGNIZED", YOU TRIED A LINUX COMMAND. STOP AND USE POWERSHELL INSTEAD.**
+
+### ❌ FORBIDDEN Commands (Will Fail on Windows)
+- `tail`, `head`, `grep`, `sed`, `awk`, `cut`, `cat`, `ls`, `find`, `wc`, `chmod`, etc.
+- **These WILL fail with "command not recognized" errors**
+- **Never pipe to these commands, never use them in chains**
+
+### ✅ USE ONLY PowerShell Equivalents
+- `Select-Object -Last 50` (instead of `tail -n 50`)
+- `Select-Object -First 50` (instead of `head -n 50`)
+- `Select-String -Pattern "text"` (instead of `grep`)
+- `Get-Content` (instead of `cat`)
+- `Get-ChildItem` (instead of `ls`)
+
+### 🔴 ABSOLUTELY CRITICAL REMINDER
+**When filtering command output on Windows, ALWAYS use PowerShell syntax:**
+- ❌ `dotnet publish | tail -5` → **WILL FAIL**
+- ✅ `dotnet publish | Select-Object -Last 5` → **CORRECT**
+- ❌ `command | head -20` → **WILL FAIL**
+- ✅ `command | Select-Object -First 20` → **CORRECT**
+
+---
+
 ## Operating System and Shell Awareness
 
 ### Critical: Always Check Environment Info

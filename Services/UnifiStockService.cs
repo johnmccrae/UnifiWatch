@@ -210,11 +210,14 @@ fragment MoneyFragment on Money {
                     continue;
                 }
 
+                // Check variant status for availability (API returns PascalCase like "Available")
+                var isAvailable = variant.Status?.Equals("Available", StringComparison.OrdinalIgnoreCase) ?? false;
+
                 result.Add(new UnifiProduct
                 {
                     Name = product.Title,
                     ShortName = product.ShortTitle,
-                    Available = variant.Status == "AVAILABLE",
+                    Available = isAvailable,
                     Category = category,
                     Collection = product.CollectionSlug,
                     OrganizationalCollectionSlug = product.OrganizationalCollectionSlug,
@@ -243,6 +246,17 @@ fragment MoneyFragment on Money {
             StoreConfiguration.CollectionToCategory.TryGetValue(product.OrganizationalCollectionSlug, out category))
         {
             return category;
+        }
+
+        // Fallback: use the collection slug directly if we don't have a mapping
+        if (!string.IsNullOrEmpty(product.CollectionSlug))
+        {
+            return product.CollectionSlug;
+        }
+
+        if (!string.IsNullOrEmpty(product.OrganizationalCollectionSlug))
+        {
+            return product.OrganizationalCollectionSlug;
         }
 
         return "Unknown";

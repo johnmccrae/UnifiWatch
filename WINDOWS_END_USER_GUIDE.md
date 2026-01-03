@@ -18,13 +18,6 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
 - [ ] Administrator privileges for service installation
 - [ ] Internet connection for API access
 
-**Test Environment**:
-
-- OS Version: ____________________
-- .NET Version: ____________________
-- PowerShell Version: ____________________
-- Test Date: ____________________
-
 ---
 
 ## Test 1: Build and Publish
@@ -88,14 +81,6 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
    Get-Service -Name "UnifiWatch" -ErrorAction SilentlyContinue
    ```
 
-4. Open Services.msc:
-
-   ```powershell
-   services.msc
-   ```
-
-5. Locate "UnifiWatch" service in the list
-
 ### Expected Results
 
 - [ ] Service installs without errors
@@ -110,61 +95,89 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
 
 ---
 
-## Test 3: Configuration Wizard
+## Test 3: Configuration Wizard & Credential Storage
+
+**Note**: This test stores credentials securely in Windows Credential Manager. Credentials are NOT stored in the config file (security best practice).
 
 ### Steps
 
-1. Run configuration wizard:
+1. Install CredentialManager module (required for credential verification):
+
+   ```powershell
+   if (-not (Get-Module -ListAvailable -Name CredentialManager)) {
+       Install-Module -Name CredentialManager -Force -Scope CurrentUser
+   }
+   ```
+
+2. Run configuration wizard:
 
    ```powershell
    .\UnifiWatch.exe --configure
    ```
 
-2. Follow prompts and configure:
+3. Follow prompts and configure:
    - **Product ID**: `UDM-SE` (or any valid product ID)
    - **Product Name**: `UniFi Dream Machine SE`
    - **Check Interval**: `60` seconds
    - **Email Notifications**: `yes`
-     - SMTP Server: `smtp.gmail.com`
-     - SMTP Port: `587`
-     - Use TLS: `yes`
-     - From Address: (your email)
-     - Recipients: (your email)
-     - SMTP Username: (your email)
-     - SMTP Password: (app password)
+     - **Authentication Method**:
+       - **Option 1: SMTP (Traditional)**
+         - SMTP Server: `smtp.gmail.com`
+         - SMTP Port: `587`
+         - Use TLS: `yes`
+         - From Address: (your email)
+         - Recipients: (your email)
+         - SMTP Username: (your email)
+         - **SMTP Password**: (app password - stored securely in Credential Manager)
+       - **Option 2: OAuth 2.0 (Microsoft Graph)**
+         - Requires Azure AD application registration with Mail.Send permission
+         - Azure AD Tenant ID: (your tenant GUID)
+         - Application (Client) ID: (your app ID)
+         - Mailbox Email: (shared mailbox or service account email)
+         - Client Secret: (stored securely in Credential Manager)
    - **SMS Notifications**: `no` (or configure Twilio if available)
    - **Desktop Notifications**: `yes`
 
-3. Verify configuration saved:
+   **Important**: When the wizard prompts for passwords/secrets, they are automatically stored securely in Windows Credential Manager. Do not skip this step.
+
+4. Verify configuration saved:
 
    ```powershell
    .\UnifiWatch.exe --show-config
    ```
 
-4. Check credentials stored in Credential Manager:
+5. Verify credentials stored in Credential Manager:
 
    ```powershell
-   # Install CredentialManager module if not already installed
-   if (-not (Get-Module -ListAvailable -Name CredentialManager)) {
-       Install-Module -Name CredentialManager -Force -Scope CurrentUser
-   }
-   
-   # List UnifiWatch credentials
-   Get-StoredCredential -Target "UnifiWatch*"
+   # List UnifiWatch credentials (email and OAuth)
+   Get-StoredCredential -Target "UnifiWatch:email-smtp"   # For SMTP
+   Get-StoredCredential -Target "UnifiWatch:email-oauth"  # For OAuth
    ```
 
-5. Verify credentials exist:
-   - Look for entries starting with "UnifiWatch:"
-   - Verify `UnifiWatch:email-smtp` exists
+   **Expected output**: Should show credentials like `UnifiWatch:email-smtp` or `UnifiWatch:email-oauth`
+
+6. Retrieve and verify the stored credential works:
+
+   ```powershell
+   # For SMTP:
+   $credential = Get-StoredCredential -Target "UnifiWatch:email-smtp"
+   $credential.UserName
+   $credential.Password  # This will be the app password you entered
+
+   # For OAuth:
+   $credential = Get-StoredCredential -Target "UnifiWatch:email-oauth"
+   $credential.Password  # This will be the client secret you entered
+   ```
 
 ### Expected Results
 
 - [ ] Wizard completes without errors
 - [ ] Configuration file created at `%APPDATA%\UnifiWatch\config.json`
 - [ ] `--show-config` displays saved configuration
-- [ ] Sensitive data (passwords) redacted in `--show-config` output
-- [ ] Credentials visible in Windows Credential Manager
-- [ ] Credential entry named "UnifiWatch:email-smtp"
+- [ ] Sensitive data (passwords/secrets) redacted in `--show-config` output (shows `***REDACTED***` instead)
+- [ ] `Get-StoredCredential -Target "UnifiWatch*"` returns credential object(s)
+- [ ] Credential entry named "UnifiWatch:email-smtp" or "UnifiWatch:email-oauth" exists and is retrievable
+- [ ] Retrieved credential contains correct username/password or client secret
 
 
 
@@ -249,29 +262,33 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
 
 **Note**: Desktop notifications use PowerShell to invoke Windows.UI.Notifications APIs. They work in interactive mode but may not display in Windows Service mode (Session 0 isolation). Email and SMS notifications are recommended for service deployments.
 
+**Testing Approach**: Desktop notifications only trigger when a product changes from out-of-stock to in-stock. To test this reliably:
+
 ### Steps
 
-1. Ensure service is running and configured for desktop notifications
-
-2. Wait for next stock check cycle (default: 60 seconds)
-
-3. If product is in stock, verify toast notification appears
-
-4. Alternative: Trigger test notification (if implemented):
+1. Run UnifiWatch in wait mode monitoring a specific product:
 
    ```powershell
-   .\UnifiWatch.exe --test-notifications
+   .\UnifiWatch.exe --wait --store USA --product-skus UDM-SE --seconds 30
    ```
 
-5. Check Windows Action Center for notification history
+2. Wait for the stock check cycle (30 seconds in this example)
+
+3. When a product is detected as in-stock, verify toast notification appears
+
+4. Check Windows Action Center for notification history
+
+5. Press Ctrl+C to stop monitoring
 
 ### Expected Results
 
-- [ ] Desktop toast notification appears
+- [ ] Desktop toast notification appears when product becomes available
 - [ ] Notification shows product name and status
 - [ ] Notification includes Ubiquiti branding/logo (if applicable)
 - [ ] Notification persists in Action Center
 - [ ] Clicking notification (if interactive) opens product page
+
+**Alternative**: If no products are currently in stock, this test can be skipped. Email and SMS notifications (Tests 7-8) are more reliable for service deployments.
 
 
 
@@ -287,15 +304,27 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
    ```powershell
    .\UnifiWatch.exe --show-config
    ```
+   
+   Check that email section shows either:
+   - SMTP configuration with server, port, from address, and recipients, **OR**
+   - OAuth configuration with tenant ID, client ID, and mailbox email
 
-2. Wait for stock check cycle or trigger test notification
+2. Send a test email:
+
+   ```powershell
+   .\UnifiWatch.exe --test-email
+   ```
+   
+   When using OAuth, you should see info messages like:
+   - "OAuth token acquired, expires in X seconds"
+   - "Email sent successfully to..."
 
 3. Check email inbox for notification
 
 4. Verify email contents:
    - Subject line mentions "UnifiWatch" or product name
    - Body contains product details (name, price, URL)
-   - From address matches configured address
+   - From address matches configured address (SMTP) or mailbox email (OAuth)
    - TLS encryption used (check email headers)
 
 ### Expected Results
@@ -391,13 +420,13 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
 
 ### Steps
 
-1. Update email password via wizard:
+1. Update email password/secret via wizard:
 
    ```powershell
    .\UnifiWatch.exe --configure
    ```
 
-2. When prompted for email password, enter new value (or same value)
+2. When prompted for email password (SMTP) or client secret (OAuth), enter new value (or same value)
 
 3. Verify credential updated in Credential Manager:
 
@@ -408,11 +437,11 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
        Import-Module CredentialManager
    }
    
-   # List UnifiWatch credentials
+   # List UnifiWatch credentials (SMTP and/or OAuth)
    Get-StoredCredential -Target "UnifiWatch*"
    ```
 
-4. Check `UnifiWatch:email-smtp` entry appears in the list
+4. Check `UnifiWatch:email-smtp` or `UnifiWatch:email-oauth` entry appears in the list
 
 5. Restart service to pick up new credentials:
 

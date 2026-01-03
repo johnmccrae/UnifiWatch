@@ -126,13 +126,21 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
    - **Product Name**: `UniFi Dream Machine SE`
    - **Check Interval**: `60` seconds
    - **Email Notifications**: `yes`
-     - SMTP Server: `smtp.gmail.com`
-     - SMTP Port: `587`
-     - Use TLS: `yes`
-     - From Address: (your email)
-     - Recipients: (your email)
-     - SMTP Username: (your email)
-     - SMTP Password: (app password)
+     - **Authentication Method**:
+       - **Option 1: SMTP (Traditional)**
+         - SMTP Server: `smtp.gmail.com`
+         - SMTP Port: `587`
+         - Use TLS: `yes`
+         - From Address: (your email)
+         - Recipients: (your email)
+         - SMTP Username: (your email)
+         - SMTP Password: (app password - stored securely)
+       - **Option 2: OAuth 2.0 (Microsoft Graph)**
+         - Requires Azure AD application with Mail.Send permission
+         - Azure AD Tenant ID: (your tenant GUID)
+         - Application (Client) ID: (your app ID)
+         - Mailbox Email: (shared mailbox or service account email)
+         - Client Secret: (stored securely)
    - **SMS Notifications**: `no` (or configure Twilio if available)
    - **Desktop Notifications**: `yes` (if desktop environment available)
 
@@ -258,11 +266,6 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
 
 4. If product is in stock, verify desktop notification appears
 
-5. Alternative: Test notification manually:
-   ```bash
-   ./UnifiWatch --test-notifications
-   ```
-
 ### Expected Results
 
 - [ ] Desktop notification appears (if desktop environment available)
@@ -280,8 +283,15 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
    ```bash
    ./UnifiWatch --show-config
    ```
+   
+   Check that email section shows either:
+   - SMTP configuration with server, port, from address, and recipients, **OR**
+   - OAuth configuration with tenant ID, client ID, and mailbox email
 
-2. Wait for stock check cycle or trigger test notification
+2. Send a test email:
+   ```bash
+   ./UnifiWatch --test-email
+   ```
 
 3. Check email inbox for notification
 
@@ -373,12 +383,12 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
 
 ### Steps
 
-1. Update email password via wizard:
+1. Update email password/secret via wizard:
    ```bash
    ./UnifiWatch --configure
    ```
 
-2. When prompted for email password, enter new value (or same value)
+2. When prompted for email password (SMTP) or client secret (OAuth), enter new value (or same value)
 
 3. Verify credential updated:
    ```bash

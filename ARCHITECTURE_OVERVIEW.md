@@ -23,14 +23,14 @@ This document explains **how UnifiWatch works internally**. For hands-on build/t
 
 1. [Architecture Overview](#architecture-overview)
 2. [Configuration System](#configuration-system)
-4. [Credential Management](#credential-management)
-5. [Stock Monitoring](#stock-monitoring)
-6. [Notifications](#notifications)
-7. [Background Service](#background-service)
-8. [Dependency Injection](#dependency-injection)
-9. [Localization](#localization)
-10. [Testing](#testing)
-11. [Common Workflows](#common-workflows)
+3. [Credential Management](#credential-management)
+4. [Stock Monitoring](#stock-monitoring)
+5. [Notifications](#notifications)
+6. [Background Service](#background-service)
+7. [Dependency Injection](#dependency-injection)
+8. [Localization](#localization)
+9. [Testing](#testing)
+10. [Common Workflows](#common-workflows)
 
 ---
 

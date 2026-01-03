@@ -118,13 +118,21 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
    - **Product Name**: `UniFi Dream Machine SE`
    - **Check Interval**: `60` seconds
    - **Email Notifications**: `yes`
-     - SMTP Server: `smtp.gmail.com`
-     - SMTP Port: `587`
-     - Use TLS: `yes`
-     - From Address: (your email)
-     - Recipients: (your email)
-     - SMTP Username: (your email)
-     - SMTP Password: (app password)
+     - **Authentication Method**:
+       - **Option 1: SMTP (Traditional)**
+         - SMTP Server: `smtp.gmail.com`
+         - SMTP Port: `587`
+         - Use TLS: `yes`
+         - From Address: (your email)
+         - Recipients: (your email)
+         - SMTP Username: (your email)
+         - SMTP Password: (app password - stored securely in Keychain)
+       - **Option 2: OAuth 2.0 (Microsoft Graph)**
+         - Requires Azure AD application with Mail.Send permission
+         - Azure AD Tenant ID: (your tenant GUID)
+         - Application (Client) ID: (your app ID)
+         - Mailbox Email: (shared mailbox or service account email)
+         - Client Secret: (stored securely in Keychain)
    - **SMS Notifications**: `no` (or configure Twilio if available)
    - **Desktop Notifications**: `yes`
 
@@ -157,9 +165,9 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
 - [ ] Configuration file created at `~/Library/Application Support/UnifiWatch/config.json`
 - [ ] Config file permissions: `-rw-------` (600)
 - [ ] `--show-config` displays saved configuration
-- [ ] Sensitive data (passwords) redacted in `--show-config` output
+- [ ] Sensitive data (passwords/secrets) redacted in `--show-config` output
 - [ ] Credentials visible in Keychain Access app
-- [ ] Keychain entry named "UnifiWatch:email-smtp" (or similar)
+- [ ] Keychain entry named "UnifiWatch:email-smtp" or "UnifiWatch:email-oauth"
 
 ---
 
@@ -248,12 +256,7 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
 
 3. If product is in stock, verify notification appears in Notification Center
 
-4. Alternative: Trigger test notification (if implemented):
-   ```bash
-   ./UnifiWatch --test-notifications
-   ```
-
-5. Check Notification Center for notification history
+4. Check Notification Center for notification history
 
 ### Expected Results
 
@@ -273,8 +276,15 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
    ```bash
    ./UnifiWatch --show-config
    ```
+   
+   Check that email section shows either:
+   - SMTP configuration with server, port, from address, and recipients, **OR**
+   - OAuth configuration with tenant ID, client ID, and mailbox email
 
-2. Wait for stock check cycle or trigger test notification
+2. Send a test email:
+   ```bash
+   ./UnifiWatch --test-email
+   ```
 
 3. Check email inbox for notification
 
@@ -375,13 +385,13 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
 
 2. Search for "UnifiWatch" in the search box
 
-3. Double-click the "UnifiWatch:email-smtp" entry
+3. Double-click the "UnifiWatch:email-smtp" or "UnifiWatch:email-oauth" entry
 
 4. Click "Show password" checkbox
 
 5. Enter your macOS user password when prompted
 
-6. Verify password is stored correctly
+6. Verify password/secret is stored correctly
 
 7. Check "Access Control" tab to see which apps can access the credential
 
