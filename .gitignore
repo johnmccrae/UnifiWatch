@@ -103,3 +103,6 @@ $RECYCLE.BIN/
 
 # JetBrains Rider
 *.sln.iml
+
+# Scratch work
+To Do.md
