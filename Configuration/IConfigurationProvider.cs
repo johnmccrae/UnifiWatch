@@ -1,4 +1,4 @@
-namespace UnifiWatch.Configuration;
+namespace UnifiStockTracker.Configuration;
 
 /// <summary>
 /// Platform-agnostic configuration provider interface

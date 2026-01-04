@@ -1,8 +1,8 @@
-using UnifiWatch.Models;
+using UnifiStockTracker.Models;
 
-namespace UnifiWatch.Services;
+namespace UnifiStockTracker.Services;
 
-public interface IunifiwatchService
+public interface IUnifiStockService
 {
     Task<List<UnifiProduct>> GetStockAsync(string store, string[]? collections = null, CancellationToken cancellationToken = default);
 }

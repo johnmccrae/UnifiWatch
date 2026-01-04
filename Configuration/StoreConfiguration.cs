@@ -1,4 +1,4 @@
-namespace UnifiWatch.Configuration;
+namespace UnifiStockTracker.Configuration;
 
 public static class StoreConfiguration
 {
@@ -169,81 +169,6 @@ public static class StoreConfiguration
         { "wifi-flagship-high-capacity", "FlagshipHighCapacityWiFi" },
         { "wifi-inwall-high-capacity", "InWallHighCapacityWiFi" },
         { "wifi-outdoor-flexible", "OutdoorFlexibleWiFi" },
-        { "ui-care", "UICare" },
-
-        // Accessories - Pro Line
-        { "accessories-pro-access-point", "AccessoriesProAccessPoint" },
-        { "accessories-pro-rack-mount", "AccessoriesProRackMount" },
-        { "accessories-pro-camera", "AccessoriesProCamera" },
-        { "accessories-pro-box-cables", "AccessoriesProBoxCables" },
-        { "accessories-pro-patch-cables", "AccessoriesProPatchCables" },
-        { "accessories-pro-poe-and-power", "AccessoriesProPoEAndPower" },
-        { "accessories-pro-storage", "AccessoriesProStorage" },
-        { "accessories-pro-single-mode-optical-fiber", "AccessoriesProSingleModeOpticalFiber" },
-        { "accessories-pro-multi-mode-optical-fiber", "AccessoriesProMultiModeOpticalFiber" },
-        { "accessories-pro-door-access", "AccessoriesProDoorAccess" },
-        { "accessories-pro-installations", "AccessoriesProInstallations" },
-        { "accessories-pro-direct-attach-cables", "AccessoriesProDirectAttachCables" },
-        { "accessories-pro-cwdm", "AccessoriesProCWDM" },
-        { "accessories-ethernet-repeater", "AccessoriesEthernetRepeater" },
-
-        // Camera Security - Additional Categories
-        { "unifi-camera-security-bullet", "CameraSecurityBullet" },
-        { "unifi-camera-security-dome-turret", "CameraSecurityDomeTurret" },
-        { "unifi-camera-security-compact", "CameraSecurityCompact" },
-        { "unifi-camera-security-door-access-intercoms-viewers", "CameraSecurityDoorAccessIntercoms" },
-        { "unifi-camera-security-interior-design-hub", "CameraSecurityInteriorDesignHub" },
-        { "unifi-camera-security-interior-design-kit", "CameraSecurityInteriorDesignKit" },
-        { "unifi-camera-security-interior-design-lens", "CameraSecurityInteriorDesignLens" },
-        { "unifi-camera-security-nvr", "CameraSecurityNVR" },
-        { "unifi-camera-security-special", "CameraSecuritySpecial" },
-
-        // WiFi - Additional Categories
-        { "unifi-wifi-outdoor", "WiFiOutdoor" },
-        { "unifi-wifi-enterprise", "WiFiEnterprise" },
-        { "unifi-wifi-flagship", "WiFiFlagship" },
-        { "unifi-wifi-inwall", "WiFiInWall" },
-        { "unifi-wifi-special-devices", "WiFiSpecialDevices" },
-        { "unifi-wifi-building-bridge", "WiFiBuildingBridge" },
-
-        // Switching - Professional and Standard
-        { "switching-professional", "SwitchingProfessional" },
-        { "switching-enterprise", "SwitchingEnterprise" },
-        { "switching-standard", "SwitchingStandard" },
-        { "switching-utility", "SwitchingUtility" },
-
-        // Cloud and Internet Solutions
-        { "cloud-gateways-wifi-integrated", "CloudGatewaysWiFiIntegrated" },
-        { "cloud-gateway-compact", "CloudGatewayCompact" },
-        { "enterprise-fortress-gateway", "EnterpriseFortressGateway" },
-        { "pro-internet-solutions", "ProInternetSolutions" },
-
-        // Pro Store and Other Pro Categories
-        { "pro-store-doorbells-chimes", "ProStoreDoorbellsChimes" },
-        { "pro-ai-theta-lenses", "ProAIThetaLenses" },
-        { "pro-ai-theta-audio", "ProAIThetaAudio" },
-
-        // UniFi Advanced Features
-        { "unifi-switching-pro-max", "SwitchingProMax" },
-        { "unifi-switching-wan", "SwitchingWAN" },
-        { "unifi-talk-business-voip", "TalkBusinessVoIP" },
-        { "unifi-new-integrations-digital-signage", "NewIntegrationsDigitalSignage" },
-        { "unifi-new-integrations-network-storage", "NewIntegrationsNetworkStorage" },
-        { "unifi-new-integrations-premium-audio", "NewIntegrationsPremiumAudio" },
-        { "unifi-cloudkeys-gateways", "CloudKeysGateways" },
-
-        // Add-ons and Special Categories
-        { "add-ons-wifi", "AddOnsWiFi" },
-        { "apparel", "Apparel" },
-        { "power-tech", "PowerTech" },
-
-        // Camera and Mounting Accessories
-        { "camera-junction-boxes", "CameraJunctionBoxes" },
-        { "g5-ptz-mounts", "G5PTZMounts" },
-
-        // UISP Accessories
-        { "uisp-accessory-tech-mounting", "UISPAccessoryTechMounting" },
-        { "uisp-accessory-tech-poe-surge-converters", "UISPAccessoryTechPoESurgeConverters" },
-        { "uisp-accessory-tech-poe-surge-protect", "UISPAccessoryTechPoESurgeProtect" }
+        { "ui-care", "UICare" }
     };
 }

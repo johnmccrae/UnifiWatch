@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace UnifiWatch.Models;
+namespace UnifiStockTracker.Models;
 
 // GraphQL Request Models
 public class GraphQLRequest

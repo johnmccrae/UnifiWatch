@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace UnifiWatch.Models;
+namespace UnifiStockTracker.Models;
 
 // Legacy Shopify API Models
 public class ShopifyProductsResponse
