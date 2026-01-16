@@ -1,6 +1,6 @@
 # Windows Testing Guide
 
-This guide covers testing the UnifiStockTracker application on Windows.
+This guide covers testing the UnifiWatch application on Windows.
 
 ## Prerequisites
 
@@ -18,24 +18,22 @@ dotnet test
 
 ## Test Results Summary
 
-**Last tested:** December 7, 2025  
-**Platform:** Windows  
+**Last tested:** January 15, 2026
+**Platform:** Windows
 **SDK Version:** .NET 9.0
 
 ### Test Statistics
-- **Total Tests:** 71
-- **Passed:** 65
-- **Failed:** 0
-- **Skipped:** 6
+- **Total Tests:** 223
+- **Passed:** 212 ✅
+- **Failed:** 0 ❌
+- **Skipped:** 11 (Integration/advanced tests)
 
 ### Skipped Tests
-The following tests are skipped because they require real HTTP services:
-- `Main_WithStoreOption_ShouldStartMonitoring`
-- `Main_WithLegacyApiStoreOption_ShouldStartMonitoring`
-- `Main_WithCheckNowOption_ShouldCheckOnce`
-- `Main_WithCheckNowAndNoSoundOptions_ShouldCheckOnceWithoutSound`
-- `Main_WithNoSoundOption_ShouldSucceed`
-- `GetProductsAsync_WithRealStore_ShouldReturnProducts`
+The following tests are skipped as they require real HTTP services or are deferred:
+- Integration tests for email/SMS notifications (Phase 2+)
+- End-to-end stock check workflow tests (Phase 2+)
+- Localization resource validation (deferred to Phase 2b)
+- Service lifecycle integration tests (Phase 5+)
 
 ## Platform-Specific Notes
 
@@ -47,13 +45,13 @@ On Windows, the application uses **Windows Credential Manager (DPAPI)** for secu
 - Integration with Windows security policies
 
 ### Testing Credential Provider
-The credential provider tests will use DPAPI encryption on Windows:
+The credential provider tests validate DPAPI encryption on Windows:
 
 ```powershell
 dotnet test --filter CredentialProviderTests
 ```
 
-Expected output: All 10 credential provider tests should pass.
+Expected output: All credential provider tests should pass (46+ tests).
 
 ### File Paths
 Windows uses different path conventions:
@@ -91,8 +89,8 @@ Remove test artifacts:
 
 ```powershell
 Remove-Item -Recurse -Force bin, obj
-Remove-Item -Recurse -Force UnifiStockTracker.Tests\bin, UnifiStockTracker.Tests\obj
-Remove-Item -Recurse -Force $env:APPDATA\UnifiStock
+Remove-Item -Recurse -Force UnifiWatch.Tests\bin, UnifiWatch.Tests\obj
+Remove-Item -Recurse -Force $env:APPDATA\UnifiWatch
 ```
 
 ## Running Specific Test Categories

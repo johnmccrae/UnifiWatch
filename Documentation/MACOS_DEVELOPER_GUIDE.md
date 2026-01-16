@@ -217,10 +217,10 @@ sudo dotnet test UnifiWatch.sln
 ```
 
 **Expected Results**:
-- Total: 71 tests
-- Passed: 65 ✅
-- Failed: 0 ❌
-- Skipped: 6 (integration tests)
+  - Total: 223 tests
+  - Passed: 212 ✅
+  - Failed: 0 ❌
+  - Skipped: 11 (integration/advanced tests)
 
 ---
 
@@ -476,8 +476,8 @@ sudo dotnet test UnifiWatch.sln --configuration Release
 
 **Expected Results**:
 
-- [ ] 65 tests passed ✅
-- [ ] 6 tests skipped (integration tests)
+  - [ ] 212 tests passed ✅
+  - [ ] 11 tests skipped (integration/advanced tests)
 - [ ] 0 tests failed ❌
 
 ---
@@ -559,9 +559,11 @@ sudo dotnet test UnifiWatch.sln --configuration Release
 |------------|-------------|---------------|---------------|---------------|
 | Configuration Provider | 19 | 19 | 0 | 0 |
 | Credential Provider | 46 | 46 | 0 | 0 |
-| Build & Compilation | 2 | 2 | 0 | 0 |
-| Integration Tests | 6 | 0 | 0 | 6 |
-| **TOTAL** | **71** | **65** | **0** | **6** |
+| Stock Watcher & Service | 52 | 52 | 0 | 0 |
+| Notifications & Email | 32 | 32 | 0 | 0 |
+| SMS & Localization | 38 | 38 | 0 | 0 |
+| CLI & Configuration | 36 | 25 | 0 | 11 |
+| **TOTAL** | **223** | **212** | **0** | **11** |
 
 **After Testing, Verify**:
 

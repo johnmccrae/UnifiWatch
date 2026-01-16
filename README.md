@@ -4,7 +4,7 @@
 
 UnifiWatch is a tool that automatically checks if Ubiquiti networking products are in stock at their online stores. Instead of manually refreshing the Ubiquiti store website hoping your desired product comes back in stock, this program does it for you automatically.
 
-This is a C# rewrite of the original PowerShell module created by [Evotec](https://github.com/EvotecIT) of Poland. The C# version provides better cross-platform support and performance while maintaining all the functionality of the original.
+This is a C# rewrite of the original PowerShell module created by [Evotec](https://github.com/EvotecIT) of Poland. The C# version provides great cross-platform support and performance while maintaining all the functionality of the original.
 
 Think of it as a personal shopping assistant that watches the store 24/7 and alerts you the moment your product becomes available.
 
