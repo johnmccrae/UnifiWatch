@@ -1,0 +1,23 @@
+{
+  "NotificationFailed": "Échec de l'affichage de la notification: {0}",
+  "ConfigNotFound": "Fichier de configuration non trouvé à: {0}",
+  "InvalidStore": "Le magasin '{0}' n'est pas pris en charge",
+  "CredentialStoreFailed": "Échec du stockage des identifiants pour la clé '{0}': {1}",
+  "CredentialLoadFailed": "Échec du chargement des identifiants pour la clé '{0}': {1}",
+  "CredentialDeleteFailed": "Échec de la suppression des identifiants pour la clé '{0}': {1}",
+  "InvalidConfiguration": "Configuration invalide: {0}",
+  "ConfigurationLoadFailed": "Échec du chargement de la configuration depuis '{0}': {1}",
+  "ConfigurationSaveFailed": "Échec de l'enregistrement de la configuration vers '{0}': {1}",
+  "ConfigurationValidationFailed": "La validation de la configuration a échoué: {0}",
+  "InvalidCheckInterval": "L'intervalle de vérification doit être entre {0} et {1} secondes",
+  "NoProductsSpecified": "Aucun produit spécifié à surveiller",
+  "InvalidEmailConfiguration": "Configuration de courriel invalide: {0}",
+  "InvalidSmsConfiguration": "Configuration SMS invalide: {0}",
+  "EmailSendFailed": "Échec de l'envoi de la notification par courriel: {0}",
+  "SmsSendFailed": "Échec de l'envoi de la notification par SMS: {0}",
+  "DesktopNotificationFailed": "Échec de l'affichage de la notification de bureau: {0}",
+  "CorruptCredentialsFile": "Le fichier d'identifiants est corrompu ou invalide, il sera supprimé: {0}",
+  "KeychainAccessDenied": "L'accès aux identifiants macOS a été refusé",
+  "SecretServiceUnavailable": "Le service de secrets Linux n'est pas disponible",
+  "PlatformNotSupported": "Cette plateforme n'est pas prise en charge pour le stockage des identifiants"
+}

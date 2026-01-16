@@ -1,0 +1,43 @@
+[Unit]
+Description=UniFi Stock Watch Service
+After=network-online.target
+Wants=network-online.target
+Documentation=https://github.com/johnmccrae/UnifiWatch
+
+[Service]
+Type=notify
+User=unifiwatch
+Group=unifiwatch
+WorkingDirectory=/opt/unifiwatch
+
+# Start command with service mode
+ExecStart=/opt/unifiwatch/UnifiWatch --service-mode
+
+# Restart policy
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=300
+StartLimitBurst=3
+
+# Process management
+KillMode=process
+KillSignal=SIGTERM
+
+# Security
+PrivateTmp=yes
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/etc/unifiwatch /var/lib/unifiwatch
+
+# Resource limits
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=unifiwatch
+
+# Timeouts
+TimeoutStartSec=30
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

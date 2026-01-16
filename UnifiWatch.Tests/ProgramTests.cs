@@ -1,9 +1,9 @@
 using FluentAssertions;
 using System.CommandLine;
-using UnifiStockTracker;
+using UnifiWatch;
 using Xunit;
 
-namespace UnifiStockTracker.Tests;
+namespace UnifiWatch.Tests;
 
 public class ProgramTests
 {

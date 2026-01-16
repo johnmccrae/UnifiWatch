@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace UnifiStockTracker.Services.Credentials;
+namespace UnifiWatch.Services.Credentials;
 
 /// <summary>
 /// Linux secret-service implementation using DBus Secret Service API
@@ -10,7 +10,7 @@ namespace UnifiStockTracker.Services.Credentials;
 public class LinuxSecretService : ICredentialProvider
 {
     private readonly ILogger<LinuxSecretService> _logger;
-    private const string ApplicationName = "UnifiStockTracker";
+    private const string ApplicationName = "UnifiWatch";
 
     public string StorageMethodDescription => "Linux Secret Service (GNOME Keyring, KDE Wallet, or pass)";
     public string StorageMethod => "linux-secret-service";

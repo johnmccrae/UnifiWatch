@@ -1,0 +1,23 @@
+{
+  "NotificationFailed": "Benachrichtigung konnte nicht angezeigt werden: {0}",
+  "ConfigNotFound": "Konfigurationsdatei nicht gefunden unter: {0}",
+  "InvalidStore": "Der Shop '{0}' wird nicht unterstützt",
+  "CredentialStoreFailed": "Fehler beim Speichern von Anmeldeinformationen für Schlüssel '{0}': {1}",
+  "CredentialLoadFailed": "Fehler beim Laden von Anmeldeinformationen für Schlüssel '{0}': {1}",
+  "CredentialDeleteFailed": "Fehler beim Löschen von Anmeldeinformationen für Schlüssel '{0}': {1}",
+  "InvalidConfiguration": "Ungültige Konfiguration: {0}",
+  "ConfigurationLoadFailed": "Fehler beim Laden der Konfiguration von '{0}': {1}",
+  "ConfigurationSaveFailed": "Fehler beim Speichern der Konfiguration in '{0}': {1}",
+  "ConfigurationValidationFailed": "Konfigurationsvalidierung fehlgeschlagen: {0}",
+  "InvalidCheckInterval": "Das Überprüfungsintervall muss zwischen {0} und {1} Sekunden liegen",
+  "NoProductsSpecified": "Keine Produkte zum Überwachen angegeben",
+  "InvalidEmailConfiguration": "Ungültige E-Mail-Konfiguration: {0}",
+  "InvalidSmsConfiguration": "Ungültige SMS-Konfiguration: {0}",
+  "EmailSendFailed": "Fehler beim Senden der E-Mail-Benachrichtigung: {0}",
+  "SmsSendFailed": "Fehler beim Senden der SMS-Benachrichtigung: {0}",
+  "DesktopNotificationFailed": "Fehler beim Anzeigen der Desktopbenachrichtigung: {0}",
+  "CorruptCredentialsFile": "Anmeldedatendatei ist beschädigt oder ungültig, wird gelöscht: {0}",
+  "KeychainAccessDenied": "Zugriff auf macOS-Schlüsselbund verweigert",
+  "SecretServiceUnavailable": "Linux Secret Service ist nicht verfügbar",
+  "PlatformNotSupported": "Diese Plattform wird nicht für die Anmeldeinformationsspeicherung unterstützt"
+}

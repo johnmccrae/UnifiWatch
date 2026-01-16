@@ -1,0 +1,23 @@
+{
+  "NotificationFailed": "Falha ao exibir notificação: {0}",
+  "ConfigNotFound": "Arquivo de configuração não encontrado em: {0}",
+  "InvalidStore": "A loja '{0}' não é suportada",
+  "CredentialStoreFailed": "Falha ao armazenar credenciais para a chave '{0}': {1}",
+  "CredentialLoadFailed": "Falha ao carregar credenciais para a chave '{0}': {1}",
+  "CredentialDeleteFailed": "Falha ao excluir credenciais para a chave '{0}': {1}",
+  "InvalidConfiguration": "Configuração inválida: {0}",
+  "ConfigurationLoadFailed": "Falha ao carregar configuração de '{0}': {1}",
+  "ConfigurationSaveFailed": "Falha ao salvar configuração em '{0}': {1}",
+  "ConfigurationValidationFailed": "Falha na validação da configuração: {0}",
+  "InvalidCheckInterval": "O intervalo de verificação deve estar entre {0} e {1} segundos",
+  "NoProductsSpecified": "Nenhum produto especificado para monitorar",
+  "InvalidEmailConfiguration": "Configuração de email inválida: {0}",
+  "InvalidSmsConfiguration": "Configuração de SMS inválida: {0}",
+  "EmailSendFailed": "Falha ao enviar notificação por email: {0}",
+  "SmsSendFailed": "Falha ao enviar notificação por SMS: {0}",
+  "DesktopNotificationFailed": "Falha ao exibir notificação de desktop: {0}",
+  "CorruptCredentialsFile": "O arquivo de credenciais está corrompido ou inválido, será excluído: {0}",
+  "KeychainAccessDenied": "Acesso negado ao Keychain do macOS",
+  "SecretServiceUnavailable": "O serviço de secrets do Linux não está disponível",
+  "PlatformNotSupported": "Esta plataforma não é suportada para armazenamento de credenciais"
+}

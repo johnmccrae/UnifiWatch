@@ -187,7 +187,7 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
 ### Phase 3: Multi-Channel Notification System
 
 #### Phase 3a: Email Notification Provider
-**Objective**: Implement email notifications with HTML templates and retry logic
+**Objective**: Implement email notifications with HTML templates and retry logic, supporting both traditional SMTP and modern OAuth2 (Microsoft Graph) authentication
 
 **Tasks**:
 1. Create `INotificationProvider` interface with methods:
@@ -201,34 +201,94 @@ Transform UnifiStockTracker from CLI-only to a dual-mode application supporting 
    - List of `UnifiProduct` objects for stock alerts
    - Priority level, timestamp
 
-3. Implement `EmailNotificationProvider` using MailKit:
+3. Implement `SmtpEmailProvider` using MailKit:
    - Read SMTP config from `EmailNotificationConfig`
    - Retrieve credentials from `ICredentialProvider` using `credentialKey`
+   - Support for traditional SMTP authentication (username/password)
    - HTML email template with product table (name, price, stock status, link)
    - SMTP retry logic: 3 attempts with exponential backoff (1s, 2s, 4s)
    - TLS/SSL support based on config
    - Comprehensive logging for send attempts, failures, retries
 
-4. Add email template engine:
+4. Implement `MicrosoftGraphEmailProvider` using Microsoft Graph API:
+   - OAuth2 authentication via Microsoft identity platform
+   - Support for Office 365, Outlook.com, and Exchange Online
+   - Credential storage: OAuth refresh token securely stored in `ICredentialProvider`
+   - Token refresh handling: Automatic refresh when token expires
+   - Send email via Microsoft Graph `/me/sendMail` endpoint
+   - Retry logic with exponential backoff
+   - Support for HTML and plain text bodies
+   - Error handling: Invalid token, permission scopes, rate limiting
+
+5. Create `EmailProviderFactory`:
+   - Determines provider based on config: "smtp" → SmtpEmailProvider, "msgraph" → MicrosoftGraphEmailProvider
+   - Passes appropriate config and credential manager
+   - Throws descriptive errors for unsupported provider types
+
+6. Add email template engine:
    - Create `EmailTemplateBuilder` class
    - HTML template with responsive design
    - Product table with Unifi branding colors
    - Include store name, timestamp, product details
+   - Support for both plain text and HTML rendering
 
-5. Unit tests:
-   - Mock SMTP server responses
+7. Unit tests:
+   - Mock SMTP server responses (SmtpEmailProvider)
+   - Mock Microsoft Graph API responses (MicrosoftGraphEmailProvider)
+   - Test OAuth token refresh scenarios
    - Test retry logic with transient failures
    - Validate HTML template generation
    - Test credential retrieval integration
+   - Test provider factory selection
 
-**NuGet Packages**: `MailKit` (already referenced)
+**NuGet Packages**: 
+- `MailKit` (already referenced)
+- `Microsoft.Graph` (for Microsoft Graph SDK)
+- `Azure.Identity` (for OAuth token acquisition)
 
 **Files to Create**:
 - `Services/Notifications/INotificationProvider.cs`
 - `Services/Notifications/NotificationMessage.cs`
-- `Services/Notifications/EmailNotificationProvider.cs`
+- `Services/Notifications/SmtpEmailProvider.cs`
+- `Services/Notifications/MicrosoftGraphEmailProvider.cs`
+- `Services/Notifications/EmailProviderFactory.cs`
 - `Services/Notifications/EmailTemplateBuilder.cs`
 - `UnifiStockTracker.Tests/EmailNotificationProviderTests.cs`
+
+**Configuration Schema**:
+```csharp
+public class EmailNotificationConfig
+{
+    [JsonPropertyName("provider")]
+    public string Provider { get; set; } = "smtp";  // "smtp" or "msgraph"
+    
+    // SMTP-specific config
+    [JsonPropertyName("smtpServer")]
+    public string SmtpServer { get; set; } = "smtp.gmail.com";
+    
+    [JsonPropertyName("smtpPort")]
+    public int SmtpPort { get; set; } = 587;
+    
+    [JsonPropertyName("useTls")]
+    public bool UseTls { get; set; } = true;
+    
+    [JsonPropertyName("senderEmail")]
+    public string SenderEmail { get; set; }
+    
+    [JsonPropertyName("credentialKey")]
+    public string CredentialKey { get; set; } = "email-password";
+    
+    // Microsoft Graph-specific config
+    [JsonPropertyName("tenantId")]
+    public string TenantId { get; set; }  // Only for msgraph provider
+    
+    [JsonPropertyName("clientId")]
+    public string ClientId { get; set; }  // Only for msgraph provider
+    
+    [JsonPropertyName("clientSecret")] 
+    public string ClientSecret { get; set; }  // Stored in credentials, not config
+}
+```
 
 ---
 

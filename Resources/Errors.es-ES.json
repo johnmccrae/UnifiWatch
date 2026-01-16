@@ -1,0 +1,23 @@
+{
+  "NotificationFailed": "Error al mostrar la notificación: {0}",
+  "ConfigNotFound": "Archivo de configuración no encontrado en: {0}",
+  "InvalidStore": "La tienda '{0}' no es compatible",
+  "CredentialStoreFailed": "Error al almacenar las credenciales para la clave '{0}': {1}",
+  "CredentialLoadFailed": "Error al cargar las credenciales para la clave '{0}': {1}",
+  "CredentialDeleteFailed": "Error al eliminar las credenciales para la clave '{0}': {1}",
+  "InvalidConfiguration": "Configuración no válida: {0}",
+  "ConfigurationLoadFailed": "Error al cargar la configuración desde '{0}': {1}",
+  "ConfigurationSaveFailed": "Error al guardar la configuración en '{0}': {1}",
+  "ConfigurationValidationFailed": "Falló la validación de la configuración: {0}",
+  "InvalidCheckInterval": "El intervalo de verificación debe estar entre {0} y {1} segundos",
+  "NoProductsSpecified": "Ningún producto especificado para monitorear",
+  "InvalidEmailConfiguration": "Configuración de correo electrónico no válida: {0}",
+  "InvalidSmsConfiguration": "Configuración de SMS no válida: {0}",
+  "EmailSendFailed": "Error al enviar la notificación por correo electrónico: {0}",
+  "SmsSendFailed": "Error al enviar la notificación por SMS: {0}",
+  "DesktopNotificationFailed": "Error al mostrar la notificación del escritorio: {0}",
+  "CorruptCredentialsFile": "El archivo de credenciales está dañado o no es válido, se eliminará: {0}",
+  "KeychainAccessDenied": "Acceso denegado a las credenciales de macOS",
+  "SecretServiceUnavailable": "El servicio de secretos de Linux no está disponible",
+  "PlatformNotSupported": "Esta plataforma no es compatible con el almacenamiento de credenciales"
+}

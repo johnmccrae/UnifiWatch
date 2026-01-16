@@ -4,12 +4,12 @@ using Moq.Protected;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using UnifiStockTracker.Configuration;
-using UnifiStockTracker.Models;
-using UnifiStockTracker.Services;
+using UnifiWatch.Configuration;
+using UnifiWatch.Models;
+using UnifiWatch.Services;
 using Xunit;
 
-namespace UnifiStockTracker.Tests;
+namespace UnifiWatch.Tests;
 
 public class UnifiStockServiceTests
 {

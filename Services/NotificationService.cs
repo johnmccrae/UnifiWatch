@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 
-namespace UnifiStockTracker.Services;
+namespace UnifiWatch.Services;
 
 public static class NotificationService
 {

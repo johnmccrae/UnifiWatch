@@ -1,10 +1,10 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using UnifiStockTracker.Configuration;
+using UnifiWatch.Configuration;
 using Xunit;
 
-namespace UnifiStockTracker.Tests;
+namespace UnifiWatch.Tests;
 
 public class ConfigurationProviderTests
 {
@@ -14,7 +14,7 @@ public class ConfigurationProviderTests
     public ConfigurationProviderTests()
     {
         _mockLogger = new Mock<ILogger<ConfigurationProvider>>();
-        _testConfigDir = Path.Combine(Path.GetTempPath(), "UnifiStockTracker-Test-" + Guid.NewGuid());
+        _testConfigDir = Path.Combine(Path.GetTempPath(), "UnifiWatch-Test-" + Guid.NewGuid());
     }
 
     private void Cleanup()
@@ -201,7 +201,7 @@ public class ConfigurationProviderTests
         config.Notifications.Email.Recipients.Add("test@example.com");
         config.Notifications.Email.SmtpServer = "smtp.gmail.com";
         config.Notifications.Email.SmtpPort = 587;
-        config.Notifications.Email.FromAddress = "sender@example.com";
+        config.Notifications.Email.SenderEmail = "sender@example.com";
 
         // Act
         await provider.SaveAsync(config);
@@ -279,7 +279,7 @@ public class ConfigurationProviderTests
             Enabled = true,
             SmtpServer = "smtp.example.com",
             SmtpPort = 587,
-            FromAddress = "sender@example.com"
+            SenderEmail = "sender@example.com",
         };
 
         // Act
@@ -296,9 +296,11 @@ public class ConfigurationProviderTests
         var config = new SmsNotificationConfig
         {
             Enabled = true,
-            Provider = "twilio",
-            Recipients = new() { "+15551234567" },
-            CredentialKey = "sms-api"
+            ServiceType = "twilio",
+            ToPhoneNumbers = new() { "+15551234567" },
+            FromPhoneNumber = "+15557654321",
+            TwilioAccountSid = "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            AuthTokenKeyName = "sms:twilio:auth-token"
         };
 
         // Act
