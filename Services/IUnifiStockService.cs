@@ -1,6 +1,6 @@
-using UnifiStockTracker.Models;
+using UnifiWatch.Models;
 
-namespace UnifiStockTracker.Services;
+namespace UnifiWatch.Services;
 
 public interface IUnifiStockService
 {

@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using UnifiStockTracker.Models;
+using UnifiWatch.Models;
 
-namespace UnifiStockTracker.Services;
+namespace UnifiWatch.Services;
 
 public class StockWatcher
 {

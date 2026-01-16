@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.unifiwatch.service</string>
+	
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/local/bin/UnifiWatch</string>
+		<string>--service-mode</string>
+	</array>
+	
+	<key>RunAtLoad</key>
+	<true/>
+	
+	<key>KeepAlive</key>
+	<dict>
+		<key>SuccessfulExit</key>
+		<false/>
+	</dict>
+	
+	<key>StandardOutPath</key>
+	<string>/var/log/unifiwatch/output.log</string>
+	
+	<key>StandardErrorPath</key>
+	<string>/var/log/unifiwatch/error.log</string>
+	
+	<key>WorkingDirectory</key>
+	<string>/Users/Shared/.unifiwatch</string>
+	
+	<key>ProcessType</key>
+	<string>Standard</string>
+	
+	<key>StartCalendarInterval</key>
+	<array>
+		<dict>
+			<key>Hour</key>
+			<integer>0</integer>
+			<key>Minute</key>
+			<integer>0</integer>
+		</dict>
+	</array>
+	
+	<key>ThrottleInterval</key>
+	<integer>10</integer>
+	
+	<key>Disabled</key>
+	<false/>
+	
+	<!-- Security and sandboxing -->
+	<key>SoftResourceLimits</key>
+	<dict>
+		<key>NumberOfFiles</key>
+		<integer>1024</integer>
+		<key>NumberOfProcesses</key>
+		<integer>256</integer>
+	</dict>
+	
+	<!-- Environment variables -->
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>PATH</key>
+		<string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+	</dict>
+	
+	<key>Nice</key>
+	<integer>0</integer>
+</dict>
+</plist>

@@ -1,9 +1,9 @@
 using System.Text;
 using System.Text.Json;
-using UnifiStockTracker.Configuration;
-using UnifiStockTracker.Models;
+using UnifiWatch.Configuration;
+using UnifiWatch.Models;
 
-namespace UnifiStockTracker.Services;
+namespace UnifiWatch.Services;
 
 public class UnifiStockService : IUnifiStockService
 {
@@ -210,7 +210,7 @@ fragment MoneyFragment on Money {
                 {
                     Name = product.Title,
                     ShortName = product.ShortTitle,
-                    Available = variant.Status == "AVAILABLE",
+                    Available = variant.Status?.Equals("AVAILABLE", StringComparison.OrdinalIgnoreCase) ?? false,
                     Category = category,
                     Collection = product.CollectionSlug,
                     OrganizationalCollectionSlug = product.OrganizationalCollectionSlug,

@@ -1,0 +1,23 @@
+{
+  "NotificationFailed": "Failed to show notification: {0}",
+  "ConfigNotFound": "Configuration file not found at: {0}",
+  "InvalidStore": "Store '{0}' is not supported",
+  "CredentialStoreFailed": "Failed to store credentials for key '{0}': {1}",
+  "CredentialLoadFailed": "Failed to load credentials for key '{0}': {1}",
+  "CredentialDeleteFailed": "Failed to delete credentials for key '{0}': {1}",
+  "InvalidConfiguration": "Invalid configuration: {0}",
+  "ConfigurationLoadFailed": "Failed to load configuration from '{0}': {1}",
+  "ConfigurationSaveFailed": "Failed to save configuration to '{0}': {1}",
+  "ConfigurationValidationFailed": "Configuration validation failed: {0}",
+  "InvalidCheckInterval": "Check interval must be between {0} and {1} seconds",
+  "NoProductsSpecified": "No products specified to monitor",
+  "InvalidEmailConfiguration": "Email configuration is invalid: {0}",
+  "InvalidSmsConfiguration": "SMS configuration is invalid: {0}",
+  "EmailSendFailed": "Failed to send email notification: {0}",
+  "SmsSendFailed": "Failed to send SMS notification: {0}",
+  "DesktopNotificationFailed": "Failed to show desktop notification: {0}",
+  "CorruptCredentialsFile": "Credentials file is corrupt or invalid, it will be deleted: {0}",
+  "KeychainAccessDenied": "Access to macOS Keychain was denied",
+  "SecretServiceUnavailable": "Linux Secret Service is not available",
+  "PlatformNotSupported": "This platform is not supported for credential storage"
+}

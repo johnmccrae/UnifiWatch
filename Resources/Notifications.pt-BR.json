@@ -1,0 +1,21 @@
+{
+  "ProductInStock.Title": "Alerta de estoque UnifiWatch",
+  "ProductInStock.Message": "O produto '{0}' agora está em estoque! SKU: {1}",
+  "ProductInStock.MessageWithPrice": "O produto '{0}' agora está em estoque! SKU: {1}, Preço: {2}",
+  "TestNotification.Title": "UnifiWatch - TESTE",
+  "TestNotification.Message": "Esta é uma notificação de teste. Se você vir isso, sua configuração de notificações está funcionando corretamente!",
+  "Email.Subject": "Alerta de estoque UnifiWatch - {0}",
+  "Email.Body.Header": "Alerta de estoque",
+  "Email.Body.ProductName": "Nome do produto",
+  "Email.Body.SKU": "SKU",
+  "Email.Body.Price": "Preço",
+  "Email.Body.Store": "Loja",
+  "Email.Body.ViewProduct": "Visualizar produto",
+  "Email.Body.Footer": "Este alerta foi enviado pelo serviço de monitoramento de estoque UnifiWatch.",
+  "Sms.ProductInStock": "{0} em estoque! SKU: {1}. {2}",
+  "Sms.ProductInStockWithPrice": "{0} em estoque! SKU: {1}, ${2}. {3}",
+  "Desktop.ClickToView": "Clique para visualizar os detalhes do produto",
+  "Desktop.MultipleProducts": "{0} produtos agora estão em estoque!",
+  "NotificationSent": "Notificação enviada via {0}",
+  "NotificationSkipped": "Notificação ignorada (enviada recentemente): {0}"
+}

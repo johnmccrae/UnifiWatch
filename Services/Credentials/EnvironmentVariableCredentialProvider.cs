@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace UnifiStockTracker.Services.Credentials;
+namespace UnifiWatch.Services.Credentials;
 
 /// <summary>
 /// Environment variable-based credential provider

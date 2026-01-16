@@ -1,15 +1,43 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using UnifiStockTracker.Configuration;
-using UnifiStockTracker.Services;
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Spectre.Console;
+using UnifiWatch.CLI;
+using UnifiWatch.Configuration;
+using UnifiWatch.Services;
+using UnifiWatch.Services.Credentials;
+using UnifiWatch.Services.Notifications;
+using UnifiWatch.Services.Notifications.Sms;
 
-namespace UnifiStockTracker;
+namespace UnifiWatch;
 
 public class Program
 {
     public static async Task<int> Main(string[] args)
     {
-        var rootCommand = new RootCommand("UnifiStockTracker - Monitor Ubiquiti product stock availability");
+        // Force UTF-8 encoding for console output to ensure proper Unicode rendering
+        Console.OutputEncoding = Encoding.UTF8;
+
+        // Check for service mode first (--service-mode)
+        if (args.Contains("--service-mode", StringComparer.OrdinalIgnoreCase))
+        {
+            return await RunServiceModeAsync(args.Where(a => !a.Equals("--service-mode", StringComparison.OrdinalIgnoreCase)).ToArray());
+        }
+
+        // Check for configuration commands
+        if (args.Length > 0)
+        {
+            var command = args[0].ToLowerInvariant();
+            if (command is "configure" or "show-config" or "reset-config" or "test-notifications" or "validate-config" or "health-check")
+            {
+                return await HandleConfigurationCommandAsync(args);
+            }
+        }
+
+        var rootCommand = new RootCommand("UnifiWatch - Monitor Ubiquiti product stock availability");
 
         // Mode options (mutually exclusive)
         var stockOption = new Option<bool>("--stock", "Get current stock");
@@ -56,13 +84,13 @@ public class Program
             // Validate mutually exclusive mode options
             if (!stock && !wait)
             {
-                Console.WriteLine("Error: You must specify either --stock or --wait");
+                AnsiConsole.MarkupLine("[red]✗ Error: You must specify either --stock or --wait[/]");
                 context.ExitCode = 1;
                 return;
             }
             if (stock && wait)
             {
-                Console.WriteLine("Error: Cannot specify both --stock and --wait");
+                AnsiConsole.MarkupLine("[red]✗ Error: Cannot specify both --stock and --wait[/]");
                 context.ExitCode = 1;
                 return;
             }
@@ -70,13 +98,13 @@ public class Program
             // Validate mutually exclusive store options
             if (store == null && legacyStore == null)
             {
-                Console.WriteLine("Error: You must specify either --store or --legacy-api-store");
+                AnsiConsole.MarkupLine("[red]✗ Error: You must specify either --store or --legacy-api-store[/]");
                 context.ExitCode = 1;
                 return;
             }
             if (store != null && legacyStore != null)
             {
-                Console.WriteLine("Error: Cannot specify both --store and --legacy-api-store");
+                AnsiConsole.MarkupLine("[red]✗ Error: Cannot specify both --store and --legacy-api-store[/]");
                 context.ExitCode = 1;
                 return;
             }
@@ -105,6 +133,37 @@ public class Program
         return await rootCommand.InvokeAsync(args);
     }
 
+    static async Task<int> HandleConfigurationCommandAsync(string[] args)
+    {
+        var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder.AddConsole();
+            builder.SetMinimumLevel(LogLevel.Warning);
+        });
+
+        var logger = loggerFactory.CreateLogger<Program>();
+        var configProvider = new ConfigurationProvider(loggerFactory.CreateLogger<ConfigurationProvider>());
+        var credentialProvider = CredentialProviderFactory.CreateProvider("auto", loggerFactory);
+
+        var rootCommand = new RootCommand("UnifiWatch Configuration");
+
+        // Add configuration commands
+        rootCommand.AddCommand(ConfigurationCommands.CreateConfigureCommand(
+            configProvider, credentialProvider, logger));
+        rootCommand.AddCommand(ConfigurationCommands.CreateShowConfigCommand(
+            configProvider, logger));
+        rootCommand.AddCommand(ConfigurationCommands.CreateResetConfigCommand(
+            configProvider, credentialProvider, logger));
+        rootCommand.AddCommand(ConfigurationCommands.CreateTestNotificationsCommand(
+            configProvider, logger));
+        rootCommand.AddCommand(ConfigurationCommands.CreateValidateConfigCommand(
+            configProvider, credentialProvider, logger));
+        rootCommand.AddCommand(ConfigurationCommands.CreateHealthCheckCommand(
+            configProvider, logger));
+
+        return await rootCommand.InvokeAsync(args);
+    }
+
     static async Task GetStockAsync(string store, string[]? collections, bool isLegacy)
     {
         using var httpClient = new HttpClient();
@@ -120,7 +179,7 @@ public class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            AnsiConsole.MarkupLine($"[red]✗ Error: {ex.Message}[/]");
             throw;
         }
     }
@@ -145,24 +204,104 @@ public class Program
         }
     }
 
-    static void DisplayProducts(List<UnifiStockTracker.Models.UnifiProduct> products)
+    static void DisplayProducts(List<UnifiWatch.Models.UnifiProduct> products)
     {
-        Console.WriteLine($"\nFound {products.Count} products:\n");
-        Console.WriteLine("{0,-50} {1,-12} {2,-30} {3,-20} {4,10}", 
+        Console.WriteLine($"\n[Found {products.Count} products]\n");
+        Console.WriteLine("{0,-50} {1,-15} {2,-30} {3,-20} {4,10}", 
             "Name", "Available", "Category", "SKU", "Price");
-        Console.WriteLine(new string('-', 125));
+        Console.WriteLine(new string('-', 128));
 
         foreach (var product in products)
         {
-            var availability = product.Available ? "✓ In Stock" : "✗ Out of Stock";
+            var availability = product.Available ? "[In Stock]" : "[Out of Stock]";
             var price = product.Price.HasValue ? $"{(product.Price.Value / 100):F2}" : "N/A";
+            var name = product.Name.Length > 47 ? product.Name.Substring(0, 47) + "..." : product.Name;
+            var category = product.Category?.Length > 27 ? product.Category.Substring(0, 27) + "..." : product.Category ?? "N/A";
+            var sku = (product.SKU ?? "N/A").Length > 20 ? (product.SKU ?? "N/A").Substring(0, 17) + "..." : product.SKU ?? "N/A";
             
-            Console.WriteLine("{0,-50} {1,-12} {2,-30} {3,-20} {4,10}",
-                product.Name.Length > 47 ? product.Name.Substring(0, 47) + "..." : product.Name,
+            Console.WriteLine("{0,-50} {1,-15} {2,-30} {3,-20} {4,10}",
+                name,
                 availability,
-                product.Category?.Length > 27 ? product.Category.Substring(0, 27) + "..." : product.Category ?? "N/A",
-                product.SKU ?? "N/A",
+                category,
+                sku,
                 price);
+        }
+    }
+
+    /// <summary>
+    /// Runs UnifiWatch as a background service
+    /// Registers dependencies and configures hosting for Windows Service, systemd, or standalone
+    /// </summary>
+    static async Task<int> RunServiceModeAsync(string[] args)
+    {
+        try
+        {
+            var host = Host.CreateDefaultBuilder(args)
+                .ConfigureServices((context, services) =>
+                {
+                    // Register core services
+                    services.AddSingleton<IConfigurationProvider, ConfigurationProvider>();
+                    
+                    // Register credential provider
+                    services.AddSingleton<ICredentialProvider>(sp =>
+                        CredentialProviderFactory.CreateProvider("auto", 
+                            sp.GetRequiredService<ILoggerFactory>()));
+
+                    // Register HTTP clients for stock services
+                    services.AddHttpClient<IUnifiStockService, UnifiStockService>();
+                    services.AddHttpClient<UnifiStockLegacyService>();
+
+                    // Register notification providers (optional)
+                    services.AddScoped<SmtpEmailProvider>();
+                    services.AddScoped<MicrosoftGraphEmailProvider>();
+                    services.AddScoped<ISmsProvider, TwilioSmsProvider>();
+
+                    // Register notification orchestrator
+                    services.AddSingleton<NotificationOrchestrator>(sp =>
+                    {
+                        var config = sp.GetRequiredService<IConfigurationProvider>().LoadAsync(CancellationToken.None).GetAwaiter().GetResult();
+                        
+                        return new NotificationOrchestrator(
+                            config,
+                            config?.Notifications?.Email?.Provider?.Equals("smtp", StringComparison.OrdinalIgnoreCase) == true 
+                                ? sp.GetRequiredService<SmtpEmailProvider>() 
+                                : null,
+                            config?.Notifications?.Email?.Provider?.Equals("microsoft-graph", StringComparison.OrdinalIgnoreCase) == true 
+                                ? sp.GetRequiredService<MicrosoftGraphEmailProvider>() 
+                                : null,
+                            config?.Notifications?.Sms?.Enabled == true 
+                                ? sp.GetRequiredService<ISmsProvider>() 
+                                : null,
+                            sp.GetRequiredService<ILogger<NotificationOrchestrator>>());
+                    });
+
+                    // Register background service
+                    services.AddHostedService<UnifiWatchService>();
+                })
+                .ConfigureLogging((context, logging) =>
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole();
+                    logging.AddDebug();
+                })
+                .UseConsoleLifetime()
+                .Build();
+
+            // Add platform-specific service hosting
+            #if WINDOWS
+            host = host.UseWindowsService();
+            #elif LINUX
+            host = host.UseSystemd();
+            #endif
+
+            await host.RunAsync();
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red]✗ Service Mode Error: {ex.Message}[/]");
+            AnsiConsole.WriteException(ex);
+            return 1;
         }
     }
 }

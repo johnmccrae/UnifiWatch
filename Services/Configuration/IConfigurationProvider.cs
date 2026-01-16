@@ -1,6 +1,6 @@
-using UnifiStockTracker.Models;
+using UnifiWatch.Models;
 
-namespace UnifiStockTracker.Services.Configuration;
+namespace UnifiWatch.Services.Configuration;
 
 /// <summary>
 /// Platform-agnostic configuration provider for service mode settings

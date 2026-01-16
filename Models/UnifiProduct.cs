@@ -1,4 +1,4 @@
-namespace UnifiStockTracker.Models;
+namespace UnifiWatch.Models;
 
 public class UnifiProduct
 {

@@ -1,10 +1,10 @@
 using FluentAssertions;
 using Moq;
-using UnifiStockTracker.Models;
-using UnifiStockTracker.Services;
+using UnifiWatch.Models;
+using UnifiWatch.Services;
 using Xunit;
 
-namespace UnifiStockTracker.Tests;
+namespace UnifiWatch.Tests;
 
 public class StockWatcherTests
 {

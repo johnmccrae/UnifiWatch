@@ -1,0 +1,21 @@
+{
+  "ProductInStock.Title": "UnifiWatch Stock Alert",
+  "ProductInStock.Message": "Product '{0}' is now in stock! SKU: {1}",
+  "ProductInStock.MessageWithPrice": "Product '{0}' is now in stock! SKU: {1}, Price: {2}",
+  "TestNotification.Title": "UnifiWatch - TEST",
+  "TestNotification.Message": "This is a test notification. If you see this, your notification setup is working correctly!",
+  "Email.Subject": "UnifiWatch Stock Alert - {0}",
+  "Email.Body.Header": "Stock Alert",
+  "Email.Body.ProductName": "Product Name",
+  "Email.Body.SKU": "SKU",
+  "Email.Body.Price": "Price",
+  "Email.Body.Store": "Store",
+  "Email.Body.ViewProduct": "View Product",
+  "Email.Body.Footer": "This alert was sent by UnifiWatch stock monitoring service.",
+  "Sms.ProductInStock": "{0} in stock! SKU: {1}. {2}",
+  "Sms.ProductInStockWithPrice": "{0} in stock! SKU: {1}, ${2}. {3}",
+  "Desktop.ClickToView": "Click to view product details",
+  "Desktop.MultipleProducts": "{0} products are now in stock!",
+  "NotificationSent": "Notification sent via {0}",
+  "NotificationSkipped": "Notification skipped (recently sent): {0}"
+}

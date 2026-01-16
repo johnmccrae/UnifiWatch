@@ -2,9 +2,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using UnifiStockTracker.Utilities;
+using UnifiWatch.Utilities;
 
-namespace UnifiStockTracker.Services.Credentials;
+namespace UnifiWatch.Services.Credentials;
 
 /// <summary>
 /// Encrypted file-based credential provider using DPAPI (Windows) or AES (others)
@@ -161,10 +161,37 @@ public class EncryptedFileCredentialProvider : ICredentialProvider
 
             return credentials ?? new Dictionary<string, string>();
         }
+        catch (CryptographicException ex)
+        {
+            _logger.LogWarning(ex, "Credentials file at {Path} is unreadable; resetting file", _credentialsFilePath);
+            TryDeleteCorruptFile();
+            return new Dictionary<string, string>();
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogWarning(ex, "Credentials file at {Path} contains invalid JSON; resetting file", _credentialsFilePath);
+            TryDeleteCorruptFile();
+            return new Dictionary<string, string>();
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error loading credentials from {Path}", _credentialsFilePath);
             throw;
+        }
+    }
+
+    private void TryDeleteCorruptFile()
+    {
+        try
+        {
+            if (File.Exists(_credentialsFilePath))
+            {
+                File.Delete(_credentialsFilePath);
+            }
+        }
+        catch (Exception deleteEx)
+        {
+            _logger.LogError(deleteEx, "Failed to delete corrupt credentials file at {Path}", _credentialsFilePath);
         }
     }
 

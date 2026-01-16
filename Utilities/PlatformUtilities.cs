@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace UnifiStockTracker.Utilities;
+namespace UnifiWatch.Utilities;
 
 /// <summary>
 /// Platform detection and OS-specific utilities
@@ -15,8 +15,8 @@ public static class PlatformUtilities
     /// Gets the appropriate configuration directory for the current platform
     /// </summary>
     /// <returns>
-    /// Windows: %APPDATA%\UnifiStockTracker
-    /// macOS: ~/.config/unifistock (preferred) or ~/Library/Application Support/UnifiStockTracker
+    /// Windows: %APPDATA%\UnifiWatch
+    /// macOS: ~/.config/unifistock (preferred) or ~/Library/Application Support/UnifiWatch
     /// Linux: ~/.config/unifistock (preferred) or /etc/unifistock (system-wide)
     /// </returns>
     public static string GetConfigurationDirectory()
@@ -24,7 +24,7 @@ public static class PlatformUtilities
         if (IsWindows)
         {
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(appData, "UnifiStockTracker");
+            return Path.Combine(appData, "UnifiWatch");
         }
         else if (IsMacOS)
         {
@@ -34,7 +34,7 @@ public static class PlatformUtilities
             if (Directory.Exists(configDir))
                 return configDir;
 
-            return Path.Combine(home, "Library", "Application Support", "UnifiStockTracker");
+            return Path.Combine(home, "Library", "Application Support", "UnifiWatch");
         }
         else if (IsLinux)
         {
