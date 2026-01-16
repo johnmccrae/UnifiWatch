@@ -117,7 +117,7 @@ This will:
 
 ```bash
 # USA
-./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --stock --store USA
+./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --stock --store USA
 
 # Europe
 ./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --stock --store Europe

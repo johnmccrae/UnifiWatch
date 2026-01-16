@@ -184,10 +184,10 @@ dotnet test UnifiWatch.sln
 ```
 
 **Expected Results**:
-- Total: 71 tests
-- Passed: 65 ✅
-- Failed: 0 ❌
-- Skipped: 6 (integration tests)
+  - Total: 223 tests
+  - Passed: 212 ✅
+  - Failed: 0 ❌
+  - Skipped: 11 (integration/advanced tests)
 
 **Last Tested**: December 7, 2025  
 **Platform**: Linux  
@@ -433,8 +433,8 @@ dotnet test UnifiWatch.sln --configuration Release
 
 **Expected Results**:
 
-- [ ] 65 tests passed ✅
-- [ ] 6 tests skipped (integration tests)
+  - [ ] 212 tests passed ✅
+  - [ ] 11 tests skipped (integration/advanced tests)
 - [ ] 0 tests failed ❌
 
 ---
@@ -603,19 +603,20 @@ sudo dnf install -y compat-openssl11 krb5-libs libicu openssl-libs zlib
 |------------|-------------|---------------|---------------|---------------|
 | Configuration Provider | 19 | 19 | 0 | 0 |
 | Credential Provider | 46 | 46 | 0 | 0 |
-| Build & Compilation | 2 | 2 | 0 | 0 |
-| Integration Tests | 6 | 0 | 0 | 6 |
-| **TOTAL** | **71** | **65** | **0** | **6** |
+| Stock Watcher & Service | 52 | 52 | 0 | 0 |
+| Notifications & Email | 32 | 32 | 0 | 0 |
+| SMS & Localization | 38 | 38 | 0 | 0 |
+| CLI & Configuration | 36 | 25 | 0 | 11 |
+| **TOTAL** | **223** | **212** | **0** | **11** |
 
-### Skipped Tests
+### Skipped Tests (11 total)
 
-The following tests are skipped because they require real HTTP services:
-- `Main_WithStoreOption_ShouldStartMonitoring`
-- `Main_WithLegacyApiStoreOption_ShouldStartMonitoring`
-- `Main_WithCheckNowOption_ShouldCheckOnce`
-- `Main_WithCheckNowAndNoSoundOptions_ShouldCheckOnceWithoutSound`
-- `Main_WithNoSoundOption_ShouldSucceed`
-- `GetProductsAsync_WithRealStore_ShouldReturnProducts`
+The following 11 tests are skipped because they require real HTTP services or are deferred to Phase 2+:
+- Integration tests for real stock checking (HTTP API tests)
+- Email notification integration tests
+- SMS provider integration tests (Twilio, AWS SNS, Azure)
+- Localization resource validation (deferred to Phase 2b)
+- Service lifecycle and background task integration tests
 
 ---
 
