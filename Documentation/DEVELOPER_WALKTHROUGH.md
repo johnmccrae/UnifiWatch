@@ -1672,5 +1672,3 @@ _logger.LogError("Error occurred: {error}", ex.Message);
 - **Development Plan**: See BUILD_PLAN.md
 
 **Happy coding!**
-
-

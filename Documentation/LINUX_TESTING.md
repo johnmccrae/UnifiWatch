@@ -1,8 +1,8 @@
 # Linux Testing Checklist
 
-**Purpose**: Validate Phase 1 credential and configuration functionality on Linux  
-**Platform**: Linux (tested on: ___________ distribution _______)  
-**Date**: December 2025  
+**Purpose**: Validate Phase 1 credential and configuration functionality on Linux
+**Platform**: Linux (tested on: ___________ distribution ______)
+**Date**: December 2025
 **Tester**: _____________
 
 ---
@@ -14,17 +14,20 @@
 **SEVERITY: HIGH** - The encrypted file provider has a **critical security flaw** on Linux and macOS:
 
 **The Problem**:
+
 - AES-256 encryption key is stored **IN THE SAME FILE** as the encrypted credentials
 - File format: `[key length][key][iv length][iv][ciphertext]`
 - Anyone with read access to `credentials.enc.json` can decrypt the credentials
 - This is effectively **obfuscation, not encryption**
 
 **Why This Happens**:
+
 - Windows uses DPAPI which derives keys from user login credentials ✅ SECURE
 - Linux/macOS have no equivalent without GUI/keyring daemon
 - Current implementation generates random key and stores it with the data ❌ INSECURE
 
 **Impact on Headless/Server Linux**:
+
 - No GNOME Keyring daemon (requires GUI session)
 - No KDE Wallet available
 - Current fallback provides **NO REAL SECURITY**
@@ -32,6 +35,7 @@
 
 **Phase 2 Required Fixes** (HIGH PRIORITY):
 1. **Implement proper key derivation**:
+
    - Use PBKDF2 to derive key from user passphrase
    - Store only salt, never the key itself
    - Similar to Windows DPAPI behavior
@@ -51,6 +55,7 @@
    - Integrated with systemd services
 
 **Current Recommendation**:
+
 - ⚠️ **DO NOT use encrypted file storage for production secrets on Linux**
 - Use environment variables instead: `UNIFI_API_KEY`, `UNIFI_API_SECRET`
 - Wait for Phase 2 Secret Service or proper key derivation implementation
@@ -63,12 +68,14 @@
 **CRITICAL**: The Linux Secret Service credential provider is NOT fully implemented in Phase 1. The current implementation falls back to the insecure encrypted file storage described above.
 
 **Impact**:
+
 - Credentials are stored in `~/.config/unifistock/credentials.enc.json` 
 - NOT stored in system keyring (GNOME Keyring, KDE Wallet, pass, etc.)
 - Encryption key stored alongside encrypted data (see security issue above)
 - Functional for testing, but requires Phase 2 enhancement
 
 **Phase 2 TODO**:
+
 - Implement proper DBus Secret Service API integration using `Tmds.DBus` library
 - Support GNOME Keyring (Ubuntu, Fedora, Debian, RHEL, CentOS Stream, openSUSE)
 - Support KDE Wallet (Kubuntu, KDE Neon, Fedora KDE, openSUSE KDE)
@@ -76,6 +83,7 @@
 - See `Services/Credentials/LinuxSecretService.cs` for implementation notes
 
 **Distribution Compatibility** (Secret Service API - planned for Phase 2):
+
 - ✅ **Ubuntu** (20.04+): GNOME Keyring included by default
 - ✅ **Debian** (11+): GNOME Keyring available via `gnome-keyring` package
 - ✅ **Fedora** (35+): GNOME Keyring included by default
@@ -91,9 +99,11 @@
 ## Pre-Testing Setup
 
 ### 1. Development Environment
+
 - [ ] Install .NET 9.0 SDK for Linux (version 9.0.203)
   
   **Option A: Direct download from Microsoft (Ubuntu/Debian x64)**
+
   ```bash
   # Download .NET 9.0.203 SDK
   wget https://download.visualstudio.microsoft.com/download/pr/822078c4-86ed-4e8d-9cbd-dc15d05f030f/9ff0b5b3e93ddc34c0e04ca93baf2e18/dotnet-sdk-9.0.203-linux-x64.tar.gz
@@ -110,6 +120,7 @@
   ```
   
   **Option B: Using package manager (Ubuntu/Debian)**
+
   ```bash
   # Add Microsoft package repository
   wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
@@ -125,31 +136,34 @@
   ```
   
   **Option C: Fedora/RHEL/CentOS**
+
   ```bash
   sudo dnf install dotnet-sdk-9.0
   dotnet --version
   ```
   
   **Option D: Arch Linux**
+
   ```bash
   sudo pacman -S dotnet-sdk
   dotnet --version
   ```
 
 - [ ] Clone repository
+
   ```bash
-  git clone https://github.com/EvotecIT/UnifiStockTracker.git
-  cd UnifiStockTracker/UnifiStockTracker-CSharp
+  git clone https://github.com/EvotecIT/UnifiWatch.git
+  cd UnifiWatch
   ```
 
 - [ ] Restore NuGet packages
   ```bash
-  dotnet restore UnifiStockTracker-CSharp.sln
+  dotnet restore UnifiWatch.sln
   ```
 
 - [ ] Build project
   ```bash
-  dotnet build UnifiStockTracker-CSharp.sln
+  dotnet build UnifiWatch.sln
   ```
   **Expected**: 0 errors, 0 warnings
 
@@ -188,7 +202,7 @@ sudo dnf install kwalletmanager      # Fedora/RHEL
 
 #### Test 1.1: Configuration File Location
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.LoadAsync_ValidConfiguration_LoadsAllSettings"
+dotnet test UnifiWatch.sln --filter "ConfigurationProviderTests.LoadAsync_ValidConfiguration_LoadsAllSettings"
 ```
 
 - [ ] **PASS**: Test passes
@@ -206,7 +220,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.Lo
 
 #### Test 1.2: Configuration Save/Load Cycle
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.SaveAsync_ValidConfiguration_SavesCorrectly"
+dotnet test UnifiWatch.sln --filter "ConfigurationProviderTests.SaveAsync_ValidConfiguration_SavesCorrectly"
 ```
 
 - [ ] **PASS**: Test passes
@@ -218,7 +232,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.Sa
 
 #### Test 1.3: Configuration Backup
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.BackupAsync_CreatesBackupFile"
+dotnet test UnifiWatch.sln --filter "ConfigurationProviderTests.BackupAsync_CreatesBackupFile"
 ```
 
 - [ ] **PASS**: Test passes
@@ -236,13 +250,13 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests.Ba
 
 #### Test 2.1: Platform Detection
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.CredentialProviderFactory_CreateProvider_WithAutoStorage_ShouldSelectDefault"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.CredentialProviderFactory_CreateProvider_WithAutoStorage_ShouldSelectDefault"
 ```
 
 - [ ] **PASS**: Test passes
 - [ ] Verify runtime platform:
   ```bash
-  dotnet run --project UnifiStockTracker.csproj -- --version
+  dotnet run --project UnifiWatch.csproj -- --version
   # Should detect Linux
   ```
 
@@ -253,7 +267,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.Crede
 **Manual Test - Verify Fallback Behavior**:
 ```bash
 # Check that LinuxSecretService falls back to encrypted file
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.StoreAsync_WithValidKeyAndSecret_ShouldSucceed"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.StoreAsync_WithValidKeyAndSecret_ShouldSucceed"
 
 # Verify encrypted file is created (in test temp directory during unit tests)
 # In production, credentials would be at: ~/.config/unifistock/credentials.enc.json
@@ -267,7 +281,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.Store
 
 #### Test 2.3: Retrieve Non-Existent Credential
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.RetrieveAsync_WithNonExistentKey_ShouldReturnNull"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.RetrieveAsync_WithNonExistentKey_ShouldReturnNull"
 ```
 
 - [ ] **PASS**: Test passes
@@ -275,7 +289,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.Retri
 
 #### Test 2.4: Update Existing Credential
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.StoreAsync_UpdateExistingKey_ShouldOverwrite"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.StoreAsync_UpdateExistingKey_ShouldOverwrite"
 ```
 
 - [ ] **PASS**: Test passes
@@ -283,7 +297,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.Store
 
 #### Test 2.5: Delete Credential
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.DeleteAsync_AfterStore_ShouldSucceed"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.DeleteAsync_AfterStore_ShouldSucceed"
 ```
 
 - [ ] **PASS**: Test passes
@@ -291,7 +305,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.Delet
 
 #### Test 2.6: List All Credential Keys
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests.ListAsync_AfterMultipleStores_ShouldReturnAllKeys"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests.ListAsync_AfterMultipleStores_ShouldReturnAllKeys"
 ```
 
 - [ ] **PASS**: Test passes
@@ -369,7 +383,7 @@ export UNIFI_API_KEY="your-api-key-here"
 export UNIFI_API_SECRET="your-api-secret-here"
 
 # Run the application
-dotnet run --project UnifiStockTracker.csproj
+dotnet run --project UnifiWatch.csproj
 ```
 
 ---
@@ -378,7 +392,7 @@ dotnet run --project UnifiStockTracker.csproj
 
 #### Test 4.1: Configuration Directory
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests"
+dotnet test UnifiWatch.sln --filter "ConfigurationProviderTests"
 ```
 
 **Verify Paths** (User Mode):
@@ -393,7 +407,7 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "ConfigurationProviderTests"
 
 #### Test 4.2: Credential Directory
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests"
+dotnet test UnifiWatch.sln --filter "CredentialProviderTests"
 ```
 
 **Verify Paths**:
@@ -409,8 +423,8 @@ dotnet test UnifiStockTracker-CSharp.sln --filter "CredentialProviderTests"
 
 #### Test 5.1: Clean Build
 ```bash
-dotnet clean UnifiStockTracker-CSharp.sln
-dotnet build UnifiStockTracker-CSharp.sln --configuration Release
+dotnet clean UnifiWatch.sln
+dotnet build UnifiWatch.sln --configuration Release
 ```
 
 - [ ] **0 errors**
@@ -419,7 +433,7 @@ dotnet build UnifiStockTracker-CSharp.sln --configuration Release
 
 #### Test 5.2: All Unit Tests
 ```bash
-dotnet test UnifiStockTracker-CSharp.sln --configuration Release
+dotnet test UnifiWatch.sln --configuration Release
 ```
 
 **Expected Results**:

@@ -1,6 +1,6 @@
 # Building and Testing on macOS
 
-This guide walks you through building and testing UnifiStockTracker on a Mac (Intel or Apple Silicon).
+This guide walks you through building and testing UnifiWatch on a Mac (Intel or Apple Silicon).
 
 ## Prerequisites
 
@@ -40,47 +40,47 @@ You should see `9.0.x` or later.
 ### Option A: Clone from GitHub (if available)
 
 ```bash
-git clone https://github.com/EvotecIT/UnifiStockTracker-CSharp.git
-cd UnifiStockTracker-CSharp
+git clone https://github.com/EvotecIT/UnifiWatch.git
+cd UnifiWatch
 ```
 
 ### Option B: Copy from Windows Machine
 
-- Use AirDrop, email, USB drive, or network share to transfer the `UnifiStockTracker-CSharp` folder
-- Extract to your preferred location (e.g., `~/Projects/UnifiStockTracker-CSharp`)
+- Use AirDrop, email, USB drive, or network share to transfer the `UnifiWatch` folder
+- Extract to your preferred location (e.g., `~/Projects/UnifiWatch`)
 
 ## Step 3: Build the Application
 
 Open Terminal and navigate to the project:
 
 ```bash
-cd ~/path/to/UnifiStockTracker-CSharp
+cd ~/path/to/UnifiWatch
 ```
 
 **For Apple Silicon (M1/M2/M3/M4):**
 
 ```bash
-dotnet publish UnifiStockTracker.csproj -c Release -r osx-arm64 --self-contained -p:PublishSingleFile=true
+dotnet publish UnifiWatch.csproj -c Release -r osx-arm64 --self-contained -p:PublishSingleFile=true
 ```
 
 **For Intel Mac:**
 
 ```bash
-dotnet publish UnifiStockTracker.csproj -c Release -r osx-x64 --self-contained -p:PublishSingleFile=true
+dotnet publish UnifiWatch.csproj -c Release -r osx-x64 --self-contained -p:PublishSingleFile=true
 ```
 
 This will:
 - Download dependencies
 - Compile the application
 - Create a standalone executable (no .NET runtime needed on other machines)
-- Output the file to: `bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker` or `bin/Release/net9.0/osx-x64/publish/UnifiStockTracker`
+- Output the file to: `bin/Release/net9.0/osx-arm64/publish/UnifiWatch` or `bin/Release/net9.0/osx-x64/publish/UnifiWatch`
 
 Build time: ~2-3 minutes on first build, ~10-20 seconds on subsequent builds.
 
 ## Step 4: Make the Executable
 
 ```bash
-chmod +x bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker
+chmod +x bin/Release/net9.0/osx-arm64/publish/UnifiWatch
 ```
 
 (Use `osx-x64` instead if you're on Intel Mac)
@@ -90,7 +90,7 @@ chmod +x bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker
 ### Quick Test - Check Stock
 
 ```bash
-./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --stock --store USA --product-names "Dream Machine" | head -30
+./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --stock --store USA --product-names "Dream Machine" | head -30
 ```
 
 Expected output:
@@ -103,7 +103,7 @@ Expected output:
 To test the monitoring functionality:
 
 ```bash
-./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --wait --store USA --product-names "Dream Machine" --seconds 5
+./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --wait --store USA --product-names "Dream Machine" --seconds 5
 ```
 
 This will:
@@ -120,20 +120,20 @@ This will:
 ./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --stock --store USA
 
 # Europe
-./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --stock --store Europe
+./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --stock --store Europe
 
 # UK
-./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --stock --store UK
+./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --stock --store UK
 ```
 
 **Shopify API Stores (Legacy):**
 
 ```bash
 # Brazil
-./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --stock --legacy-api-store Brazil
+./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --stock --legacy-api-store Brazil
 
 # Japan
-./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --stock --legacy-api-store Japan
+./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --stock --legacy-api-store Japan
 ```
 
 ## Step 6: Test Notifications
@@ -158,7 +158,7 @@ You should see a notification in the top-right corner of your screen.
 To run the full test suite:
 
 ```bash
-sudo dotnet test UnifiStockTracker-CSharp.sln
+sudo dotnet test UnifiWatch.sln
 ```
 
 Expected output:
@@ -171,13 +171,13 @@ To run the application from anywhere, copy it to a location in your PATH:
 
 ```bash
 # Option 1: Copy to /usr/local/bin
-sudo cp bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker /usr/local/bin/
+sudo cp bin/Release/net9.0/osx-arm64/publish/UnifiWatch /usr/local/bin/
 
 # Option 2: Create a symlink
-sudo ln -s $(pwd)/bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker /usr/local/bin/
+sudo ln -s $(pwd)/bin/Release/net9.0/osx-arm64/publish/UnifiWatch /usr/local/bin/
 
 # Now you can run it from anywhere:
-UnifiStockTracker --stock --store USA
+UnifiWatch --stock --store USA
 ```
 
 ## Troubleshooting
@@ -192,7 +192,7 @@ UnifiStockTracker --stock --store USA
 
 ### "Permission denied"
 - The executable isn't marked as executable
-- Run: `chmod +x bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker`
+- Run: `chmod +x bin/Release/net9.0/osx-arm64/publish/UnifiWatch`
 
 ### "No notifications appearing"
 - Check System Preferences > Notifications
@@ -208,19 +208,19 @@ UnifiStockTracker --stock --store USA
 
 ```bash
 # Check stock in USA
-./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --stock --store USA
+./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --stock --store USA
 
 # Monitor for specific product
-./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --wait --store USA --product-names "Dream Machine"
+./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --wait --store USA --product-names "Dream Machine"
 
 # Monitor by SKU
-./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --wait --store USA --product-skus "UDM-Pro"
+./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --wait --store USA --product-skus "UDM-Pro"
 
 # Check with custom interval (check every 30 seconds)
-./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --wait --store USA --seconds 30
+./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --wait --store USA --seconds 30
 
 # Silent mode (no notifications, no browser)
-./bin/Release/net9.0/osx-arm64/publish/UnifiStockTracker --wait --store USA --no-website --no-sound
+./bin/Release/net9.0/osx-arm64/publish/UnifiWatch --wait --store USA --no-website --no-sound
 ```
 
 ## What to Verify
@@ -233,7 +233,7 @@ After building and testing, confirm:
 - ✅ `--wait` mode monitors and counts down
 - ✅ Native macOS notifications appear when monitored (if products were in stock)
 - ✅ Ctrl+C stops the monitoring gracefully
-- ✅ Unit tests pass (`sudo dotnet test UnifiStockTracker-CSharp.sln`)
+- ✅ Unit tests pass (`sudo dotnet test UnifiWatch.sln`)
 
 ## Performance Notes
 
@@ -250,5 +250,5 @@ If you encounter issues:
 1. Check the [Troubleshooting](#troubleshooting) section above
 2. Verify .NET 9.0 is installed: `dotnet --version`
 3. Ensure you're on the correct Mac architecture (Intel vs Apple Silicon)
-4. Run `sudo dotnet test UnifiStockTracker-CSharp.sln` to check if the test suite passes
+4. Run `sudo dotnet test UnifiWatch.sln` to check if the test suite passes
 5. Check internet connectivity when running API calls

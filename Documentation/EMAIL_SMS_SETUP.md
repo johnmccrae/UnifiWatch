@@ -560,5 +560,3 @@ See `BUILD_PLAN.md` Phase 3b for implementation timeline.
 ---
 
 **Questions or issues?** Open an issue on GitHub or check the troubleshooting section above.
-
-

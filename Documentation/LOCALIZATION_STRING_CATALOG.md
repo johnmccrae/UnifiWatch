@@ -1,8 +1,8 @@
 # UnifiWatch - Localization String Catalog
 
-**Purpose**: Reference guide for contributors adding new language support  
-**Type**: Living document - updated as strings are added/modified  
-**Last Updated**: December 29, 2025  
+**Purpose**: Reference guide for contributors adding new language support
+**Type**: Living document - updated as strings are added/modified
+**Last Updated**: December 29, 2025
 **Original Audit**: December 12, 2025  
 
 ## Overview
@@ -59,23 +59,27 @@ See [LOCALIZATION_GUIDELINES.md](LOCALIZATION_GUIDELINES.md) for translation sta
 **Component**: System.CommandLine option descriptions
 
 ### 1.1 Root Command
-- `"UnifiStockTracker - Monitor Ubiquiti product stock availability"` → **Description of application purpose**
-  - *Requires localization*: Application name still shows "UnifiStockTracker" (should be "UnifiWatch")
+
+- `"UnifiWatch - Monitor Ubiquiti product stock availability"` → **Description of application purpose**
+  - *Note*: Application name now correctly uses "UnifiWatch"
   - *Note*: This needs product name update
 
 ### 1.2 Mode Options (mutually exclusive)
+
 | String | Context | Category |
 |--------|---------|----------|
 | `"Get current stock"` | `--stock` option description | CLI Help |
 | `"Wait for products to be in stock"` | `--wait` option description | CLI Help |
 
 ### 1.3 Store Options (mutually exclusive)
+
 | String | Context | Category |
 |--------|---------|----------|
 | `"Store to check (Europe, USA, UK) - uses GraphQL API"` | `--store` option help | CLI Help |
 | `"Store to check (Brazil, India, Japan, Taiwan, Singapore, Mexico, China) - uses Shopify API"` | `--legacy-api-store` option help | CLI Help |
 
 ### 1.4 Filter Options
+
 | String | Context | Category |
 |--------|---------|----------|
 | `"Collections to filter (optional)"` | `--collections` option | CLI Help |
@@ -83,6 +87,7 @@ See [LOCALIZATION_GUIDELINES.md](LOCALIZATION_GUIDELINES.md) for translation sta
 | `"Product SKUs to monitor"` | `--product-skus` option | CLI Help |
 
 ### 1.5 Wait Options
+
 | String | Context | Category |
 |--------|---------|----------|
 | `"Check interval in seconds"` | `--seconds` option | CLI Help |
@@ -90,6 +95,7 @@ See [LOCALIZATION_GUIDELINES.md](LOCALIZATION_GUIDELINES.md) for translation sta
 | `"Don't play sound when product is in stock"` | `--no-sound` option | CLI Help |
 
 **i18n Notes**:
+
 - Store names (Europe, USA, UK, Brazil, India, Japan, Taiwan, Singapore, Mexico, China) should **NOT** be translated - they are proper nouns/geographic names
 - API descriptions reference implementation details that may need context in translated docs
 
@@ -101,7 +107,9 @@ See [LOCALIZATION_GUIDELINES.md](LOCALIZATION_GUIDELINES.md) for translation sta
 **Component**: Cross-platform notification display
 
 ### 2.1 Notification Structure
+
 All notifications follow this pattern:
+
 - **Title**: Product-specific or alert-specific heading
 - **Message**: Detailed information about the stock alert
 
@@ -115,6 +123,7 @@ All notifications follow this pattern:
 | `"[Ubiquiti Stock Alert] {title}: {message}"` | Linux console fallback | Notification |
 
 ### 2.2 Brand References in Notifications
+
 | String | Component | Category |
 |--------|-----------|----------|
 | `"Ubiquiti Stock Tracker"` | notify-send app name (Linux) | Branding |
@@ -123,6 +132,7 @@ All notifications follow this pattern:
 **Note**: "Ubiquiti Stock Tracker" should be updated to "UnifiWatch" for consistency
 
 ### 2.3 Platform-Specific Notification Strings
+
 - **Windows**: Uses PowerShell + Windows.UI.Notifications (no hardcoded strings, uses title + message)
 - **macOS**: AppleScript subtitle = `"Ubiquiti Stock Alert"` (needs update to "UnifiWatch")
 - **Linux**: Multiple fallback methods
@@ -135,13 +145,15 @@ All notifications follow this pattern:
 
 ## 3. Console Output Messages
 
-**Files**: 
+**Files**:
+
 - `Program.cs`
 - `StockWatcher.cs`
 - `NotificationService.cs`
 - `TestNotification.cs`
 
 ### 3.1 Status & Progress Messages
+
 | String | Location | Category |
 |--------|----------|----------|
 | `"Sending test notification..."` | TestNotification.cs | Information |
@@ -151,6 +163,7 @@ All notifications follow this pattern:
 | `"[Notification] {title}: {message}"` | NotificationService.cs | Fallback |
 
 ### 3.2 Configuration Messages
+
 | String | Category | Notes |
 |--------|----------|-------|
 | Pending in Phase 2 | Configuration | Will add when examining Configuration/ServiceConfiguration.cs |
@@ -160,11 +173,13 @@ All notifications follow this pattern:
 ## 4. Error Messages
 
 **Files**:
+
 - `Configuration/ConfigurationProvider.cs`
 - `Services/Credentials/*.cs`
 - Various service classes
 
 ### 4.1 Configuration Errors
+
 - Configuration validation errors
 - File not found messages
 - Invalid settings messages
@@ -172,6 +187,7 @@ All notifications follow this pattern:
 *To be catalogued in follow-up scan*
 
 ### 4.2 Credential/Security Errors
+
 - Invalid credential storage
 - Permission denied messages
 - Encryption/decryption failures
@@ -179,6 +195,7 @@ All notifications follow this pattern:
 *To be catalogued in follow-up scan*
 
 ### 4.3 API & Network Errors
+
 - Store not found messages
 - API connection failures
 - Invalid API responses
@@ -192,6 +209,7 @@ All notifications follow this pattern:
 **Files**: `Models/UnifiProduct.cs`, `Configuration/ServiceConfiguration.cs`
 
 ### 5.1 Store Names (Valid Values)
+
 | Store Name | Region | API | Notes |
 |------------|--------|-----|-------|
 | USA | North America | GraphQL | Modern API |
@@ -206,6 +224,7 @@ All notifications follow this pattern:
 | China | Asia | Shopify | Legacy API |
 
 **i18n Notes**:
+
 - ✅ Store names are **proper nouns** - DO NOT TRANSLATE
 - They are geographic/company references required for API routing
 - Example: User must say "USA" not translated equivalent
@@ -217,6 +236,7 @@ All notifications follow this pattern:
 **For Phase 2 i18n infrastructure**:
 
 ### 6.1 Date/Time Formatting
+
 **Target Formats by Locale**:
 
 | Locale | Date Format | Time Format | Example |
@@ -228,6 +248,7 @@ All notifications follow this pattern:
 | fr-FR | DD/MM/YYYY | HH:mm:ss | 12/12/2025 14:30:45 |
 
 ### 6.2 Number Formatting
+
 | Locale | Decimal Sep | Thousands Sep | Currency Symbol | Example |
 |--------|-------------|---------------|-----------------|---------|
 | en-CA | . | , | $CAD | 1,234.56 |
@@ -237,11 +258,13 @@ All notifications follow this pattern:
 | fr-FR | , | space | € | 1 234,56 |
 
 **Price Display Examples**:
+
 - Canadian: `$123.45 CAD`
 - French Canadian: `123,45 $ CAD`
 - German: `123,45 €`
 
 ### 6.3 Currency Handling
+
 | Locale | Primary Currency | Secondary | Used For |
 |--------|------------------|-----------|----------|
 | en-CA | CAD | USD | Price display |
@@ -269,21 +292,23 @@ All notifications follow this pattern:
 ## 8. Findings & Recommendations
 
 ### 8.1 Critical Issues Found
-1. **Product Name Inconsistency**: Application still refers to "UnifiStockTracker" in multiple places:
+
+1. **Product Name Update**: Application now correctly uses "UnifiWatch" throughout:
    - Root command description in Program.cs
    - Notification app names (Linux: notify-send, macOS: subtitle)
    - Test notification strings
    - README and documentation still use old name
-   
+
    **Action**: Update to "UnifiWatch" before Phase 2 completion
 
 2. **Missing Hardcoded Branding**: Current branding strings are scattered:
    - `"Ubiquiti Stock Alert"` hardcoded in multiple locations
    - Should be refactored into centralized resource
-   
+
    **Action**: Move to resource files during Phase 2
 
 ### 8.2 Structural Observations
+
 1. **CLI Help Text**: Well-structured, isolated in Program.cs - good for extraction
 2. **Notifications**: Clean pattern (title + message) - easily localizable
 3. **Console Output**: Mix of status, errors, prompts - need systematic cataloging
@@ -307,16 +332,18 @@ All notifications follow this pattern:
 **Next Steps** (in order):
 
 1. ✅ **Complete this audit** (DONE)
-2. **Update product name**: "UnifiStockTracker" → "UnifiWatch" in all hardcoded strings
+2. **Product name**: "UnifiWatch" is now used consistently throughout the application
 3. **Add NuGet package**: `Microsoft.Extensions.Localization` (9.0.0)
 4. **Create resource structure**:
-   ```
+
+   ```powershell
    Resources/
      CLI.en-CA.json
      Notifications.en-CA.json
      Errors.en-CA.json
      DateTimeFormats.en-CA.json
    ```
+
 5. **Implement `CultureProvider`**: Logic for locale selection
 6. **Create unit tests**: Resource loading, fallback behavior
 7. **Update `ServiceConfiguration`**: Add language/timezone settings
@@ -326,6 +353,7 @@ All notifications follow this pattern:
 ## 10. Resource File Templates
 
 ### 10.1 CLI.en-CA.json
+
 ```json
 {
   "RootDescription": "UnifiWatch - Monitor Ubiquiti product stock availability",
@@ -343,6 +371,7 @@ All notifications follow this pattern:
 ```
 
 ### 10.2 Notifications.en-CA.json
+
 ```json
 {
   "ProductInStock": "Product '{name}' is now in stock! SKU: {sku}",
@@ -354,6 +383,7 @@ All notifications follow this pattern:
 ```
 
 ### 10.3 Errors.en-CA.json
+
 ```json
 {
   "NotificationFailed": "Failed to show notification: {error}",
@@ -380,6 +410,7 @@ All notifications follow this pattern:
 ## 12. Translation Keys Checklist
 
 ### For Phase 2 Resource Files (English Canadian):
+
 - [ ] CLI help text (12 strings)
 - [ ] Notification messages (8 strings)
 - [ ] Console output (5 strings)
@@ -404,5 +435,3 @@ All notifications follow this pattern:
 **Converted to Living Document**: December 29, 2025  
 **Last String Addition**: December 12, 2025  
 **Next Review**: When new user-facing strings are added to codebase  
-
-
