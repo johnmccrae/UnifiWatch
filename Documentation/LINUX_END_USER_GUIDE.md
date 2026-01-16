@@ -869,5 +869,3 @@ This guide provides a comprehensive manual testing checklist for UnifiWatch serv
 **Linux Distribution**: ____________________  
 **Overall Status**: ☐ Approved for Release  ☐ Needs Fixes
 
-
-
